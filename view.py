@@ -1,6 +1,6 @@
 import logging
 import re
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 from datawinners.blue.auth import logged_in_or_basicauth, response_json_cors, enable_cors
 from datawinners.blue.view import SurveyWebXformQuestionnaireRequest, logger
@@ -36,7 +36,7 @@ def get_question(request, project_uuid):
 
 @csrf_exempt
 @logged_in_or_basicauth()
-def submission_handler(request, project_uuid):
+def all_submissions_or_new(request, project_uuid):
     if request.method == 'GET':
         survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
         content = survey_request.get_submissions()
@@ -46,7 +46,6 @@ def submission_handler(request, project_uuid):
         try:
             response = XFormWebSubmissionHandler(request.user, request=request).\
                 create_new_submission_response()
-            response['Location'] = request.build_absolute_uri(request.path)
             return enable_cors(response)
         except Exception as e:
             logger.exception("Exception in submission : \n%s" % e)
@@ -55,11 +54,21 @@ def submission_handler(request, project_uuid):
 
 @csrf_exempt
 @logged_in_or_basicauth()
-def get_submission(request, project_uuid, submission_uuid):
-    survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
-    content = survey_request.get_submission(submission_uuid)
-    return response_json_cors(content)
-
+def submission_get_or_update(request, project_uuid, submission_uuid):
+    if request.method == 'GET':
+        survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
+        content = survey_request.get_submission(submission_uuid)
+        return response_json_cors(content)
+    elif request.method == 'POST':
+        try:
+            response = XFormWebSubmissionHandler(request.user, request=request).\
+                update_submission_response(submission_uuid)
+            return enable_cors(response)
+        except LookupError:
+            return HttpResponseNotFound()
+        except Exception as e:
+            logger.exception("Exception in submission : \n%s" % e)
+            return HttpResponseBadRequest()
 
 @csrf_exempt
 @logged_in_or_basicauth()
