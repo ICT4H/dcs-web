@@ -20,7 +20,7 @@ def get_questions(request):
     for row in rows:
         questionnaire = FormModel.get(manager, row['id'])
         if questionnaire.xform:
-            project_temp = dict(name=questionnaire.name, project_uuid=questionnaire.id, version='v1')
+            project_temp = dict(name=questionnaire.name, project_uuid=questionnaire.id, version=questionnaire._doc.rev)
             project_list.append(project_temp)
     return response_json_cors(project_list)
 
@@ -28,9 +28,9 @@ def get_questions(request):
 @csrf_exempt
 @logged_in_or_basicauth()
 def get_question(request, project_uuid):
-    manager =  get_database_manager(request.user)
+    manager = get_database_manager(request.user)
     questionnaire = FormModel.get(manager, project_uuid)
-    project_temp = dict(name=questionnaire.name, project_uuid=questionnaire.id, version='v1', xform=re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()))
+    project_temp = dict(name=questionnaire.name, project_uuid=questionnaire.id, version=questionnaire._doc.rev, xform=re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()))
     return response_json_cors(project_temp)
 
 
