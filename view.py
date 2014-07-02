@@ -24,6 +24,10 @@ def get_questions(request):
             project_list.append(project_temp)
     return response_json_cors(project_list)
 
+@csrf_exempt
+@logged_in_or_basicauth()
+def authenticate_user(request):
+    return response_json_cors({'auth':'success'})
 
 @csrf_exempt
 @logged_in_or_basicauth()
