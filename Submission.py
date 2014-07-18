@@ -7,7 +7,7 @@ from datawinners.search.submission_query import SubmissionQueryBuilder
 
 
 class SubmissionQueryMobile(Query):
-    SUBMISSION_TYPE = "mobile"
+    HEADER_FOR = "mobile"
     def __init__(self, form_model, query_params):
         Query.__init__(self, SubmissionQueryMobileResponseCreator(form_model), SubmissionQueryBuilder(form_model),
                        query_params)
@@ -15,14 +15,14 @@ class SubmissionQueryMobile(Query):
 
     def get_headers(self, entity_type, user):
         headers = self.query_params['headers'] if self.query_params.get('headers', None) else \
-            HeaderFactory(self.form_model).create_header(self.SUBMISSION_TYPE).get_header_field_names()
+            HeaderFactory(self.form_model).create_header(self.HEADER_FOR).get_header_field_names()
         return headers
 
     def add_unique_id_field(self, unique_id_field, header_dict):
         return None
 
     def get_header_dict(self):
-        header = HeaderFactory(self.form_model).create_header(self.SUBMISSION_TYPE)
+        header = HeaderFactory(self.form_model).create_header(self.HEADER_FOR)
         #{k,v for k1,v1 in header}
 
         return header.get_header_field_dict()
@@ -33,7 +33,7 @@ class SubmissionQueryMobile(Query):
         # take all headers if nothing selected
 
         # headers = ["4934e8e8072d11e4ae2b001c42af7554_your_name"]#self.query_params.get('headers')
-        headers = HeaderFactory(self.form_model).create_header(self.SUBMISSION_TYPE)
+        headers = HeaderFactory(self.form_model).create_header(self.HEADER_FOR)
         # submission_headers = header.get_header_field_names()
         submission_headers = headers
         query_by_submission_type = self.query_builder.filter_by_submission_type(query_all_results, self.query_params)
