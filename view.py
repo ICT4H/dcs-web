@@ -13,6 +13,7 @@ from datawinners.blue.xform_bridge import XFormTransformer, XFormSubmissionProce
 from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler
 from datawinners.dcs_app.Submission import SubmissionQueryMobile
 from datawinners.main.database import get_database_manager
+from datawinners.search.submission_headers import HeaderFactory
 from mangrove.form_model.form_model import FormModel
 
 
@@ -41,7 +42,13 @@ def authenticate_user(request):
 def get_question(request, project_uuid):
     manager = get_database_manager(request.user)
     questionnaire = FormModel.get(manager, project_uuid)
-    project_temp = dict(name=questionnaire.name, project_uuid=questionnaire.id, version=questionnaire._doc.rev, xform=re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()))
+    headers = HeaderFactory(questionnaire).create_header("Mobile", False).get_header_dict()
+
+    project_temp = dict(name=questionnaire.name,
+                        project_uuid=questionnaire.id,
+                        version=questionnaire._doc.rev,
+                        headers=json.dumps(headers),
+                        xform=re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()))
     return response_json_cors(project_temp)
 
 
@@ -76,7 +83,7 @@ def submission_get_or_update(request, project_uuid, submission_uuid):
                 update_submission_response(submission_uuid)
             return enable_cors(response)
         except LookupError:
-            return HttpResponseNotFound()
+            return enable_cors(HttpResponseNotFound())
         except Exception as e:
             logger.exception("Exception in submission : \n%s" % e)
             return HttpResponseBadRequest()
@@ -127,7 +134,7 @@ def get_server_submissions(request):
     search_parameters.update({"number_of_results": length})
     search_parameters.update({"filter":'all'})
 
-    search_parameters.update({"sort_field": "4934e8e8072d11e4ae2b001c42af7554_your_name"})
+    search_parameters.update({"sort_field": "date"})
     search_parameters.update({"order": ""})
     # search_parameters.update({"headers": json.loads('["c3b9ac7c07f811e4a302001c42af7554_q2"]')})
 
