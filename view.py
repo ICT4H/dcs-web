@@ -42,7 +42,7 @@ def authenticate_user(request):
 def get_question(request, project_uuid):
     manager = get_database_manager(request.user)
     questionnaire = FormModel.get(manager, project_uuid)
-    headers = HeaderFactory(questionnaire).create_header("Mobile", False).get_header_dict()
+    headers = HeaderFactory(questionnaire).create_header("mobile", False).get_header_dict()
 
     project_temp = dict(name=questionnaire.name,
                         project_uuid=questionnaire.id,
