@@ -401,7 +401,7 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
                 'project_uuid': self.questionnaire.id,
                 'created': py_datetime_to_js_datestring(submission.created),
                 'xml': self._model_str_of(submission.id, self.questionnaire.name),
-                'html': self._to_html(submission.values)
+                'data': json.dumps(submission.values)
         }
 
 
