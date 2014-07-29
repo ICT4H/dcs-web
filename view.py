@@ -1,6 +1,7 @@
 import logging
 import re
 import json
+from sets import Set
 
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
@@ -22,7 +23,11 @@ logger = logging.getLogger("datawinners.xlfrom.client")
 @csrf_exempt
 @basicauth_allow_cors()
 def get_questions(request):
+    start = int(request.GET.get('start', '0'))
+    length = int(request.GET.get('length', '10'))
+
     manager =  get_database_manager(request.user)
+
     project_list = []
     rows = manager.load_all_rows_in_view('all_projects', descending=True)
     for row in rows:
@@ -30,7 +35,11 @@ def get_questions(request):
         if questionnaire.xform:
             project_temp = dict(name=questionnaire.name, project_uuid=questionnaire.id, version=questionnaire._doc.rev)
             project_list.append(project_temp)
-    return response_json_cors(project_list)
+
+    return response_json_cors({"projects":project_list[start:start+length],
+                               "total":len(project_list),
+                               "start":start,
+                               "length":length})
 
 @csrf_exempt
 @basicauth_allow_cors()
@@ -51,6 +60,40 @@ def get_question(request, project_uuid):
                         xform=re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()))
     return response_json_cors(project_temp)
 
+'''
+id_version_dict={"12e3ed8a10af11e4b876001c42af7554":"1-4fbac7d730599bb9f9cea0bb6511e56d", "1b71e0bc130011e49e57001c42af7554": "3-6cfb65f3deaaadda8c8b36409efbd15d"}
+
+
+{"ids_not_found": [], "insync_ids": ["12e3ed8a10af11e4b876001c42af7554", "1b71e0bc130011e49e57001c42af7554"], "outdated_ids": []}
+'''
+@csrf_exempt
+@basicauth_allow_cors()
+def check_submissions_status(request, project_uuid):
+    req_id_version_dict = json.loads(request.POST['id_version_dict'])
+    outdated_ids = []
+    insync_ids = []
+
+    manager = get_database_manager(request.user)
+
+    req_ids = req_id_version_dict.keys()
+    rows = manager.load_all_rows_in_view("survey_response_by_survey_response_id", keys=req_ids)
+    id_version_dict = {r.value['_id']:r.value['_rev'] for r in rows if not r.value['void']}
+
+    req_ids_set = Set(req_ids)
+    ids = id_version_dict.keys()
+    ids_not_found = list(req_ids_set.difference(ids))
+    ids_found = req_ids_set.intersection(ids)
+
+    for id_found in ids_found:
+        if req_id_version_dict[id_found] == id_version_dict[id_found]:
+            insync_ids.append(id_found)
+        else:
+            outdated_ids.append(id_found)
+
+    return response_json_cors({
+        'both':insync_ids,
+        'server-deleted':ids_not_found,
+        'outdated':outdated_ids})
 
 @csrf_exempt
 @basicauth_allow_cors()
@@ -151,7 +194,7 @@ def get_server_submissions(request):
     query_count, search_count, submissions = submission_query.paginated_query(user, form_model.id)
 
     return enable_cors(HttpResponse(
-        jsonpickle.encode(
+        json.dumps(
             {
                 'data': submissions,
                 'headers': header_dict.values(),
@@ -159,7 +202,7 @@ def get_server_submissions(request):
                 'start': start,
                 "search_count": search_count,
                 'length': length
-            }, unpicklable=False), content_type='application/json'))
+            }), content_type='application/json'))
 # type=all
 # sEcho=8 iColumns=6 sColumns= iDisplayStart=0 iDisplayLength=25 sSearch= bRegex=false sSearch_0= bRegex_0=false bSearchable_0=true
 # sSearch_1= bRegex_1=false bSearchable_1=true sSearch_2= bRegex_2=false bSearchable_2=true sSearch_3= bRegex_3=false bSearchable_3=true
