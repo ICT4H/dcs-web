@@ -1,9 +1,11 @@
+import json
 from django.utils.translation import get_language, ugettext
 from datawinners.search.index_utils import es_field_name, es_unique_id_code_field_name
 from datawinners.search.query import Query
 from datawinners.search.submission_headers import HeaderFactory
 from datawinners.search.submission_index_constants import SubmissionIndexConstants
 from datawinners.search.submission_query import SubmissionQueryBuilder
+from mangrove.form_model.field import FieldSet
 
 
 class SubmissionQueryMobile(Query):
@@ -48,9 +50,18 @@ class SubmissionQueryMobileResponseCreator():
     def __init__(self, form_model):
         self.form_model = form_model
 
+    def get_field_set_fields(self,fields):
+        field_set_field_dict = {}
+        for field in fields:
+            if(isinstance(field,FieldSet)):
+              field_set_field_dict.update({es_field_name(field.code,self.form_model.id):field})
+              field_set_field_dict.update(self.get_field_set_fields(field.fields))
+        return field_set_field_dict
+
     def create_response(self, required_field_names, query):
         entity_question_codes = [es_field_name(field.code, self.form_model.id) for field in
                                  self.form_model.entity_questions]
+        fieldset_fields = self.get_field_set_fields(self.form_model.fields)
         meta_fields = [SubmissionIndexConstants.DATASENDER_ID_KEY]
         meta_fields.extend([es_unique_id_code_field_name(code) for code in entity_question_codes])
 
@@ -72,6 +83,8 @@ class SubmissionQueryMobileResponseCreator():
                         if error_msg.find('| |') != -1:
                             error_msg = error_msg.split('| |,')[['en', 'fr'].index(language)]
                         submission.append(error_msg)
+                    elif key in fieldset_fields.keys():
+                        submission.append(json.loads(res.get(key)))
                     else:
                         submission.append(res.get(ugettext(key)))
             submissions.append(submission)
