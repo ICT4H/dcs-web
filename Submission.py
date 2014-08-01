@@ -1,6 +1,7 @@
 import json
 from django.utils.translation import get_language, ugettext
-from datawinners.search.index_utils import es_field_name, es_unique_id_code_field_name
+
+from datawinners.search.index_utils import es_unique_id_code_field_name, es_questionnaire_field_name
 from datawinners.search.query import Query
 from datawinners.search.submission_headers import HeaderFactory
 from datawinners.search.submission_index_constants import SubmissionIndexConstants
@@ -59,7 +60,7 @@ class SubmissionQueryMobileResponseCreator():
         return field_set_field_dict
 
     def create_response(self, required_field_names, query):
-        entity_question_codes = [es_field_name(field.code, self.form_model.id) for field in
+        entity_question_codes = [es_questionnaire_field_name(field.code, self.form_model.id) for field in
                                  self.form_model.entity_questions]
         fieldset_fields = self.get_field_set_fields(self.form_model.fields)
         meta_fields = [SubmissionIndexConstants.DATASENDER_ID_KEY]
