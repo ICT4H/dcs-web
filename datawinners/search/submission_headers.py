@@ -10,9 +10,10 @@ from mangrove.form_model.form_model import header_fields
 
 
 class SubmissionHeader():
-    def __init__(self, form_model, language='en'):
+    def __init__(self, form_model, language='en', as_es_field_name=True):
         self.form_model = form_model
         self.language = language
+        self.as_es_field_name = as_es_field_name
 
     def get_header_dict(self):
         header_dict = OrderedDict()
@@ -25,7 +26,7 @@ class SubmissionHeader():
         entity_question_dict = dict((field.code, field) for field in entity_questions)
         headers = header_fields(self.form_model, key_attribute)
         for field_code, val in headers.items():
-            key = es_questionnaire_field_name(field_code, self.form_model.id)
+            key = es_questionnaire_field_name(field_code, self.form_model.id) if self.as_es_field_name else field_code
             if field_code in entity_question_dict.keys():
                 self.add_unique_id_field(entity_question_dict.get(field_code), header_dict)
             else:
@@ -107,6 +108,6 @@ class HeaderFactory():
         self.form_model = form_model
         self.language = language
 
-    def create_header(self, submission_type):
+    def create_header(self, submission_type, as_es_field_name=True):
         header_class = self.header_to_class_dict.get(submission_type)
-        return header_class(self.form_model, self.language)
+        return header_class(self.form_model, self.language, as_es_field_name)
