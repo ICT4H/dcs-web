@@ -122,7 +122,7 @@ class TestReminderSend(HeadlessRunnerTest):
         reminder_settings.save_reminders()
         self.assertEqual(reminder_settings.get_example_text(), text_example_before_save)
 
-    @attr("functional_test")
+    @attr("functional_testa")
     def test_should_disable_reminder_setting_for_project_having_no_datasender(self):
         reminder_settings = self.go_to_reminder_page("clinic3 test project", VALID_CREDENTIALS)
         self.assertTrue(reminder_settings.is_disabled)
