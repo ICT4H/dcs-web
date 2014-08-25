@@ -63,7 +63,7 @@ class TestProjectTestSMSPreview(HeadlessRunnerTest):
         self.driver.wait_for_page_with_title(20, MY_DATASENDERS_PAGE_TITLE)
         self.check_upgrade_instruction(project_overview_page)
 
-    @attr('functional_test')
+    @attr('functional_testa')
     def test_should_show_upgrade_instruction_on_add_datasenders_page(self):
         project_overview_page = self.navigate_to_clinic3_overview_page()
         my_datasenders = project_overview_page.navigate_to_datasenders_page()
