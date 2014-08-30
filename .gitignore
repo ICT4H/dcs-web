@@ -79,3 +79,6 @@ datawinners/media/css/scss/*.css
 datawinners/media/css/scss/*.css.map
 
 *.pyc
+
+# grunt generated
+node_modules

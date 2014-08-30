@@ -1,0 +1,24 @@
+{% extends 'layout_registration.html' %}
+{% load i18n %}
+{% block page_title %} {% trans "Registration Confirmation" %} {% endblock %}
+{% block section_title %} {% trans "Registration Confirmation" %} {% endblock %}
+{% block content %}
+    <div class="span-12 box push-6">
+        <fieldset>
+            <div class="span-8 last">
+                <div class="span-8">
+                    <div class="form-row-10px">
+                        <p class="success-box">{% trans "You have successfully signed up with Garner" %}!!
+                            <br/><br/>
+                            <b>{% trans "Last Step: Activate your account" %}</b>
+                            <br/>
+                            {% trans "We've sent you an activation email. Please check your Spam folder if you haven't received it." %}
+                            <br/><br/>
+                            {% trans 'Contact <a href="mailto:garner@thoughtworks.com">garner@thoughtworks.com</a> if you need help.' %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+{% endblock %}
