@@ -1,0 +1,79 @@
+{% extends 'public.html' %}
+{% load i18n %}
+{% block page_title %} DataWinners {% endblock %}
+
+{% block page_js %}
+    {{ block.super }}
+    <script src="/media/javascript/home/index.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block main_content %}
+    <div id="container_home_intro">
+        <div id="home_intro_bg">
+            <div id="home_intro" class="container_24">
+                <div class="grid_14 alpha omega">
+                    <img src="/media/images/dw_mobile_en.png" width="530" height="393"
+                         style="margin-left: 44px" alt=""/>
+                </div>
+                <div class="grid_10 alpha omega">
+                    <div class="content">
+                        <p class="title">
+                            Data Collection<br/>
+                            for Development<br/>
+                        </p>
+                        <p class="title_medium_size">
+                            Transform Paper Forms to Digital Questionnaires<br/>
+                            Get Data Using SMS / Smartphone / Web
+                        </p>
+                        <p class="title_min_size">Unlimited data collection for one low monthly fee</p>
+                        <a href="/register/trial"
+                           class="intro_try_button">Try it Free</a>
+                        <a href="/{% trans "en"%}/what-is-datawinners" class="intro_learn_button">Learn
+                            More</a>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="container_home_how">
+        <div id="home_how" class="container_24">
+            <div class="grid_4 alpha omega">
+                <img src="/media/images/dw_home_how_en.png" alt="How it works"
+                     class="title"/><br/>
+                <a href="/en/what-is-datawinners/how-it-works">Learn more &raquo;</a>
+            </div>
+            <div class="grid_20 alpha omega">
+                <img src="/media/images/dw_home_how_schema.png" alt="How it works"
+                     width="800" height="106"/>
+
+                <div class="grid_5 alpha omega text_align_center">
+                    <p>
+                        <strong>Create Your Questionnaire</strong>
+                    </p>
+                </div>
+                <div class="grid_6 alpha omega text_align_center">
+                    <p>
+                        <strong>Receive Accurate Data</strong>
+                    </p>
+                </div>
+                <div class="grid_4 alpha omega text_align_center">
+                    <p>
+                        <strong>See Your Results</strong>
+                    </p>
+                </div>
+                <div class="grid_5 alpha omega margin_left_20 text_align_center">
+                    <p class="margin_left_20" style="width: 205px;">
+                        <strong>Make Informed Decisions</strong><br/>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="container_home_carousel"></div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{
+    "name": "dcs",
+    "version": "0.0.0",
+    "brand": "dcs",
+    "brand_file": "_dcs.scss",
+    "scss_src": "datawinners/media/css/scss/",
+
+    "devDependencies": {
+        "grunt": "0.4.5",
+        "grunt-preprocess": "4.0.0",
+        "grunt-contrib-sass": "0.7.4",
+        "grunt-contrib-watch": "0.6.1"
+    }
+}
