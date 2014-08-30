@@ -34,6 +34,7 @@ class XlsFormParser():
     type_dict = {'group': ['repeat', 'group'],
                  'field': ['text', 'integer', 'decimal', 'date', 'geopoint', 'calculate', 'cascading_select'],
                  'auto_filled': ['note', 'today'],
+                 'media': ['photo'],
                  'select': ['select one', 'select all that apply']
     }
     meta_data_types = ["start","end","today","imei","deviceid","subscriberid","phonenumber","simserial"]
