@@ -1,0 +1,13 @@
+{% load i18n %}
+<div id="container_header_wizard" >
+    <div class="container_24" id="header">
+        {% if not user.is_authenticated %}
+            <div class="grid_4 login text_align_center float_right">
+                <span><a href="{% url django.contrib.auth.views.login %}" class="first">{% trans "Sign In" %}</a></span>
+                <span><a href="/registration">{% trans "Sign Up" %}</a></span>
+            </div>
+        {% endif %}
+        <div class="clear"></div>
+    </div>
+</div>
+

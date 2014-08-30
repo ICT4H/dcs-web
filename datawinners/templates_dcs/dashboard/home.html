@@ -1,0 +1,87 @@
+{% extends 'layout_application.html' %}
+{% load i18n %}
+{% block page_title %}{% trans "Dashboard" %}{% endblock %}
+{% block section_title %}{% trans "Dashboard" %}{% endblock %}
+
+{% load dw_tabs %}
+{% block body %}
+{% activetab "main_nav" "dashboard" %}
+{{ block.super }}
+{% endblock %}
+
+{% block page_scss %}
+    {{ block.super }}
+    <link href="/media/css/scss/section_dashboard.css" rel="stylesheet" />
+{% endblock %}
+
+{% block page_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="/media/javascript/home/dashboard.js"></script>
+{% endblock %}
+
+{% block navigation %}
+    <div class="grid_24">
+        <div class="grid_11 margin_left_null margin_bottom_20 create_proj_button">
+            <a id="create_project_link" href="{% url datawinners.project.wizard_view.create_project%}?prev=dash" class="button">{% trans "Create a New Questionnaire" %}</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+    {% for message in messages %}
+            <div class="{{ message.tags }}-message-box message-box clear-left">{{ message }}</div>
+    {% endfor %}
+    {% if questionnaireDoesNotExist %}
+        <div class="warning-message-box clear-left">
+            <p>
+                {% trans 'We made our Questionnaire Building process simpler and easier for you. '%} <a target="_blank" href="http://datawinners.wordpress.com/2014/05/15/data-collection-just-got-easier/">{% trans 'Read more »'%}</a>
+                <br/>
+                {%trans 'With this update we changed the webpage address you are trying to access. Sorry for the inconvenience.' %}
+            </p>
+        </div>
+    {% endif %}
+
+    <div id="how_to" class="none">
+        <h3><span class="title">{% trans "How to use Datawinners" %}</span><img src="/media/images/help_icon.png" class="help_icon" style="margin-top:-6px;">
+            <div class="tooltip"><p>{% trans "Click on the triangle to the left of 'How to use DataWinners' to expand or collapse the box." %}</p></div>
+        </h3>
+         <p>
+            {% trans "help_how_to_use_dw" %}
+         </p>
+    </div>
+
+    <div class="grid_17 margin_left_null dashboard_left">
+        <h4 class="grid_16 omega alpha">{% trans "Your Most Recent Questionnaires" %}</h4>
+        <div id="projects">
+        {% for project in projects %}
+            <div class="project_header">
+                <span class="header">{{ project.name }} </span>
+                <span id="submission_success_breakup_{{ project.id }}" class="success_error"></span>
+            </div>
+            <div>
+                <a class="go_to_project"href="{{ project.link }}">{% trans "go to this Questionnaire" %}»</a>
+                <span class="project_id none">{{ project.id }}</span>
+                <img class="ajax_loader_image none" src="/media/images/ajax-loader-horizontal-bar.gif"/>
+                <table>
+                    <tbody class="submission_list">
+
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+        </div>
+        <a class="grid_4  omega alpha view_all_projects" href="{% url alldata_index %}">{% trans "view all Questionnaires"%} »</a>
+    </div>
+    <div class="grid_5 alpha omega dashboard_right">
+        <h4 class="margin_bottom_10">{% trans "Statistics" %}</h4>
+        <h6>{% trans "Submissions Received" %}</h6>
+        <table class="no-border">
+            <tr><td width="55%">&nbsp;</td><td width="30%" class="italic grey font_size_10">{% trans "This Month" %}</td><td width="15%" class="italic grey font_size_10">{% trans "Total" %}</td></tr>
+            <tr><td>{% trans "Smartphone" %}</td><td>{{ counters.sp_submission_current_month }}</td><td>{{ counters.total_sp_submission }}</td></tr>
+            <tr><td>{% trans "Web" %}</td><td>{{ counters.web_submission_current_month }}</td><td>{{ counters.total_web_submission }}</td></tr>
+            <tr><td><b>{% trans "Total" %}</b></td><td><b>{{ counters.total_submission_current_month }}</b></td><td><b>{{ counters.combined_total_submissions }}</b></td></tr>
+        </table>
+    </div>
+{% endblock %}
