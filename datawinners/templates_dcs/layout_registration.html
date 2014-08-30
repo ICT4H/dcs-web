@@ -1,0 +1,56 @@
+{% extends 'layout_application.html' %}
+{% load i18n %}
+{% block layout_scss %}
+{% include 'application_scss.html' %}
+<link href="/media/css/scss/section_registration.css" rel="stylesheet" />
+<link href="/media/css/scss/section_public.css" rel="stylesheet" />
+{% endblock %}
+
+{% block page_js %}
+    {{ block.super }}
+{% endblock %}
+{% block body %}
+{% block header %}
+<div id="container_header_application">
+  <div class="container_24" id="header_application">
+    {% include 'header_wizard.html' %}
+    <div id="main_tab">
+        <div class="grid_6 alpha logo">
+            <a href="/{% trans "en" %}/home/" ><img src="/media/images/dcs_logo.png"/></a>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block main_content %}
+{% load i18n %}
+<div id="container_content">
+  <div id="page_title">
+    {% block section_title %}
+    {% endblock %}
+  </div>
+  <div class="container_24">
+    
+    <div class="grid_23 content">
+      <div class="grid_15 alpha  left_hand_section">
+        {% block messages %}{% endblock %} 
+        {% block content %} {% endblock %}
+      </div>
+        {% block right_hand_section %}
+            {% block already_registered_link %}
+            {% endblock %}
+            <div class="grid_7 right_hand_section alpha omega about_datawinners">
+            {% trans "about_DW" %}
+            </div>
+        {% endblock  %}
+        {% block right_second_hand_section %}
+            <div class="grid_7 right_hand_section alpha omega subscription_details">
+            {% trans "subscription_details" %}
+            </div>
+        {% endblock  %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+{% endblock %}

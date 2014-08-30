@@ -1,0 +1,129 @@
+{% extends 'layout_registration.html' %}
+{% load i18n %}
+{% load field_tags %}
+{% block page_title %} {% trans "Register" %}{% endblock %}
+{% block section_title %}{% trans "Sign Up to Garner" %} {% endblock %}
+{% block page_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="/media/javascript/registration/register.js"></script>
+{% endblock %}
+
+{% block already_registered_link %}
+    {% include "registration/already_registered_link.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="span-18 box">
+        <fieldset>
+             <h6 class="section_description">{% trans "All fields are required unless marked optional." %}</h6>
+             <form id="registration_form" action="" method="POST" class="registration_form">
+                    {% csrf_token %}
+                    <div class="form-5px">
+                        <ul class="organization">
+                            <li>
+                                <h3 class="highlighted_title">{%  trans "Your Organization" %}<br/></h3>
+                            </li>
+                            <li class="{{ form.organization_name.css_classes }} form-row-10px">
+                                {{ form.language }}
+                                {{ form.organization_name|field_label }}
+                                {{ form.organization_name }}
+                                    {{ form.organization_name.errors }}
+                            </li>
+                            <li class="{{ form.organization_sector.css_classes  }} form-row-10px">
+
+                                {{ form.organization_sector|field_label }}
+                                {{ form.organization_sector }}
+                                {{ form.organization_sector.errors }}
+
+                            </li>
+                            <li class="{{ form.organization_city.css_classes  }} form-row-10px">
+                                {{ form.organization_city|field_label }}
+                                {{ form.organization_city }}
+
+                                {{ form.organization_city.errors }}
+
+                            </li>
+                            <li class="{{ form.organization_country.css_classes  }} form-row-10px">
+                                {{ form.organization_country|field_label }}
+                                {{ form.organization_country }}
+
+                                {{ form.organization_country.errors }}
+
+                            </li>
+                        </ul>
+                        <ul class="administrative">
+                            <li>
+                                <h3 class="highlighted_title">{% trans "Point of Contact / Your Account Administrator" %}</h3>
+                            </li>
+                             <li class="{{ form.title.css_classes  }} form-row-10px">
+                                {{ form.title|field_label }}
+                                {{ form.title }}
+
+                                 {{ form.title.errors }}
+                                <p class="black_italic optional">{% trans "Example: Program Director" %}</p>
+                             </li>
+                            <li class="{{ form.full_name.css_classes  }} form-row-10px">
+                                {{ form.full_name|field_label }}
+                                {{ form.full_name }}
+
+                                {{ form.full_name.errors }}
+
+                            </li>
+
+                            <li class="{{ form.email.css_classes  }} form-row-10px">
+                                {{ form.email|field_label }}
+                                {{ form.email }}
+
+                                {{ form.email.errors }}
+
+                            </li>
+                            <li class="{{ form.mobile_phone.css_classes  }} form-row-10px" id="mobile-phone-number-{% trans "en" %}">
+                                {{ form.mobile_phone|field_label }}
+                                {{ form.mobile_phone }}
+
+                                {{ form.mobile_phone.errors }}
+                                <p class="black_italic">{% trans "phone_number_example" %}</p>
+                            </li>
+                            <li class="{{ form.password1.css_classes  }} form-row-10px">
+                                {{ form.password1|field_label }}
+                                {{ form.password1 }}
+
+                                {{ form.password1.errors }}
+                                <br class="clear_both"/>
+                                <p class="black_italic">{% trans "Example: Minimum	of 6 characters in length" %}</p>
+                            </li>
+                            <li class="{{ form.password2.css_classes  }} form-row-10px">
+                                {{ form.password2|field_label }}
+                                {{ form.password2 }}
+
+                                {{ form.password2.errors }}
+
+                            </li>
+                            <li>
+                                <input type="checkbox" id="agree-terms" value="1" {% ifequal messages.request.method 'POST' %}checked="checked"{% endifequal %}/> {% trans "agree-terms" %}
+                            </li>
+                            <li class="margin_top_20">
+                                <input type="button" id="submit_registration_form" value="{% trans "Sign Up" %}" class="button" />
+                            </li>
+                        </ul>
+                    </div>
+             </form>
+        </fieldset>
+    </div>
+    <div id='user_should_agree_terms_block'>
+            {% trans "To sign up for a DataWinners account, you need to agree to our Terms and Conditions" %}
+            <br/>
+            <div class="float_right">
+                <a href="javascript:void(0);" id="cancel-agree-terms" class="cancel_link">{% trans "Cancel" %}</a>
+                <a href="#" class="button agree_link">{% trans "I Agree" %}</a>
+            </div>
+    </div>
+    <div id="content_of_terms_and_conditions">
+        <div class="content" style="">
+
+        </div>
+        <div class="text_align_right margin_top_15">
+            <a id="terms_ok" href="javascript:void(0)" class="button">{% trans "OK, Got it." %}</a>
+        </div>
+    </div>
+{% endblock %}
