@@ -209,3 +209,20 @@ def get_server_submissions(request):
 # sSearch_4= bRegex_4=false bSearchable_4=true sSearch_5= bRegex_5=false bSearchable_5=true iSortingCols=1 iSortCol_0=2 sSortDir_0=desc
 # bSortable_0=false bSortable_1=true bSortable_2=true bSortable_3=true bSortable_4=true bSortable_5=true disable_cache=1404814386137
 # search_filters={"submissionDatePicker":"All Dates","datasenderFilter":"","search_text":"ssdfsdf","dateQuestionFilters":{},"uniqueIdFilters":{}}
+
+@csrf_exempt
+@basicauth_allow_cors()
+def get_projects_status(request):
+    outdated_projects = []
+    manager =  get_database_manager(request.user)
+    client_projects = json.loads(request.POST['projects'])
+
+    for client_project in client_projects:
+        try:
+            server_project = FormModel.get(manager, client_project['id'])
+        except Exception as e:
+            outdated_projects.append({'id': client_project['id'], 'status': 'server-deleted'})
+            continue
+        if server_project.revision != client_project['rev']:
+            outdated_projects.append({'id': server_project.id, 'status': 'outdated'})
+    return response_json_cors(outdated_projects)

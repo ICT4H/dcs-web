@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import patterns, url
-from datawinners.dcs_app.view import get_questions, get_question, all_submissions_or_new, submission_get_or_update, authenticate_user, get_server_submissions, get_submission_headers, check_submissions_status
+from datawinners.dcs_app.view import get_questions, get_question, all_submissions_or_new, submission_get_or_update, authenticate_user, get_server_submissions, get_submission_headers, check_submissions_status, \
+    get_projects_status
 
 urlpatterns = patterns('',
     url(r'^client/project/$', get_questions),
@@ -11,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^client/auth/$', authenticate_user),
     url(r'^client/submissions/$', get_server_submissions),
     url(r'^client/submission-headers/$', get_submission_headers),
+    url(r'^client/projects/validate/$', get_projects_status),
 
 )
