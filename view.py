@@ -105,7 +105,7 @@ def all_submissions_or_new(request, project_uuid):
 
     elif request.method == 'POST':
         try:
-            response = XFormWebSubmissionHandler(request.user, request=request).\
+            response = XFormWebSubmissionHandler(request=request).\
                 create_new_submission_response()
             return enable_cors(response)
         except Exception as e:
@@ -122,7 +122,7 @@ def submission_get_or_update(request, project_uuid, submission_uuid):
         return response_json_cors(content)
     elif request.method == 'POST':
         try:
-            response = XFormWebSubmissionHandler(request.user, request=request).\
+            response = XFormWebSubmissionHandler(request=request).\
                 update_submission_response(submission_uuid)
             return enable_cors(response)
         except LookupError:
@@ -135,7 +135,7 @@ def submission_get_or_update(request, project_uuid, submission_uuid):
 @basicauth_allow_cors()
 def submit_submission(request):
     try:
-        response = XFormWebSubmissionHandler(request.user, request=request).\
+        response = XFormWebSubmissionHandler(request=request).\
             create_new_submission_response()
         response['Location'] = request.build_absolute_uri(request.path)
         return enable_cors(response)
