@@ -6,7 +6,7 @@ from django.utils.translation import ugettext
 from datawinners.search.index_utils import es_unique_id_code_field_name, es_questionnaire_field_name
 from datawinners.search.submission_index_constants import SubmissionIndexConstants
 from datawinners.utils import translate
-from mangrove.form_model.form_model import header_fields
+from mangrove.form_model.form_model import header_fields, _header_fields_for_mobile, header_fields_for_mobile
 
 
 class SubmissionHeader():
@@ -15,16 +15,16 @@ class SubmissionHeader():
         self.language = language
         self.as_es_field_name = as_es_field_name
 
+    def get_header_fields(self, key_attribute):
+        return header_fields(self.form_model, key_attribute)
+
     def get_header_dict(self):
         header_dict = OrderedDict()
         header_dict.update(self.update_static_header_info())
 
-        def key_attribute(field):
-            return field.code
-
         entity_questions = self.form_model.entity_questions
         entity_question_dict = dict((self._get_entity_question_path(field), field) for field in entity_questions)
-        headers = header_fields(self.form_model, key_attribute)
+        headers = self.get_header_fields(key_attribute)
         for field_code, val in headers.items():
             key = es_questionnaire_field_name(field_code, self.form_model.id) if self.as_es_field_name else field_code
             if field_code in entity_question_dict.keys():
@@ -68,6 +68,8 @@ class SubmissionHeader():
     def update_static_header_info(self):
         pass
 
+def key_attribute(field):
+    return field.code.lower()
 
 class SubmissionAnalysisHeader(SubmissionHeader):
     def update_static_header_info(self):
@@ -111,6 +113,9 @@ class MobileSubmissionHeader(SubmissionHeader):
         header_dict.update({SubmissionIndexConstants.DATASENDER_NAME_KEY: "Data Sender"})
         header_dict.update({"date": "Submission Date"})
         return header_dict
+
+    def get_header_fields(self, key_attribute):
+        return header_fields_for_mobile(self.form_model, key_attribute)
 
 
 class ErroredSubmissionHeader(SubmissionHeader):
