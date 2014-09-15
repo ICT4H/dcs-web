@@ -51,11 +51,14 @@ class SubmissionQueryMobileResponseCreator():
     def __init__(self, form_model):
         self.form_model = form_model
 
+    def combine_name_and_id(self, short_code, entity_name):
+        return ["%s<span class='small_grey'>  %s</span>" % (entity_name, short_code)] if entity_name else entity_name
+
     def get_field_set_fields(self,fields):
         field_set_field_dict = {}
         for field in fields:
             if(isinstance(field,FieldSet)):
-              field_set_field_dict.update({es_field_name(field.code,self.form_model.id):field})
+              field_set_field_dict.update({es_questionnaire_field_name(field.code,self.form_model.id):field})
               field_set_field_dict.update(self.get_field_set_fields(field.fields))
         return field_set_field_dict
 
@@ -69,24 +72,26 @@ class SubmissionQueryMobileResponseCreator():
         submissions = []
         language = get_language()
         for res in query.values_dict(tuple(required_field_names)):
-            submission = [res._id]
+            submission = {'id': [res._id]}
             for key in required_field_names:
                 if not key in meta_fields:
                     #TODO do we need entity_question
                     if key in entity_question_codes:
-                        self.combine_name_and_id(short_code=res.get(es_unique_id_code_field_name(key)),
-                                                 entity_name=res.get(key), submission=submission)
+                        submission[key] = self.combine_name_and_id(short_code=res.get(es_unique_id_code_field_name(key)),
+                                                 entity_name=res.get(key))
+                    elif key == SubmissionIndexConstants.DATASENDER_NAME_KEY:
+                        submission[key] = self.combine_name_and_id(res.get(SubmissionIndexConstants.DATASENDER_ID_KEY),
+                                                 res.get(SubmissionIndexConstants.DATASENDER_NAME_KEY))
                     elif key == 'status':
-                        submission.append(ugettext(res.get(key)))
-
+                        submission[key] = ugettext(res.get(key))
                     elif key == 'error_msg':
                         error_msg = res.get(key)
                         if error_msg.find('| |') != -1:
                             error_msg = error_msg.split('| |,')[['en', 'fr'].index(language)]
-                        submission.append(error_msg)
+                        submission[key] = error_msg
                     elif key in fieldset_fields.keys():
-                        submission.append(json.loads(res.get(key)))
+                        submission[key.split('_', 1)[-1]] = json.loads(res.get(key))
                     else:
-                        submission.append(res.get(ugettext(key)))
+                        submission[key.split('_', 1)[-1]] = res.get(ugettext(key))
             submissions.append(submission)
         return submissions
