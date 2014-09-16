@@ -106,13 +106,16 @@ def all_submissions_or_new(request, project_uuid):
 
     elif request.method == 'POST':
         try:
-            response = XFormWebSubmissionHandler(request=request).\
+            form_code = get_form_code_from_xform(request.POST['form_data']);
+            response = XFormWebSubmissionHandler(request=request, form_code=form_code).\
                 create_new_submission_response()
             return enable_cors(response)
         except Exception as e:
             logger.exception("Exception in submission : \n%s" % e)
             return HttpResponseBadRequest()
 
+def get_form_code_from_xform(xform):
+    return re.search('<form_code>(.+?)</form_code>', xform).group(1)
 
 @csrf_exempt
 @basicauth_allow_cors()
