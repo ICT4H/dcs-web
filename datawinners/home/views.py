@@ -22,7 +22,7 @@ def index(request):
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
     language = request.session.get("django_language", "en")
-    return redirect("/%s/home/" % language)
+    return redirect("/login/")
 
 def switch_language(request, language):
     request.session['django_language'] = language
