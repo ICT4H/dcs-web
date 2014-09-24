@@ -18,6 +18,8 @@ API_KEYS = {
     'localhost:8000': 'AIzaSyChwOoz0ZXqQS6EAVcdngeb_17KMLW3eTM'
 }
 
+ROOT_URLCONF = 'datawinners.dcs_app.urls'
+
 GOOGLE_MAPS_ENABLED = False
 GOOGLE_ANALYTICS_ENABLED = False
 
