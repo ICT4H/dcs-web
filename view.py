@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import jsonpickle
+from mangrove.transport.player.new_players import XFormPlayerV2
 
 from datawinners.dcs_app.auth import basicauth_allow_cors, response_json_cors, enable_cors
 from datawinners.blue.view import SurveyWebXformQuestionnaireRequest, logger
@@ -226,3 +227,10 @@ def get_projects_status(request):
         if server_project.revision != client_project['rev']:
             outdated_projects.append({'id': server_project.id, 'status': 'outdated'})
     return response_json_cors(outdated_projects)
+
+@csrf_exempt
+@basicauth_allow_cors()
+def attachment_post(request, survey_response_id):
+    player = XFormPlayerV2(get_database_manager(request.user))
+    player.add_new_attachments(request.FILES, survey_response_id)
+    return HttpResponse(status=201)
