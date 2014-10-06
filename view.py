@@ -1,3 +1,4 @@
+import base64
 import logging
 import re
 import json
@@ -7,7 +8,6 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import jsonpickle
-from mangrove.transport.player.new_players import XFormPlayerV2
 
 from datawinners.dcs_app.auth import basicauth_allow_cors, response_json_cors, enable_cors
 from datawinners.blue.view import SurveyWebXformQuestionnaireRequest, logger
@@ -45,7 +45,7 @@ def get_questions(request):
 @csrf_exempt
 @basicauth_allow_cors()
 def authenticate_user(request):
-    return response_json_cors({'auth':'success'})
+    return response_json_cors({'auth':'success', 'hash': base64.b64encode(str(request.user))   })
 
 @csrf_exempt
 @basicauth_allow_cors()
@@ -117,6 +117,7 @@ def all_submissions_or_new(request, project_uuid):
 def get_form_code_from_xform(xform):
     return re.search('<form_code>(.+?)</form_code>', xform).group(1)
 
+
 @csrf_exempt
 @basicauth_allow_cors()
 def submission_get_or_update(request, project_uuid, submission_uuid):
@@ -161,8 +162,8 @@ def get_submission_headers(request):
                 'data': headers
             })
 
-# @csrf_exempt
-# @logged_in_or_basicauth()
+@csrf_exempt
+@basicauth_allow_cors()
 def get_server_submissions(request):
     user = User.objects.get(username='tester150411@gmail.com')
     # NGOUserProfile.objects.filter(user=user)
@@ -230,10 +231,3 @@ def get_projects_status(request):
         if server_project.revision != client_project['rev']:
             outdated_projects.append({'id': server_project.id, 'status': 'outdated'})
     return response_json_cors(outdated_projects)
-
-@csrf_exempt
-@basicauth_allow_cors()
-def attachment_post(request, survey_response_id):
-    player = XFormPlayerV2(get_database_manager(request.user))
-    player.add_new_attachments(request.FILES, survey_response_id)
-    return HttpResponse(status=201)
