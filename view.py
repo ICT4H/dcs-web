@@ -18,6 +18,7 @@ from datawinners.dcs_app.Submission import SubmissionQueryMobile
 from datawinners.main.database import get_database_manager
 from datawinners.search.submission_headers import HeaderFactory
 from mangrove.form_model.form_model import FormModel
+from mangrove.transport.player.new_players import XFormPlayerV2
 
 
 logger = logging.getLogger("datawinners.xlfrom.client")
@@ -231,6 +232,12 @@ def get_projects_status(request):
             outdated_projects.append({'id': server_project.id, 'status': 'outdated'})
     return response_json_cors(outdated_projects)
 
+@csrf_exempt
+@basicauth_allow_cors()
+def attachment_post(request, survey_response_id):
+    player = XFormPlayerV2(get_database_manager(request.user))
+    player.add_new_attachments(request.FILES, survey_response_id)
+    return HttpResponse(status=201)
 
 @csrf_exempt
 @basicauth_allow_cors()
