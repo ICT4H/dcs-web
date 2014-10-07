@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import jsonpickle
+import magic
 
 from datawinners.dcs_app.auth import basicauth_allow_cors, response_json_cors, enable_cors
 from datawinners.blue.view import SurveyWebXformQuestionnaireRequest, logger
@@ -127,7 +128,8 @@ def submission_get_or_update(request, project_uuid, submission_uuid):
         return response_json_cors(content)
     elif request.method == 'POST':
         try:
-            response = XFormWebSubmissionHandler(request=request).\
+            form_code = get_form_code_from_xform(request.POST['form_data']);
+            response = XFormWebSubmissionHandler(request=request, form_code=form_code).\
                 update_submission_response(submission_uuid)
             return enable_cors(response)
         except LookupError:
@@ -229,3 +231,13 @@ def get_projects_status(request):
             outdated_projects.append({'id': server_project.id, 'status': 'outdated'})
     return response_json_cors(outdated_projects)
 
+
+@csrf_exempt
+@basicauth_allow_cors()
+def attachment_get(request, survey_response_id, file_name):
+    manager = get_database_manager(request.user)
+    try:
+        file_content = manager.get_attachments(survey_response_id, attachment_name=file_name.strip())
+        return HttpResponse(file_content, mimetype=magic.from_buffer(file_content, mime=True))
+    except LookupError:
+        return HttpResponseNotFound('Attachment not found')
