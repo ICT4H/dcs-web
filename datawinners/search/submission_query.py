@@ -9,7 +9,7 @@ from datawinners.search.submission_headers import HeaderFactory
 from datawinners.search.submission_index_constants import SubmissionIndexConstants
 from datawinners.settings import ELASTIC_SEARCH_URL, ELASTIC_SEARCH_TIMEOUT
 from datawinners.search.query import QueryBuilder, Query
-from mangrove.form_model.field import ImageField, FieldSet, SelectField
+from mangrove.form_model.field import FieldSet, SelectField, MediaField
 from mangrove.form_model.form_model import get_field_by_attribute_value
 
 
@@ -144,7 +144,7 @@ class SubmissionQueryResponseCreator():
             return key
 
     def append_if_attachments_are_present(self, res, key):
-        if type(get_field_by_attribute_value(self.form_model, 'code', self._get_key(key))) is ImageField:
+        if isinstance(get_field_by_attribute_value(self.form_model, 'code', self._get_key(key)), MediaField):
             value = res.get(key)
             if value:
                 return "<span style=\"display:inline-block;width:70px; height: 70px;border:1px solid #CCC; margin-right:5px;display: table-cell;vertical-align: middle;\"><img style=\"width:70px;\" src='/attachment/%s/%s'/></span>" \
