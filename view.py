@@ -184,12 +184,9 @@ def get_server_submissions(request):
 
     search_parameters.update({"sort_field": "date"})
     search_parameters.update({"order": ""})
-    # search_parameters.update({"headers": json.loads('["c3b9ac7c07f811e4a302001c42af7554_q2"]')})
 
+    search_filters = {"submissionDatePicker": request.GET.get('submissionDatePicker') or "All Dates", "datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
 
-    search_filters = json.loads('{"submissionDatePicker":"All Dates","datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}')
-
-    # {"submissionDatePicker":"All Dates","datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
     search_parameters.update({"search_filters": search_filters})
     search_text = search_filters.get("search_text", '')
     search_parameters.update({"search_text": search_text})
@@ -231,3 +228,4 @@ def get_projects_status(request):
         if server_project.revision != client_project['rev']:
             outdated_projects.append({'id': server_project.id, 'status': 'outdated'})
     return response_json_cors(outdated_projects)
+
