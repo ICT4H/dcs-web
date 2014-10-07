@@ -34,6 +34,7 @@ from datawinners.search.submission_index import SubmissionSearchStore
 from mangrove.errors.MangroveException import ExceedSubmissionLimitException, QuestionAlreadyExistsException
 from datawinners.accountmanagement.decorators import session_not_expired, is_not_expired, is_datasender_allowed, \
     project_has_web_device, is_datasender
+    XlsProjectParser, get_generated_xform_id_name, XFormImageProcessor
 from datawinners.main.database import get_database_manager
 from datawinners.project.helper import generate_questionnaire_code, is_project_exist
 from datawinners.project.utils import is_quota_reached
@@ -396,11 +397,14 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
 
     def get_submission(self, submission_uuid):
         submission = get_survey_response_by_id(self.manager, submission_uuid)
+        imageProcessor = XFormImageProcessor()
 
         return {'submission_uuid': submission.id,
                 'version': submission.version,
                 'project_uuid': self.questionnaire.id,
                 'created': py_datetime_to_js_datestring(submission.created),
+                'media_file_names_string': imageProcessor
+                                            .get_media_files_str(self.questionnaire.fields, submission.values),
                 'xml': self._model_str_of(submission.id, get_generated_xform_id_name(self.questionnaire.xform)),
                 'data': json.dumps(submission.values)
         }
