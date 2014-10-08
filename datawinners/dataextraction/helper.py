@@ -121,7 +121,7 @@ def convert_to_json_file_download_response(result, file_name):
     return response
 
 
-def convert_date_string_to_UTC(date_string):
+def convert_date_string_to_UTC(date_string, time_string=None):
     if date_string is None:
         return None
-    return convert_date_string_in_UTC_to_epoch("%s %s" % (date_string, '00:00:00'))
+    return convert_date_string_in_UTC_to_epoch("%s %s" % (date_string, time_string or '00:00:00'))
