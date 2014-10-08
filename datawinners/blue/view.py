@@ -420,6 +420,20 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
             })
         return submission_list
 
+    def get_submission_from(self, from_time, to_time):
+        submission_list = []
+        submissions = get_survey_responses(self.manager, self.questionnaire.form_code, from_time, to_time,
+                                           view_name="undeleted_survey_response")
+        for submission in submissions:
+            submission_list.append({'submission_uuid': submission.id,
+                'version': submission.version,
+                'project_uuid': self.questionnaire.id,
+                'created': py_datetime_to_js_datestring(submission.created),
+                'xml': self._model_str_of(submission.id, get_generated_xform_id_name(self.questionnaire.xform)),
+                'data': json.dumps(submission.values)
+            })
+        return submission_list
+
     def get_submission(self, submission_uuid):
         submission = get_survey_response_by_id(self.manager, submission_uuid)
         imageProcessor = XFormImageProcessor()
