@@ -1,14 +1,15 @@
 import base64
+from datetime import datetime
 import logging
 import re
 import json
 from sets import Set
+from IPython.core import magic
 
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-import jsonpickle
-import magic
+from datawinners.dataextraction.helper import convert_date_string_to_UTC
 
 from datawinners.dcs_app.auth import basicauth_allow_cors, response_json_cors, enable_cors
 from datawinners.blue.view import SurveyWebXformQuestionnaireRequest, logger
@@ -19,7 +20,6 @@ from datawinners.main.database import get_database_manager
 from datawinners.search.submission_headers import HeaderFactory
 from mangrove.form_model.form_model import FormModel
 from mangrove.transport.player.new_players import XFormPlayerV2
-
 
 logger = logging.getLogger("datawinners.xlfrom.client")
 
@@ -188,7 +188,7 @@ def get_server_submissions(request):
     search_parameters.update({"sort_field": "date"})
     search_parameters.update({"order": ""})
 
-    search_filters = {"submissionDatePicker": request.GET.get('submissionDatePicker') or "All Dates", "datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
+    search_filters = {"submissionDatePicker":"All Dates", "datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
 
     search_parameters.update({"search_filters": search_filters})
     search_text = search_filters.get("search_text", '')
@@ -248,3 +248,11 @@ def attachment_get(request, survey_response_id, file_name):
         return HttpResponse(file_content, mimetype=magic.from_buffer(file_content, mime=True))
     except LookupError:
         return HttpResponseNotFound('Attachment not found')
+
+def get_delta_submission(request):
+    survey_request = SurveyWebXformQuestionnaireRequest(request, request.GET.get('uuid'), XFormSubmissionProcessor())
+    to_time = convert_date_string_to_UTC(datetime.now().strftime("%d-%m-%Y"), datetime.now().time().strftime("%H:%M:%S"))
+    from_time = convert_date_string_to_UTC(request.GET.get('last_fetch'))
+
+    content = survey_request.get_submission_from(from_time, to_time)
+    return response_json_cors(content)
