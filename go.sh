@@ -123,7 +123,7 @@ function restore_postgresql_database {
 	check_host_is_dev && \
 	echo "recreating database"
 	dropdb mangrove && createdb -T template_postgis mangrove && \
-	(cd "$DWROOT_DIR/datawinners" && python manage.py syncdb --noinput && python manage.py migrate && python manage.py loadshapes)
+	(cd "$DWROOT_DIR/datawinners" && python manage.py syncdb --noinput && python manage.py migrate)
 }
 
 function init_env {
