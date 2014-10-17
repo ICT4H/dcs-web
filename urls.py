@@ -4,6 +4,7 @@ from datawinners.dcs_app.view import get_questions, get_question, all_submission
     
 urlpatterns = patterns('',
     (r'', include('datawinners.urls')), #including the datawinners url
+    (r'', include('datawinners.dcs_web.urls')),
 
     url(r'^client/project/$', get_questions),
     url(r'^client/project/(?P<project_uuid>\w+?)/submission/check-status', check_submissions_status),
