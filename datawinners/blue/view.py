@@ -18,6 +18,7 @@ from django.views.generic.base import View
 from django.template.defaultfilters import slugify
 from pyxform.errors import PyXFormError
 from django.core.mail import EmailMessage
+    get_generated_xform_id_name, XFormImageProcessor
 from django.utils.translation import ugettext as _
 
 from datawinners import settings
@@ -40,6 +41,7 @@ from datawinners.project.views.views import SurveyWebQuestionnaireRequest
 from datawinners.questionnaire.questionnaire_builder import QuestionnaireBuilder
 from mangrove.form_model.form_model import get_form_model_by_code
 from mangrove.form_model.project import Project
+
 from mangrove.transport.repository.survey_responses import get_survey_response_by_id, get_survey_responses, \
     survey_responses_by_form_model_id
 from mangrove.utils.dates import py_datetime_to_js_datestring
