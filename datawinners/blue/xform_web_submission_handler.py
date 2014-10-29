@@ -80,3 +80,32 @@ class XFormWebSubmissionHandler():
 
         check_quotas_and_update_users(self.organization)
         return success_response
+
+class GuestWebSubmissionHandler(XFormWebSubmissionHandler):
+
+    def __init__(self, request, public_submission):
+        # feeds_db_name
+        self.public_submission = public_submission
+        self.request = request
+        self.manager = public_submission.get_dbm()
+        self.organization = public_submission.get_organisation()
+        self.player = XFormPlayerV2(self.manager, public_submission.get_feeds_dbm())
+
+        self.xml_submission_file = request.POST['form_data']
+        self.retain_files = request.POST['retain_files'].split(',') if request.POST.get('retain_files') else None
+
+        self.mangrove_request = Request(message=self.xml_submission_file, media=request.FILES,
+            retain_files=self.retain_files,
+            transportInfo=
+            TransportInfo(transport=WEB,
+                source=public_submission.get_guest_email(),
+                destination=''
+            ))
+        from_code = public_submission.get_form_code()
+        self.form_code = from_code if from_code else self.request.POST['form_code']
+
+    def create_new_guest_submission(self):
+        #TODO validations can be added here(expire, count_exceded)
+        player_response = self.player.add_guest_survey_response(self.mangrove_request, logger=sp_submission_logger)
+        self.public_submission.project_guest.mark_submission_taken()
+        return self._post_save(player_response, success_msg='Thank you for taking the survey')
