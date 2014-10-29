@@ -5,8 +5,8 @@ import os
 import re
 from tempfile import NamedTemporaryFile
 import traceback
-from django.contrib import messages
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
@@ -29,14 +29,14 @@ from datawinners.blue.xform_bridge import MangroveService, XlsFormParser, XFormT
 from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler
 from datawinners.accountmanagement.models import Organization
 from datawinners.blue.error_translation_utils import transform_error_message, translate_odk_message
-from datawinners.project.public_project_guest_handler import PublicSubmission, InvalidLinkException, SubmissionTakenError
+from datawinners.project.public_project_guest_handler import GuestSubmission, InvalidLinkException, SubmissionTakenError, AnonymousSubmission
 from datawinners.settings import EMAIL_HOST_USER, HNI_SUPPORT_EMAIL_ID
 from datawinners.feeds.database import get_feeds_database
 from datawinners.search.submission_index import SubmissionSearchStore
 from mangrove.errors.MangroveException import ExceedSubmissionLimitException, QuestionAlreadyExistsException
 from datawinners.accountmanagement.decorators import session_not_expired, is_not_expired, is_datasender_allowed, \
     project_has_web_device, is_datasender
-from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler, GuestWebSubmissionHandler
+from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler, GuestWebSubmissionHandler, PublicWebSubmissionHandler
 from datawinners.main.database import get_database_manager
 from datawinners.project.helper import generate_questionnaire_code, is_project_exist
 from datawinners.project.utils import is_quota_reached
@@ -608,12 +608,12 @@ def attachment_download(request, document_id, attachment_name):
 @csrf_exempt
 def guest_survey(request, link_uid):
     try:
-        public_submission = PublicSubmission(link_uid)
+        guest_submission = GuestSubmission(link_uid)
         if request.method == 'POST':
-            handler = GuestWebSubmissionHandler(request, public_submission)
+            handler = GuestWebSubmissionHandler(request, guest_submission)
             return handler.create_new_guest_submission()
         else:
-            questionnaire = public_submission.get_questionnaire()
+            questionnaire = guest_submission.get_questionnaire()
             #TODO needs to handle non-xform based survey?
             # if not questionnaire.xform:
             form_context = {
@@ -626,14 +626,36 @@ def guest_survey(request, link_uid):
             return render_to_response("project/public_web_questionnaire.html", form_context, context_instance=RequestContext(request))
 
     except SubmissionTakenError:
-        # After the submission, the page is reloaded, so using this exception to show success.
-        # iteration will clear previously set messages
-        if len(messages.get_messages(request)) > 0:
-            messages[:]
         messages.add_message(request, messages.SUCCESS, 'Thank you for taking up the survey.')
     except InvalidLinkException:
         messages.add_message(request, messages.ERROR, 'The survey link is invalid.')
     except Exception:
-        messages.add_message(request, messages.ERROR, 'Something unexpected happened!.')
+        return HttpResponseBadRequest()
+
+    return render_to_response("project/public_web_questionnaire_message.html", context_instance=RequestContext(request))
+
+@csrf_exempt
+def public_survey(request, org_id, anonymous_link_id):
+    try:
+        public_survey = AnonymousSubmission(org_id, anonymous_link_id)
+        if request.method == 'POST':
+            handler = PublicWebSubmissionHandler(request, public_survey)
+            return handler.create_new_guest_submission()
+        else:
+            questionnaire = public_survey.get_questionnaire()
+            #TODO needs to handle non-xform based survey?
+            # if not questionnaire.xform:
+            form_context = {
+                'xform_xml': re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()),
+                'questionnaire_code': questionnaire.form_code,
+                'submission_create_url': '',
+                'web_site_url': '',
+                'errors': ''
+            }
+            return render_to_response("project/public_web_questionnaire.html", form_context, context_instance=RequestContext(request))
+    except InvalidLinkException:
+        messages.add_message(request, messages.ERROR, 'The survey link is invalid.')
+    except Exception:
+        return HttpResponseBadRequest()
 
     return render_to_response("project/public_web_questionnaire_message.html", context_instance=RequestContext(request))
