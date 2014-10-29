@@ -216,7 +216,7 @@ def project_guests(request, project_id):
 class PublicProjectForm(forms.Form):
     is_anonymous_enabled = forms.BooleanField(initial=False, required=False)
     allowed_submission_count = forms.IntegerField(initial=-1, required=False)
-    expires_on = forms.DateField(widget=forms.widgets.DateInput(format='%m.%d.%Y'), input_formats=['%m.%d.%Y'], required=False)
+    expires_on = forms.DateField(widget=forms.widgets.DateInput(format='%d.%m.%Y'), input_formats=['%d.%m.%Y'], required=False)
     public_link = forms.CharField(max_length=100, required=False)
 
 
@@ -247,7 +247,7 @@ def public_survey(request, project_id):
             public_survey.save()
             success, message = True, 'Survey settings updated'
     else:
-        form = PublicProjectForm({'public_link': public_survey.anonymous_survey_link_id,
+        form = PublicProjectForm({'public_link': public_survey.anonymous_link_id,
                                   'is_anonymous_enabled': public_survey.anonymous_web_submission_allowed,
                                   'expires_on': public_survey.survey_expiry_date,
                                   'allowed_submission_count': public_survey.allowed_submission_count})
@@ -255,7 +255,7 @@ def public_survey(request, project_id):
     return render_to_response('project/public_survey.html',
       {'project': questionnaire,
        'domain': domain,
-       'public_link': public_survey.anonymous_survey_link_id,
+       'public_link': public_survey.anonymous_link_id,
        'org_id': organisation.org_id,
        'project_links': project_links,
        'success': success,
