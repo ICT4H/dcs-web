@@ -92,14 +92,22 @@ class PublicSurvey(models.Model):
     questionnaire_id = models.CharField(max_length=100)
     anonymous_web_submission_allowed = models.BooleanField(default=False)
     allowed_submission_count = models.IntegerField(null=True) # max 2147483647
-    anonymous_survey_link_id = models.CharField(max_length=100)
+    anonymous_link_id = models.CharField(max_length=100)
+    submissions_count = models.IntegerField(default=0)
 
+    class Meta:
+        # to support custom link
+        unique_together = ('organization', 'questionnaire_id')
+
+    def mark_submission_taken(self):
+        self.submissions_count += 1
+        self.save()
 
 def create_public_survey(org_id, questionnaire_id):
     from datawinners.project.public_project_guest_handler import UniqueIdGenerator
     project_survey = PublicSurvey.objects.create(organization=Organization.objects.get(org_id=org_id),
                                                  questionnaire_id=questionnaire_id,
-                                                 anonymous_survey_link_id=UniqueIdGenerator().get_unique_id())
+                                                 anonymous_link_id=UniqueIdGenerator().get_unique_id())
     return project_survey
 
 
