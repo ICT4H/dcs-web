@@ -1,0 +1,47 @@
+{% extends 'layout_public_survey.html' %}
+{% load i18n %}
+{% load field_tags %}
+{% load dw_tabs %}
+
+{% block page_scss %}
+    {{ block.super }}
+    <link type="text/css" href="/media/css/formhub.css" media="all" rel="stylesheet"/>
+    <link href="/media/css/xform.css" rel="stylesheet"/>
+    <link href="/media/css/scss/dw_enketo.css" rel="stylesheet"/>
+    <style type="text/css">
+        body{
+            background: none repeat scroll 0 0 #fff;
+            display: block;
+        }
+    </style>
+{% endblock %}
+{% block page_js %}
+    {{ block.super }}
+
+    <script>
+        var submissionCreateUrl = '{{ submission_create_url }}';
+        var submissionUpdateUrl = '';
+        var xform_xml = $('<div/>').html("{{ xform_xml }}").text();
+        var dataStrToEdit = "";
+        var isQuotaReached = false;
+        var questionnaire_code = '{{ questionnaire_code }}';
+    </script>
+
+    <script type="text/javascript" src="/media/javascript/common/form_edited_warning_dialog.js"></script>
+    <script type="text/javascript" src="/media/javascript/xform_post_load_action.js"></script>
+    <script type="text/javascript" src="/media/javascript/bootstrap_dropdown.js"></script>
+    <script type="text/javascript" src="/media/javascript/app.js"></script>
+{% endblock %}
+
+
+{% block questionnaire %}
+    <div class="questionnaire-header">
+
+        <p class="instructions italic">{% trans "Fill out the following Questionnaire and click on Submit." %}</p>
+        {% for message in messages %}
+            <div class="{{ message.tags }}-message-box message-box clear-left">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    {% include "project/_xform_web_submission.html" %}
+{% endblock %}
