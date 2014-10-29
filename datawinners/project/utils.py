@@ -39,7 +39,10 @@ def make_project_links(project, entity_type=None):
                      'questionnaire_language_selection_link': reverse("project-language", args=[project_id]),
                      'reminders_link': reverse('reminder_settings', args=[project_id]),
                      'xform_link': reverse("xform_web_questionnaire", args=[project_id]),
-                     'automatic_sms_link': reverse('project-language', args=[project_id])
+                     'automatic_sms_link': reverse('project-language', args=[project_id]),
+                     'project_guests': reverse('project_guests', args=[project_id]),
+                     'add_project_guests_link': reverse('add_project_guests', args=[project_id]),
+                     'public_survey_details': reverse('public_survey_details', args=[project_id])
                     }
 
     project_links.update(make_subject_links(project_id, entity_type))

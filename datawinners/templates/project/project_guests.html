@@ -1,0 +1,73 @@
+{% extends 'project/tab_navigation.html' %}
+{% load i18n %}
+{% block page_title %} {% trans "Questionnaires - Data Senders" %} {% endblock %}
+
+{% load dw_tabs %}
+{% block navigation %}
+    {% activetab "tab_nav" "data_senders" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block body %}
+    {% activetab "main_nav" "questionnaires" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block page_scss %}
+    {{ block.super }}
+    <link href="/media/css/scss/section_subjects.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_all_datasenders.css" rel="stylesheet"/>
+    <link href="/media/css/scss/import_popup.css" rel="stylesheet"/>
+    <link href="/media/javascript/file_uploader/fileuploader.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_questionnaire_preview.css" rel="stylesheet"/>
+    <link href="/media/css/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <link href="/media/javascript/jquery-dropdown/jquery.dropdown.css" rel="stylesheet"/>
+    <link href="/media/css/scss/action_button.css" media="screen" rel="stylesheet"/>
+    <link href="/media/css/scss/section_datasender_import.css" media="screen" rel="stylesheet"/>
+    <style type="text/css">
+        .guestForm p {
+            margin: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h2>{% trans "My Guests" %}</h2>
+    </div>
+
+    <div id="my_subjects">
+        {% block secondary_navigation_datasenders %}
+            {% activetab "secondary_tab_nav" "guests" %}
+            {{ block.super }}
+        {% endblock %}
+    </div>
+
+    {% if message %}
+       <div id="flash-message" class="{% if success %}success-message-box{% else %}message-box{% endif %}">
+           {{ message }}
+       </div>
+    {% endif %}
+    <p class="float_right"><a class="button" href="{%  url public_survey_details project.id %}">Manage public settings</a></p>
+    <form action="{% url add_project_guests project.id %}" method="post" class="guestForm">{% csrf_token %}
+        {% for field in guest_form %}
+            <p>{{ field.label }}</p>
+            <p>{{ field }}</p>
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        <p><input class="button" type="submit" value="Add Guest" /></p>
+
+        <br>
+        <p class="float_right"><a href="">Import guest list</a></p>
+        <br>
+    </form>
+
+    {% include 'project/guest_table.html' %}
+
+{% endblock %}
+
