@@ -1,0 +1,79 @@
+{% extends 'project/tab_navigation.html' %}
+{% load i18n %}
+{% block page_title %} {% trans "Questionnaires - Data Senders" %} {% endblock %}
+
+{% load dw_tabs %}
+{% block navigation %}
+    {% activetab "tab_nav" "data_senders" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block body %}
+    {% activetab "main_nav" "questionnaires" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block page_scss %}
+    {{ block.super }}
+    <link href="/media/css/scss/section_subjects.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_all_datasenders.css" rel="stylesheet"/>
+    <link href="/media/css/scss/import_popup.css" rel="stylesheet"/>
+    <link href="/media/javascript/file_uploader/fileuploader.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_questionnaire_preview.css" rel="stylesheet"/>
+    <link href="/media/css/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <link href="/media/javascript/jquery-dropdown/jquery.dropdown.css" rel="stylesheet"/>
+    <link href="/media/css/scss/action_button.css" media="screen" rel="stylesheet"/>
+    <link href="/media/css/scss/section_datasender_import.css" media="screen" rel="stylesheet"/>
+    <style type="text/css">
+        .guestForm p {
+            margin: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h2>{% trans "My Guests" %}</h2>
+    </div>
+
+    <div id="my_subjects">
+        {% block secondary_navigation_datasenders %}
+            {% activetab "secondary_tab_nav" "guests" %}
+            {{ block.super }}
+        {% endblock %}
+    </div>
+
+    {% if message %}
+       <div id="flash-message" class="{% if success %}success-message-box{% else %}message-box{% endif %}">
+           {{ message }}
+       </div>
+    {% endif %}
+    <p class="float_right"><a class="button" href="{%  url add_project_guests project.id %}">Manage guest</a></p>
+    <form action="" method="POST" class="guestForm">{% csrf_token %}
+        <p>Guest/Public submission attowed till (dd.mm.yyyy ex. 13.01.2018; Empty date to always allow)</p>
+        <p>{{ form.expires_on }}</p>
+            {% if form.expires_on.errors %}
+                {% for error in form.expires_on.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        <br>
+        <div >
+            <p>Enable anonymous submissions {{ form.is_anonymous_enabled }}</p>
+            {% if form.is_anonymous_enabled.data %}
+                <p>Anonymous submission link:</p>
+                <p>http://{{ domain }}{% url public_survey org_id public_link %}</p>
+
+                <p>Limit anonymous submissions (Empty for unlimited submissions)</p>
+                <p>{{ form.allowed_submission_count }}</p>
+                {% if form.allowed_submission_count.errors %}
+                    {% for error in form.allowed_submission_count.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <p><input class="button" type="submit" value="update"/></p>
+    </form>
+{% endblock %}
+
