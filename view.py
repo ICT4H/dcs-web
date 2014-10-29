@@ -249,10 +249,18 @@ def attachment_get(request, survey_response_id, file_name):
     except LookupError:
         return HttpResponseNotFound('Attachment not found')
 
+@csrf_exempt
+@basicauth_allow_cors()
 def get_delta_submission(request):
     survey_request = SurveyWebXformQuestionnaireRequest(request, request.GET.get('uuid'), XFormSubmissionProcessor())
-    to_time = convert_date_string_to_UTC(datetime.now().strftime("%d-%m-%Y"), datetime.now().time().strftime("%H:%M:%S"))
-    from_time = convert_date_string_to_UTC(request.GET.get('last_fetch'))
+    to = datetime.now().strftime("%d-%m-%Y")
+    to_time = convert_date_string_to_UTC(to, datetime.now().time().strftime("%H:%M:%S"))
+    if request.GET.get('last_fetch') == '0':
+        from_time = 0
+    else:
+        from_time = convert_date_string_to_UTC(request.GET.get('last_fetch'))
 
     content = survey_request.get_submission_from(from_time, to_time)
-    return response_json_cors(content)
+
+    return response_json_cors({'submissions':content,
+                               'last_fetch': to})
