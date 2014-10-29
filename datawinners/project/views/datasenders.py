@@ -3,7 +3,9 @@ from string import lower
 from urllib import unquote
 import unicodedata
 
+from django.contrib.sites.models import Site, RequestSite
 from django.contrib.auth.decorators import login_required
+from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -13,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_view_exempt, csrf_res
 from django.views.generic.base import View
 import jsonpickle
 
+from datawinners.utils import get_organization
 from datawinners import settings
 from datawinners.accountmanagement.decorators import is_not_expired, session_not_expired, is_datasender
 from datawinners.accountmanagement.helper import create_web_users
@@ -24,6 +27,8 @@ from datawinners.entity.datasender_tasks import convert_open_submissions_to_regi
 from datawinners.entity.helper import rep_id_name_dict_of_users
 from datawinners.main.database import get_database_manager
 from datawinners.project.helper import is_project_exist
+from datawinners.project.models import Project, get_or_create_public_survey_of
+from datawinners.project.public_project_guest_handler import GuestEmail, PublicProject, GuestFinder, UniqueIdGenerator
 from datawinners.project.views.views import get_project_link, _in_trial_mode, _is_pro_sms
 from datawinners.search.all_datasender_search import get_data_sender_search_results, get_data_sender_without_group_filters_count, \
     get_data_sender_count
@@ -166,3 +171,132 @@ def registered_datasenders(request, project_id):
                 'successful_imports': imported_data_senders
             }))
 
+@csrf_exempt
+@login_required
+@is_not_expired
+def project_guests_send_email(request, project_id):
+    if request.method == 'POST':
+        selected_guest_ids = json.loads(request.POST.get('id_list', []))
+        emailer = GuestEmail(_get_domain(request))
+        success_count = emailer.sendEmails(selected_guest_ids);
+        return HttpResponse(
+            jsonpickle.encode({
+                'success': True,
+                'success_message': "Survey request send to %s guest(s)"% success_count
+            })
+        )
+
+
+def _get_domain(request):
+    if Site._meta.installed:
+        return Site.objects.get_current().domain
+    else:
+        return RequestSite(request).domain
+
+@csrf_exempt
+@login_required
+@is_not_expired
+def project_guests(request, project_id):
+    if request.method == 'POST':
+        organisation = get_organization(request)
+        guest_finder = GuestFinder()
+        guests_data = guest_finder.get_all_guest_for_survey(organisation.org_id, project_id)
+        search_count = query_count = len(guests_data)
+
+        return HttpResponse(
+        jsonpickle.encode(
+            {
+                'data': guests_data,
+                'iTotalDisplayRecords': query_count,
+                'iDisplayStart': int(request.POST.get('iDisplayStart', 0)),
+                "iTotalRecords": search_count,
+                'iDisplayLength': int(request.POST.get('iDisplayLength', 0))
+            }, unpicklable=False), content_type='application/json')
+
+class PublicProjectForm(forms.Form):
+    is_anonymous_enabled = forms.BooleanField(initial=False, required=False)
+    allowed_submission_count = forms.IntegerField(initial=-1, required=False)
+    expires_on = forms.DateField(widget=forms.widgets.DateInput(format='%m.%d.%Y'), input_formats=['%m.%d.%Y'], required=False)
+    public_link = forms.CharField(max_length=100, required=False)
+
+
+class ProjectGuestForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField(max_length=100)
+
+@csrf_exempt
+@login_required
+@is_not_expired
+def public_survey(request, project_id):
+    manager = get_database_manager(request.user)
+    questionnaire = Project.get(manager, project_id)
+    project_links = get_project_link(questionnaire)
+    success = False
+    message = ''
+    domain = _get_domain(request)
+    organisation = get_organization(request)
+    public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
+
+    if request.method == 'POST':
+        form = PublicProjectForm(request.POST)
+        if form.is_valid():
+            form_data = form.cleaned_data
+            public_survey.allowed_submission_count = form_data['allowed_submission_count']
+            public_survey.anonymous_web_submission_allowed = form_data['is_anonymous_enabled']
+            public_survey.survey_expiry_date = form_data['expires_on']
+            public_survey.save()
+            success, message = True, 'Survey settings updated'
+    else:
+        form = PublicProjectForm({'public_link': public_survey.anonymous_survey_link_id,
+                                  'is_anonymous_enabled': public_survey.anonymous_web_submission_allowed,
+                                  'expires_on': public_survey.survey_expiry_date,
+                                  'allowed_submission_count': public_survey.allowed_submission_count})
+
+    return render_to_response('project/public_survey.html',
+      {'project': questionnaire,
+       'domain': domain,
+       'public_link': public_survey.anonymous_survey_link_id,
+       'org_id': organisation.org_id,
+       'project_links': project_links,
+       'success': success,
+       'message': message,
+       'questionnaire_code': questionnaire.form_code,
+       'current_language': translation.get_language(),
+       'is_quota_reached': is_quota_reached(request),
+       'form': form},
+      context_instance=RequestContext(request))
+
+@csrf_exempt
+@login_required
+@is_not_expired
+def add_project_guests(request, project_id):
+    manager = get_database_manager(request.user)
+    questionnaire = Project.get(manager, project_id)
+    project_links = get_project_link(questionnaire)
+    success = False
+    message = ''
+
+    if request.method == 'POST':
+        guest_form = ProjectGuestForm(request.POST)
+        if guest_form.is_valid():
+            organisation = get_organization(request)
+            public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
+
+            publicProject = PublicProject(project_id, UniqueIdGenerator())
+            message, success = publicProject.add_guest(
+                public_survey,
+                guest_form.cleaned_data.get('name', ''),
+                guest_form.cleaned_data.get('email', ''))
+    else:
+        guest_form = ProjectGuestForm()
+
+    return render_to_response('project/project_guests.html',
+      {'project': questionnaire,
+       'project_links': project_links,
+       'success': success,
+       'message': message,
+       'questionnaire_code': questionnaire.form_code,
+       'current_language': translation.get_language(),
+       'is_quota_reached': is_quota_reached(request),
+       'guest_form': guest_form},
+      context_instance=RequestContext(request))

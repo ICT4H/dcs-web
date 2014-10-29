@@ -3,7 +3,7 @@ from django.conf.urls.defaults import patterns, url
 from datawinners.entity.view.all_datasenders import DisassociateDataSendersView
 from datawinners.project.views.change_language import QuestionnaireLanguageView
 from datawinners.project.views.create_questionnaire import create_project
-from datawinners.project.views.datasenders import MyDataSendersAjaxView, registered_datasenders
+from datawinners.project.views.datasenders import MyDataSendersAjaxView, registered_datasenders, add_project_guests, project_guests, project_guests_send_email, public_survey
 from datawinners.project.views.import_submissions_views import ImportSubmissionView
 from datawinners.project.views.registered_datasenders import registered_ds_count
 
@@ -52,6 +52,12 @@ urlpatterns = patterns('',
                            name="create_data_sender_and_web_user"),
                        url(r'^project/registered_datasenders/(?P<project_id>.+?)/$', registered_datasenders,
                            name="registered_datasenders"),
+
+                       url(r'^project/(?P<project_id>.+?)/public_details/$', public_survey, name="public_survey_details"),
+                       url(r'^project/(?P<project_id>.+?)/add_guest/$', add_project_guests, name="add_project_guests"),
+                       url(r'project/(?P<project_id>.+?)/guests/send_email/$', project_guests_send_email, name='project_guests_send_email'),
+                       url(r'project/(?P<project_id>.+?)/guests/$', project_guests, name='project_guests'),
+
                        url(r'^project/(?P<project_name>.+?)/registered_datasenders/ajax/$',
                            MyDataSendersAjaxView.as_view(), name="my_datasenders_ajax"),
                        url(r'^project/broadcast_message/(?P<project_id>.+?)/$', broadcast_message,
