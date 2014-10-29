@@ -124,33 +124,12 @@ class GuestSearch():
     def findGuestsByQuestionnaireId(self):
         pass
 
-
 class PublicSubmission():
-
-    def __init__(self, link_id):
-        projectGuestObjects = ProjectGuest.objects.filter(link_id=link_id)
-        if len(projectGuestObjects) < 1:
-            raise InvalidLinkException()
-        self.project_guest = projectGuestObjects[0]
-        if self.project_guest.status == ProjectGuest.SURVEY_TAKEN:
-            raise SubmissionTakenError
-        if self.project_guest.status != ProjectGuest.EMAIL_SEND:
-            raise InvalidLinkException
-
-        #TODO raise SubmissionExpiredError
-        settings = OrganizationSetting.objects.get(organization=self.project_guest.public_survey.organization)
-        self.dbm = get_db_manager(settings.document_store)
-        self.feeds_dbm = feeds_db_for(settings.document_store)
-        self.questionnaire = Project.get(self.dbm, self.project_guest.public_survey.questionnaire_id)
-
     def mark_submitted(self, link_url):
         pass
 
     def get_organisation(self):
-        return self.project_guest.public_survey.organization
-
-    def get_guest_email(self):
-        return self.project_guest.guest_email
+        return self.organization
 
     def get_questionnaire(self):
         return self.questionnaire
@@ -163,6 +142,49 @@ class PublicSubmission():
 
     def get_form_code(self):
         return self.questionnaire.form_code;
+
+class GuestSubmission(PublicSubmission):
+
+    def __init__(self, link_id):
+        projectGuestObjects = ProjectGuest.objects.filter(link_id=link_id)
+        if len(projectGuestObjects) < 1:
+            raise InvalidLinkException()
+        self.project_guest = projectGuestObjects[0]
+        if self.project_guest.status == ProjectGuest.SURVEY_TAKEN:
+            raise SubmissionTakenError
+        if self.project_guest.status != ProjectGuest.EMAIL_SEND:
+            raise InvalidLinkException
+
+        #TODO raise survey expired exception
+        settings = OrganizationSetting.objects.get(organization=self.project_guest.public_survey.organization)
+        self.dbm = get_db_manager(settings.document_store)
+        self.feeds_dbm = feeds_db_for(settings.document_store)
+        self.questionnaire = Project.get(self.dbm, self.project_guest.public_survey.questionnaire_id)
+        self.organization = self.project_guest.public_survey.organization
+
+    def get_guest_email(self):
+        return self.project_guest.guest_email
+
+    def mark_submission_taken(self):
+        self.project_guest.mark_submission_taken()
+
+class AnonymousSubmission(PublicSubmission):
+
+    def __init__(self, org_id, anonymous_link_id):
+        public_survey_objects = PublicSurvey.objects.filter(organization=org_id, anonymous_link_id=anonymous_link_id)
+        if len(public_survey_objects) < 1:
+            raise InvalidLinkException()
+        self.public_survey = public_survey_objects[0]
+
+        #TODO raise survey expired and allowed count exceptions
+        settings = OrganizationSetting.objects.get(organization=self.public_survey.organization)
+        self.dbm = get_db_manager(settings.document_store)
+        self.feeds_dbm = feeds_db_for(settings.document_store)
+        self.questionnaire = Project.get(self.dbm, self.public_survey.questionnaire_id)
+        self.organization = self.public_survey.organization
+
+    def mark_submission_taken(self):
+        self.public_survey.mark_submission_taken()
 
 class InvalidLinkException(Exception):
     pass
