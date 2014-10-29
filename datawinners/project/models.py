@@ -2,13 +2,14 @@
 from datetime import timedelta, date
 
 from couchdb.mapping import TextField
+from django.db.models import CASCADE
 from django.db.models.fields import IntegerField, CharField
 from django.db.models.fields.related import ForeignKey
-from django.db import models
+from django.db import models, IntegrityError
 
 from datawinners.accountmanagement.models import Organization
 from mangrove.datastore.database import DatabaseManager, DataObject
-from mangrove.datastore.documents import DocumentBase, TZAwareDateTimeField
+from mangrove.datastore.documents import DocumentBase, TZAwareDateTimeField, ProjectDocument
 from mangrove.form_model.project import Project
 from mangrove.utils.types import is_string, is_empty
 
@@ -84,6 +85,61 @@ class Reminder(models.Model):
         log.save()
         return log
 
+class PublicSurvey(models.Model):
+    survey_expiry_date = models.DateField(null=True)
+    organization = models.ForeignKey('accountmanagement.Organization', on_delete=CASCADE, null=False)
+    questionnaire_id = models.CharField(max_length=100)
+    anonymous_web_submission_allowed = models.BooleanField(default=False)
+    allowed_submission_count = models.IntegerField(null=True) # max 2147483647
+    anonymous_survey_link_id = models.CharField(max_length=100)
+
+
+def create_public_survey(org_id, questionnaire_id):
+    from datawinners.project.public_project_guest_handler import UniqueIdGenerator
+    project_survey = PublicSurvey.objects.create(organization=Organization.objects.get(org_id=org_id),
+                                                 questionnaire_id=questionnaire_id,
+                                                 anonymous_survey_link_id=UniqueIdGenerator().get_unique_id())
+    return project_survey
+
+
+def get_or_create_public_survey_of(questionnaire_id, org_id):
+    public_surveys = PublicSurvey.objects.filter(organization=org_id).filter(questionnaire_id=questionnaire_id)
+    if len(public_surveys) > 0:
+        public_survey = public_surveys[0]
+    else:
+        try:
+            public_survey = create_public_survey(org_id, questionnaire_id)
+        except IntegrityError:
+            # retry once
+            public_survey = create_public_survey(org_id, questionnaire_id)
+
+
+    return public_survey
+
+
+class ProjectGuest(models.Model):
+    EMAIL_TO_BE_SEND = 0
+    EMAIL_SEND = 1
+    SURVEY_TAKEN = 2
+    STATUS_CHOICES = (
+        (EMAIL_TO_BE_SEND, 'Email to be sent'),
+        (EMAIL_SEND, 'Email send'),
+        (SURVEY_TAKEN, 'Survey taken')
+    )
+
+    guest_name = models.CharField(max_length=100)
+    guest_email = models.CharField(max_length=100, unique=True)
+    status = models.IntegerField(choices=STATUS_CHOICES, max_length=1, default=EMAIL_TO_BE_SEND)
+    link_id = models.CharField(max_length=100, unique=True)
+    public_survey = models.ForeignKey(PublicSurvey, null=False)
+
+    def mark_email_send(self):
+        self.status = self.EMAIL_SEND
+        self.save()
+
+    def mark_submission_taken(self):
+        self.status = self.SURVEY_TAKEN
+        self.save()
 
 class ReminderLogDocument(DocumentBase):
     reminder_id = TextField()
