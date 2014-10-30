@@ -176,8 +176,10 @@ def registered_datasenders(request, project_id):
 @is_not_expired
 def project_guests_send_email(request, project_id):
     if request.method == 'POST':
+        manager = get_database_manager(request.user)
+        questionnaire = Project.get(manager, project_id)
         selected_guest_ids = json.loads(request.POST.get('id_list', []))
-        emailer = GuestEmail(_get_domain(request))
+        emailer = GuestEmail(_get_domain(request), subject_line=questionnaire.name)
         success_count = emailer.sendEmails(selected_guest_ids);
         return HttpResponse(
             jsonpickle.encode({
@@ -300,3 +302,5 @@ def add_project_guests(request, project_id):
        'is_quota_reached': is_quota_reached(request),
        'guest_form': guest_form},
       context_instance=RequestContext(request))
+
+# class
