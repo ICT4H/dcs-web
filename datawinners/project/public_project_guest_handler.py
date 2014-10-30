@@ -87,8 +87,9 @@ class GuestMapper():
 
 class GuestEmail():
 
-    def __init__(self, domain):
+    def __init__(self, domain, subject_line=None):
         self.domain = domain
+        self.subject_line = '- ' + subject_line if subject_line else ''
 
     def sendEmails(self, guest_ids):
         guests = ProjectGuest.objects.filter(pk__in=[int(entry) for entry in guest_ids])
@@ -106,7 +107,7 @@ class GuestEmail():
             'link_id': link_id
         }
         subject = render_to_string('registration/guest_survey_email_subject_in_'+language+'.txt')
-        subject = ''.join(subject.splitlines()) # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines()) + self.su# Email subject *must not* contain newlines
         message = render_to_string('registration/guest_survey_link_email_'+language+'.html',
                                    context)
         email = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [guest_email], [settings.HNI_SUPPORT_EMAIL_ID])
