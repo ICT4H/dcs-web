@@ -178,7 +178,7 @@ class QuestionBuilder(object):
     def _create_media_question(self, post_dict, code):
         media_class = self.type_media_dict[post_dict['type']]
         return media_class( name=self._get_name(post_dict), code=code,
-                           parent_field_code=post_dict.get('parent_field_code') )
+                            label=post_dict["title"], instruction=post_dict.get("instruction"), required=post_dict.get( "required" ))
 
 
     def _get_unique_id_type(self, post_dict):
