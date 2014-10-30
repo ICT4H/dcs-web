@@ -3,7 +3,7 @@ from django.conf.urls.defaults import patterns, url
 from datawinners.entity.view.all_datasenders import DisassociateDataSendersView
 from datawinners.project.views.change_language import QuestionnaireLanguageView
 from datawinners.project.views.create_questionnaire import create_project
-from datawinners.project.views.datasenders import MyDataSendersAjaxView, registered_datasenders, add_project_guests, project_guests, project_guests_send_email, public_survey
+from datawinners.project.views.datasenders import MyDataSendersAjaxView, registered_datasenders, add_project_guests, project_guests, project_guests_send_email, public_survey, delete_project_guests
 from datawinners.project.views.import_submissions_views import ImportSubmissionView
 from datawinners.project.views.registered_datasenders import registered_ds_count
 
@@ -55,6 +55,7 @@ urlpatterns = patterns('',
 
                        url(r'^project/(?P<project_id>.+?)/public_details/$', public_survey, name="public_survey_details"),
                        url(r'^project/(?P<project_id>.+?)/add_guest/$', add_project_guests, name="add_project_guests"),
+                       url(r'^project/(?P<project_id>.+?)/delete_guest/$', delete_project_guests, name="delete_project_guests"),
                        url(r'project/(?P<project_id>.+?)/guests/send_email/$', project_guests_send_email, name='project_guests_send_email'),
                        url(r'project/(?P<project_id>.+?)/guests/$', project_guests, name='project_guests'),
 

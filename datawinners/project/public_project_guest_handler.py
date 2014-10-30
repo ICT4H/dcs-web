@@ -15,11 +15,12 @@ from datawinners.project.models import ProjectGuest, Project, PublicSurvey
 
 class PublicProject():
 
-    def __init__(self, questionnaire_id, id_generator):
+    def __init__(self, questionnaire_id, id_generator=None):
         self.questionnaire_id = questionnaire_id
         self.id_generator = id_generator
 
     def _create_guest_entry(self, public_survey, email, name):
+        assert self.id_generator is not None
         project_guest = ProjectGuest.objects.create(public_survey=public_survey, guest_name=name, guest_email=email,
                                                    status=ProjectGuest.EMAIL_TO_BE_SEND,
                                                    link_id=str(self.id_generator.get_unique_id()))
@@ -49,8 +50,8 @@ class PublicProject():
     #         pass
     #     return 'Guest(s) added successfully to survey', True
 
-    def remove_guests(self, guests):
-        pass
+    def delete_guests(self, selected_project_guest_ids):
+        ProjectGuest.objects.filter(pk__in=[int(entry) for entry in selected_project_guest_ids]).delete()
 
 
 class GuestFinder():
@@ -91,8 +92,8 @@ class GuestEmail():
         self.domain = domain
         self.subject_line = '- ' + subject_line if subject_line else ''
 
-    def sendEmails(self, guest_ids):
-        guests = ProjectGuest.objects.filter(pk__in=[int(entry) for entry in guest_ids])
+    def sendEmails(self, project_guest_ids):
+        guests = ProjectGuest.objects.filter(pk__in=[int(entry) for entry in project_guest_ids])
 
         for guest in guests:
             self._send_mail(guest.guest_email, guest.link_id)
@@ -107,7 +108,8 @@ class GuestEmail():
             'link_id': link_id
         }
         subject = render_to_string('registration/guest_survey_email_subject_in_'+language+'.txt')
-        subject = ''.join(subject.splitlines()) + self.su# Email subject *must not* contain newlines
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines()) + self.subject_line
         message = render_to_string('registration/guest_survey_link_email_'+language+'.html',
                                    context)
         email = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [guest_email], [settings.HNI_SUPPORT_EMAIL_ID])

@@ -174,13 +174,28 @@ def registered_datasenders(request, project_id):
 @csrf_exempt
 @login_required
 @is_not_expired
+def delete_project_guests(request, project_id):
+    if request.method == 'POST':
+        publicProject = PublicProject(project_id)
+        publicProject.delete_guests(json.loads(request.POST.get('id_list', [])))
+
+        return HttpResponse(
+            jsonpickle.encode({
+                'success': True,
+                'success_message': "Guest deleted from survey."
+            })
+        )
+
+@csrf_exempt
+@login_required
+@is_not_expired
 def project_guests_send_email(request, project_id):
     if request.method == 'POST':
         manager = get_database_manager(request.user)
         questionnaire = Project.get(manager, project_id)
-        selected_guest_ids = json.loads(request.POST.get('id_list', []))
+        selected_project_guest_ids = json.loads(request.POST.get('id_list', []))
         emailer = GuestEmail(_get_domain(request), subject_line=questionnaire.name)
-        success_count = emailer.sendEmails(selected_guest_ids);
+        success_count = emailer.sendEmails(selected_project_guest_ids);
         return HttpResponse(
             jsonpickle.encode({
                 'success': True,
