@@ -1,13 +1,15 @@
+from gettext import gettext
 import uuid
 
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
-from django.db import connection
+from django.db import connection, transaction
 from django.db.utils import IntegrityError
 
 from datawinners import settings
 from datawinners.feeds.database import feeds_db_for
 from datawinners.main.database import get_db_manager
+from datawinners.project.submission.submission_import import XlsSubmissionParser, ImportValidationError
 from datawinners.utils import get_database_manager_for_org
 from datawinners.accountmanagement.models import Organization, OrganizationSetting
 from datawinners.project.models import ProjectGuest, Project, PublicSurvey
@@ -15,21 +17,23 @@ from datawinners.project.models import ProjectGuest, Project, PublicSurvey
 
 class PublicProject():
 
-    def __init__(self, questionnaire_id, id_generator=None):
+    def __init__(self, questionnaire_id, public_survey=None, id_generator=None):
         self.questionnaire_id = questionnaire_id
         self.id_generator = id_generator
+        self.public_survey = public_survey
 
-    def _create_guest_entry(self, public_survey, email, name):
+    def _create_guest_entry(self, email, name):
         assert self.id_generator is not None
-        project_guest = ProjectGuest.objects.create(public_survey=public_survey, guest_name=name, guest_email=email,
+        assert self.public_survey is not None
+        project_guest = ProjectGuest.objects.create(public_survey=self.public_survey, guest_name=name, guest_email=email,
                                                    status=ProjectGuest.EMAIL_TO_BE_SEND,
                                                    link_id=str(self.id_generator.get_unique_id()))
         return project_guest
 
-    def add_guest(self, public_survey, name, email):
+    def add_guest(self, name, email):
 
         try:
-            self._create_guest_entry(public_survey, email, name)
+            self._create_guest_entry(email, name)
         except IntegrityError as ie:
             if 'guest_email' in ie.message:
                 connection._rollback()
@@ -37,7 +41,7 @@ class PublicProject():
             else:
                 # retry once
                 try:
-                    self._create_guest_entry(public_survey, email, name)
+                    self._create_guest_entry(self.public_survey, email, name)
                 except Exception:
                     connection._rollback()
                     return 'Failed to add guest to survey', False
@@ -53,7 +57,29 @@ class PublicProject():
     def delete_guests(self, selected_project_guest_ids):
         ProjectGuest.objects.filter(pk__in=[int(entry) for entry in selected_project_guest_ids]).delete()
 
+    def import_guests(self, file_content):
+        tabular_data = XlsSubmissionParser().parse(file_content)
+        if len(tabular_data) < 1:
+            raise ImportValidationError(gettext("The imported file is empty."))
+        return self._add_guests(tabular_data)
 
+    def _add_guests(self, guests_info):
+        duplicate_emails = []
+        with transaction.commit_manually():
+            for info in guests_info:
+                email, name = info[0], info[1]
+                try:
+                    self._create_guest_entry(email, name)
+                except IntegrityError as ie:
+                    if 'guest_email' in ie.message:
+                        connection._rollback()
+                        duplicate_emails.append(email)
+            if len(duplicate_emails) == 0:
+                transaction.commit()
+            else:
+                transaction.rollback()
+
+        return duplicate_emails
 class GuestFinder():
 
     def get_all_guest_for_survey(self, org_id, questionnaire_id):
