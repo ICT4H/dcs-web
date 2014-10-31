@@ -142,6 +142,9 @@ class ProjectGuest(models.Model):
     link_id = models.CharField(max_length=100, unique=True)
     public_survey = models.ForeignKey(PublicSurvey, null=False)
 
+    class Meta:
+        unique_together = ('guest_email', 'public_survey')
+
     def mark_email_send(self):
         self.status = self.EMAIL_SEND
         self.save()

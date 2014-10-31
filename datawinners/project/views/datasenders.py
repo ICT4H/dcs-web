@@ -1,4 +1,5 @@
 import json
+import os
 from string import lower
 from urllib import unquote
 import unicodedata
@@ -14,6 +15,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, csrf_view_exempt, csrf_response_exempt
 from django.views.generic.base import View
 import jsonpickle
+from datawinners.entity.entity_exceptions import InvalidFileFormatException
+from datawinners.entity.import_data import get_filename_and_contents
 
 from datawinners.utils import get_organization
 from datawinners import settings
@@ -299,9 +302,8 @@ def add_project_guests(request, project_id):
             organisation = get_organization(request)
             public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
 
-            publicProject = PublicProject(project_id, UniqueIdGenerator())
-            message, success = publicProject.add_guest(
-                public_survey,
+            public_project = PublicProject(project_id, public_survey, UniqueIdGenerator())
+            message, success = public_project.add_guest(
                 guest_form.cleaned_data.get('name', ''),
                 guest_form.cleaned_data.get('email', ''))
     else:
@@ -318,4 +320,32 @@ def add_project_guests(request, project_id):
        'guest_form': guest_form},
       context_instance=RequestContext(request))
 
-# class
+@csrf_exempt
+@login_required
+@is_not_expired
+def import_guest(request, project_id):
+    manager = get_database_manager(request.user)
+    questionnaire = Project.get(manager, project_id)
+    organisation = get_organization(request)
+
+    public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
+
+    public_project = PublicProject(project_id, public_survey, UniqueIdGenerator())
+    file_content = _get_uploaded_content(request)
+    duplicate_emails = public_project.import_guests(file_content)
+
+    return HttpResponse(
+            json.dumps(
+                {
+                    "success": False if len(duplicate_emails) > 0 else True,
+                    "error_msg": 'Error: Remove the following duplicate guest(s) and upload again.<br>' + '<br>'.join(duplicate_emails),
+                    "success_msg": 'Guest(s) added successfully.'
+                }))
+
+def _get_uploaded_content(request):
+    file_name, file_content = get_filename_and_contents(request)
+    base_name, extension = os.path.splitext(file_name)
+    if extension != '.xls':
+        raise InvalidFileFormatException()
+
+    return file_content
