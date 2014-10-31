@@ -2,6 +2,13 @@
 {% load i18n %}
 {% block page_title %} {% trans "Questionnaires - Data Senders" %} {% endblock %}
 
+{% block page_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="/media/javascript/file_uploader/fileuploader.js"></script>
+
+
+{% endblock %}
+
 {% load dw_tabs %}
 {% block navigation %}
     {% activetab "tab_nav" "data_senders" %}
@@ -26,7 +33,7 @@
     <link href="/media/css/scss/section_datasender_import.css" media="screen" rel="stylesheet"/>
     <style type="text/css">
         .guestForm p {
-            margin: 5px;
+            padding: 5px;
         }
     </style>
 {% endblock %}
@@ -51,6 +58,7 @@
     <div>
         <div class="float_left" style="width: 50%">
             <form action="{% url add_project_guests project.id %}" method="post" class="guestForm">{% csrf_token %}
+                <p>You can send the survey request email to the added guest by selecting 'Send survey email' form Actions below.</p>
                 {% for field in guest_form %}
                     <p>{{ field.label }}</p>
                     <p>{{ field }}</p>
@@ -62,18 +70,60 @@
                 {% endfor %}
 
                 <p><input class="button" type="submit" value="Add Guest" /></p>
+                <br>
+                <p>
+                    <div id="file-uploader" class="grid">
+                        <noscript>
+                            <p>{% trans "Please enable JavaScript to use file uploader." %}</p>
+                        </noscript>
+                        <div id="file_uploader" class="float_left grid_5"></div>
+                    </div>
+                </p>
+                <br>
 
-                <br>
-                <p>You can send the survey request email to the added guest by selecting 'Send survey email' form Actions below.</p>
-                <p class="float_right"><a href="">Import guest list</a></p>
-                <br>
             </form>
         </div>
-        <div class="float_right">
-            <p><a class="button" href="{%  url public_survey_details project.id %}">Manage public settings</a></p>
+        <div class="float_left guestForm">
             <p>Last date of submission, Anonymous survey url, submission count limit, etc.</p>
+            <p><a class="button" href="{%  url public_survey_details project.id %}">Manage public settings</a></p>
         </div>
     </div>
+
+    <script type="text/javascript">
+    var refresh_error_table = function(responseJSON) {
+
+    }
+    var import_guest_link = '{% url import_guest project.id %}';
+    var uploader = new qq.FileUploader({
+        // pass the dom node (ex. $(selector)[0] for jQuery users)
+        element: document.getElementById('file_uploader'),
+        // path to server-side upload script
+        action: import_guest_link,
+        params: {},
+        onSubmit: function () {
+            $.blockUI({ message: '<h1><img src="/media/images/ajax-loader.gif"/><span class="loading">' + gettext("Just a moment") + '...</span></h1>', css: { width: '275px'}});
+        },
+        onComplete: function (id, fileName, responseJSON) {
+            $.unblockUI();
+            $("#guest_table").dataTable().fnReloadAjax();
+            var duplicate_emails = responseJSON.duplicate_emails;
+            $('#message').remove();
+            if ($.isEmptyObject(responseJSON)) {
+                $('<div id="message" class="error_message message-box clear-left">Something unexpected happened; please check the file data and try again</div>').insertBefore($('#message_text'));
+            }
+            else {
+                if (responseJSON.success == true) {
+                    $('<div id="message" class="success_message success-message-box">' + responseJSON.success_msg + '</div>').insertBefore($('#message_text'));
+                    $("#guest_table").fnReloadAjax();
+                } else {
+                    $('<div id="message" class="error_message message-box clear-left">' + responseJSON.error_msg + '</div>').insertBefore($('#message_text'));
+                }
+            }
+        }
+    });
+
+
+    </script>
     {% include 'project/guest_table.html' %}
 
 {% endblock %}
