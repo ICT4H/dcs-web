@@ -13,10 +13,12 @@ from datawinners.common.constant import CREATED_QUESTIONNAIRE
 from datawinners.main.database import get_database_manager
 from datawinners.project import helper
 from datawinners.project.helper import associate_account_users_to_project
-from datawinners.project.wizard_view import get_preview_and_instruction_links, create_questionnaire
+from datawinners.project.wizard_view import get_preview_and_instruction_links, create_questionnaire, \
+    update_questionnaire
 from datawinners.utils import get_organization
 from mangrove.datastore.entity_type import get_unique_id_types
 from mangrove.errors.MangroveException import QuestionCodeAlreadyExistsException, QuestionAlreadyExistsException, EntityQuestionAlreadyExistsException
+from mangrove.transport.xforms.xform import xform_for
 
 
 @login_required
@@ -75,6 +77,8 @@ def _create_project_post_response(request, manager):
 
     if not code_has_errors and not name_has_errors:
         associate_account_users_to_project(manager, questionnaire)
+        questionnaire.update_doc_and_save()
+        questionnaire.xform = xform_for(get_database_manager(request.user), questionnaire.id, request.user.get_profile().reporter_id)
         questionnaire.update_doc_and_save()
         UserActivityLog().log(request, action=CREATED_QUESTIONNAIRE, project=questionnaire.name,
                               detail=questionnaire.name)
