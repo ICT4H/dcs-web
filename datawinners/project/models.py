@@ -152,6 +152,9 @@ class ProjectGuest(models.Model):
         self.status = self.SURVEY_TAKEN
         self.save()
 
+    def get_status_label(self):
+        return [v for t,v in ProjectGuest.STATUS_CHOICES if self.status == t][0]
+
 class ReminderLogDocument(DocumentBase):
     reminder_id = TextField()
     project_id = TextField()

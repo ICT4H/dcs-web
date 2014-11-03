@@ -120,9 +120,11 @@ class GuestFinder():
 
     def _transform_to_array(self, project_guests):
         data = []
+
         for pgs in project_guests:
-            data.append([pgs.id, pgs.guest_name, pgs.guest_email])
+            data.append([pgs.id, pgs.guest_name, pgs.guest_email, pgs.get_status_label()])
         return data
+
 
 class GuestMapper():
 
