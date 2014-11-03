@@ -139,7 +139,7 @@ class ProjectGuest(models.Model):
     guest_email = models.CharField(max_length=100)
     status = models.IntegerField(choices=STATUS_CHOICES, max_length=1, default=EMAIL_TO_BE_SEND)
     link_id = models.CharField(max_length=100, unique=True)
-    public_survey = models.ForeignKey(PublicSurvey, null=False)
+    public_survey = models.ForeignKey(PublicSurvey, null=False, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('guest_email', 'public_survey')
