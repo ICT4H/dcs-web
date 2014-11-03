@@ -2,6 +2,7 @@ from gettext import gettext
 import uuid
 
 from django.core.mail import EmailMessage
+from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.db import connection, transaction
 from django.db.utils import IntegrityError
@@ -25,9 +26,10 @@ class PublicProject():
     def _create_guest_entry(self, email, name):
         assert self.id_generator is not None
         assert self.public_survey is not None
-        project_guest = ProjectGuest.objects.create(public_survey=self.public_survey, guest_name=name, guest_email=email,
-                                                   status=ProjectGuest.EMAIL_TO_BE_SEND,
-                                                   link_id=str(self.id_generator.get_unique_id()))
+        project_guest = ProjectGuest.objects.create(public_survey=self.public_survey, guest_name=name,
+                                                    guest_email=email.lower(), # email is converted to lower case
+                                                    status=ProjectGuest.EMAIL_TO_BE_SEND,
+                                                    link_id=str(self.id_generator.get_unique_id()))
         return project_guest
 
     def add_guest(self, name, email):
@@ -61,13 +63,19 @@ class PublicProject():
         tabular_data = XlsSubmissionParser().parse(file_content)
         if len(tabular_data) < 1:
             raise ImportValidationError(gettext("The imported file is empty."))
-        return self._add_guests(tabular_data)
+        return self._add_guests(self._strip_header_row(tabular_data))
+
+    def _strip_header_row(self, tabular_data):
+        if tabular_data[0][0].lower() == 'email':
+            return tabular_data[1:]
+        else:
+            return tabular_data
 
     def _add_guests(self, guests_info):
         duplicate_emails = []
         with transaction.commit_manually():
             for info in guests_info:
-                email, name = info[0], info[1]
+                email, name = self._name_email_safe_get(info)
                 try:
                     self._create_guest_entry(email, name)
                 except IntegrityError as ie:
@@ -80,6 +88,14 @@ class PublicProject():
                 transaction.rollback()
 
         return duplicate_emails
+
+    def _name_email_safe_get(self, guest_info):
+        if (len(guest_info) == 2):
+            return guest_info[0], guest_info[1]
+        else:
+            return guest_info[0], ''
+
+
 class GuestFinder():
 
     def get_all_guest_for_survey(self, org_id, questionnaire_id):
@@ -87,16 +103,26 @@ class GuestFinder():
         if len(public_survey) < 1:
             return []
 
-        projectGuests = public_survey[0].projectguest_set.all()
-        data = []
-        for pgs in projectGuests:
-            data.append([pgs.id, pgs.guest_name, pgs.guest_email])
+        project_guests = public_survey[0].projectguest_set.all()
+        data = self._transform_to_array(project_guests)
 
         return data
 
-    def get_paginated_guest_for_survey(self, questionnaire_id, start, count):
-        pass
+    def get_paginated_guest_for_survey(self, org_id, questionnaire_id, page_num, count):
+        public_surveys = PublicSurvey.objects.filter(organization=org_id, questionnaire_id=questionnaire_id)
+        if len(public_surveys) < 1:
+            return 0, []
 
+
+        page = Paginator(public_surveys[0].projectguest_set.all(), count)
+        project_guests = page.page(page_num).object_list
+        return page.count, self._transform_to_array(project_guests)
+
+    def _transform_to_array(self, project_guests):
+        data = []
+        for pgs in project_guests:
+            data.append([pgs.id, pgs.guest_name, pgs.guest_email])
+        return data
 
 class GuestMapper():
 
