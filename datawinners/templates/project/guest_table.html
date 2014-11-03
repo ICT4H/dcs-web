@@ -10,99 +10,10 @@
     <script>
         var project_guests_ajax_url = "{{ project_links.project_guests }}";
         var project_id = "{{ project.id }}";
-
-        var get_options = function(waring_dialog_id, table, url, selected_ids, all_selected) {
-            return {container: waring_dialog_id,
-                continue_handler: function () {
-                    DW.loading();
-                    $.ajax({
-                            type: 'POST',
-                            url: url,
-                            data: {
-                                'id_list': JSON.stringify(selected_ids),
-                                'all_selected': all_selected
-                            },
-                            success: function (response) {
-                                var data = JSON.parse(response);
-                                $("#message_text").show();
-                                if (data.success) {
-                                    $("#message_text").html("<div class='message success-box'>" + data.success_message + "</div>");
-{#                                    table.fnSettings()._iDisplayStart = get_updated_table_page_index(table,selected_ids,all_selected);#}
-                                    table.fnReloadAjax();
-                                } else {
-                                    $("#message_text").html("<div class='error_message message-box'>" + data.error_message + "</div>");
-                                }
-                                $("#message_text .message").delay(5000).fadeOut();
-                            },
-                            error: function (e) {
-                                $("#message_text").show();
-                                $("#message_text").html("<div class='error_message message-box'>" + e.responseText + "</div>");
-                            }
-                        }
-                    )
-                    ;
-
-                    return false;
-                },
-                title: gettext("Confirmation"),
-                cancel_handler: function () {
-                },
-                height: 170,
-                width: 550
-            };
-        }
-        var handle_send_emails = function(table, selected_ids, all_selected) {
-            if (selected_ids.length == 0) {
-                $("#message_text").html("<div class='message message-box'>" + gettext("Please select at least one guest") + "</div>");
-            } else {
-                var warning_dialog = new DW.warning_dialog(get_options('#warning_dialog', table, '{% url project_guests_send_email project.id %}', selected_ids, all_selected));
-                warning_dialog.show_warning();
-                warning_dialog.ids = selected_ids;
-            }
-            $("#message_text .message").delay(5000).fadeOut();
-        }
-
-        var handle_delete_guests = function(table, selected_ids, all_selected) {
-            if (selected_ids.length == 0) {
-                $("#message_text").html("<div class='message message-box'>" + gettext("Please select at least one guest") + "</div>");
-            } else {
-                var warning_dialog = new DW.warning_dialog(get_options('#warning_dialog_delete', table, '{% url delete_project_guests project.id %}', selected_ids, all_selected));
-                warning_dialog.show_warning();
-                warning_dialog.ids = selected_ids;
-            }
-            $("#message_text .message").delay(5000).fadeOut();
-        }
-
-        $(function(){
-            function col(header_class_name){
-                return $('#guest_table th.' + header_class_name).index('#guest_table th');
-            }
-            $("#guest_table").dwTable({
-                "concept": "Project Guest",
-                "sAjaxSource": project_guests_ajax_url,
-                "sAjaxDataIdColIndex": 1,
-                "bServerSide": true,
-                "oLanguage": {
-                    "sEmptyTable": $('#no_registered_subject_message').clone(true, true).html()
-                },
-                "aoColumnDefs": [
-                    {"aTargets": [0], "sWidth": "30px"}
-                ],
-                "actionItems" : [
-                    {"label":"Send survey email", handler:handle_send_emails, "allow_selection": "multiple"},
-                    {"label":"Delete guest(s)", handler:handle_delete_guests, "allow_selection": "multiple"}
-                ],
-                "aaSorting": [ [ col("name"), "asc"] ]
-            });
-            $("#guest_table").dataTable().fnSetColumnVis(1, false)
-        });
     </script>
 {% endcompress %}
 
 <div id="message_text" style="display: none">
-    {% if  success_message  %}
-        <div class="success-message-box">{{ success_message }}</div>
-    {% endif %}
 </div>
 
 <div>
@@ -131,7 +42,7 @@
 
 <div id="warning_dialog" style="display:none;">
     <div class="warning_message">
-        {% trans "Email with submission link will send to selected guest(s).<br/>This action cannot be undone." %}
+        {% trans "Email with survey request link/url will be send to selected guest(s).<br/>This action cannot be undone." %}
         <br/><br/>
         {% trans "Are you sure you want to continue?" %}
     </div>
