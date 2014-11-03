@@ -234,7 +234,7 @@ def project_guests(request, project_id):
             }, unpicklable=False), content_type='application/json')
 
 class PublicProjectForm(forms.Form):
-    is_anonymous_enabled = forms.BooleanField(initial=False, required=False)
+    is_anonymous_enabled = forms.BooleanField(initial=False, required=False, widget=forms.CheckboxInput(attrs={'data-bind': 'checked: is_anonymous_enabled'}))
     allowed_submission_count = forms.IntegerField(initial=-1, required=False)
     expires_on = forms.DateField(widget=forms.widgets.DateInput(format='%d.%m.%Y'), input_formats=['%d.%m.%Y'], required=False)
     public_link = forms.CharField(max_length=100, required=False)

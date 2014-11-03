@@ -13,6 +13,20 @@
     {{ block.super }}
 {% endblock %}
 
+{% block page_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="/media/javascript/ko-binding-extensions.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        var viewModel = {
+            is_anonymous_enabled: ko.observable( ('{{ form.is_anonymous_enabled.data }}' == 'False'? false : true) )
+        }
+        ko.applyBindings(viewModel);
+    });
+    </script>
+{% endblock %}
+
 {% block page_scss %}
     {{ block.super }}
     <link href="/media/css/scss/section_subjects.css" rel="stylesheet"/>
@@ -61,9 +75,9 @@
                 <br>
                 <div >
                     <p>{{ form.is_anonymous_enabled }} Anonymous submissions enabled - Any one with the link can take survey any number of times.</p>
-                    {% if form.is_anonymous_enabled.data %}
+                    <div data-bind="visible: is_anonymous_enabled">
                         <p>Anonymous submission link:</p>
-                        <p>http://{{ domain }}{% url public_survey org_id public_link %}</p>
+                        <p style="border: 1px solid #ccc">http://{{ domain }}{% url public_survey org_id public_link %}</p>
 
                         <p>Limit anonymous submissions (Empty for unlimited submissions)</p>
                         <p>{{ form.allowed_submission_count }}</p>
@@ -72,7 +86,7 @@
                                 <p style="color: red">{{ error }}</p>
                             {% endfor %}
                         {% endif %}
-                    {% endif %}
+                    </div>
                 </div>
                 <p><input class="button" type="submit" value="update"/></p>
             </form>
