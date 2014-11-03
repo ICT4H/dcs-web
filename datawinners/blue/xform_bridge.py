@@ -476,7 +476,7 @@ class MangroveService():
         questionnaire = create_questionnaire(post=project_json, manager=self.manager, name=self.name,
                                              language=self.language,
                                              reporter_id=self.reporter_id, question_set_json=self.json_xform_data,
-                                             xform=self.xform_with_form_code)
+                                             xform=self.xform_with_form_code, created_through = "xls")
 
         if not questionnaire.is_project_name_unique():
             return None, None
