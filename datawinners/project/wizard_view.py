@@ -1,4 +1,5 @@
 import json
+from pyxform import create_survey_element_from_dict
 from datawinners import settings
 
 from django.contrib.auth.decorators import login_required
@@ -35,7 +36,7 @@ from mangrove.utils.types import is_empty
 
 
 def create_questionnaire(post, manager, name, language, reporter_id, question_set_json=None,
-                         xform=None, is_open_survey=False):
+                         xform=None, is_open_survey=False, created_through = "Web Designer"):
 
     questionnaire_code = post['questionnaire-code'].lower()
     datasenders = json.loads(post.get('datasenders', "[]"))
@@ -44,6 +45,7 @@ def create_questionnaire(post, manager, name, language, reporter_id, question_se
                            fields=[], form_code=questionnaire_code, language=language,
                            devices=[u'sms', u'web', u'smartPhone'])
     questionnaire.xform = xform
+    questionnaire.created_through = created_through
 
     if is_open_survey:
         questionnaire.is_open_survey = post.get('is_open_survey')
