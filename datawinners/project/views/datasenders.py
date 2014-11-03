@@ -220,16 +220,22 @@ def project_guests(request, project_id):
     if request.method == 'POST':
         organisation = get_organization(request)
         guest_finder = GuestFinder()
-        guests_data = guest_finder.get_all_guest_for_survey(organisation.org_id, project_id)
-        search_count = query_count = len(guests_data)
+
+        iDisplayStart = int(request.POST.get('iDisplayStart'))
+        iDisplayLength = int(request.POST.get('iDisplayLength'))
+        current_page = 1 if iDisplayStart == 0 else (iDisplayStart / iDisplayLength) + 1
+
+        search_count, guests_data = guest_finder.get_paginated_guest_for_survey(organisation.org_id, project_id,
+                                                                  current_page, iDisplayLength)
+        query_count = len(guests_data)
 
         return HttpResponse(
         jsonpickle.encode(
             {
                 'data': guests_data,
-                'iTotalDisplayRecords': query_count,
-                'iDisplayStart': int(request.POST.get('iDisplayStart', 0)),
-                "iTotalRecords": search_count,
+                'iTotalDisplayRecords': search_count,
+                'iDisplayStart': int(request.POST.get('iDisplayStart')),
+                "iTotalRecords": query_count,
                 'iDisplayLength': int(request.POST.get('iDisplayLength', 0))
             }, unpicklable=False), content_type='application/json')
 
@@ -327,19 +333,26 @@ def import_guest(request, project_id):
     manager = get_database_manager(request.user)
     questionnaire = Project.get(manager, project_id)
     organisation = get_organization(request)
-
+    success, message = True, 'Guest(s) added successfully.'
     public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
-
     public_project = PublicProject(project_id, public_survey, UniqueIdGenerator())
-    file_content = _get_uploaded_content(request)
-    duplicate_emails = public_project.import_guests(file_content)
+
+    try:
+        file_content = _get_uploaded_content(request)
+        duplicate_emails = public_project.import_guests(file_content)
+        if len(duplicate_emails) > 0:
+                success, message = False, 'Error: Remove the following duplicate guest(s) and upload again.<br>' +\
+                                  '<br>'.join(duplicate_emails)
+    except InvalidFileFormatException:
+        success, message = False, 'Invalid file format'
+    except Exception:
+        success, message = False, 'Something unexpected happened; please check the file data and try again'
 
     return HttpResponse(
             json.dumps(
                 {
-                    "success": False if len(duplicate_emails) > 0 else True,
-                    "error_msg": 'Error: Remove the following duplicate guest(s) and upload again.<br>' + '<br>'.join(duplicate_emails),
-                    "success_msg": 'Guest(s) added successfully.'
+                    "success": success,
+                    "message": message
                 }))
 
 def _get_uploaded_content(request):
