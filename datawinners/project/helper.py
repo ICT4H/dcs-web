@@ -26,7 +26,7 @@ from datawinners.accountmanagement.models import NGOUserProfile, TEST_REPORTER_M
 from datawinners.scheduler.smsclient import SMSClient
 from datawinners.sms.models import MSG_TYPE_USER_MSG
 import models
-from models import Reminder
+from models import Reminder, PublicSurvey
 
 
 SUBMISSION_DATE_FORMAT_FOR_SUBMISSION = "%b. %d, %Y, %I:%M %p"
@@ -133,6 +133,7 @@ def delete_project(questionnaire):
     [reminder.delete() for reminder in (Reminder.objects.filter(project_id=questionnaire.id))]
     questionnaire.reset_reminder_and_deadline()
     questionnaire.void(True)
+    PublicSurvey.objects.filter(questionnaire_id=questionnaire.id).delete()
 
 
 def get_activity_report_questions(dbm):
