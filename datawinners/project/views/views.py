@@ -434,7 +434,6 @@ def questionnaire(request, project_id):
                                    'post_url': reverse(edit_project, args=[project_id]),
                                    'preview_links': get_preview_and_instruction_links()},
                                   context_instance=RequestContext(request))
-
         return render_to_response('project/questionnaire.html',
                                   {"existing_questions": repr(existing_questions),
                                    'questionnaire_code': questionnaire.form_code,
