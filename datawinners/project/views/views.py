@@ -418,7 +418,7 @@ def questionnaire(request, project_id):
         active_language = request.LANGUAGE_CODE
         if "success" in [m.message for m in messages.get_messages(request)]:
             is_success = True
-        if questionnaire.xform:
+        if questionnaire.created_using == "XLSFORM":
             show_xls_download_link, attachment, file_extension = questionnaire.has_attachment()
             return render_to_response('project/edit_xform.html',
                                   {"existing_questions": repr(existing_questions),
