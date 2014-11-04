@@ -1,5 +1,4 @@
 import json
-from pyxform import create_survey_element_from_dict
 from datawinners import settings
 
 from django.contrib.auth.decorators import login_required
@@ -33,11 +32,12 @@ from datawinners.questionnaire.questionnaire_builder import QuestionnaireBuilder
 from datawinners.project.helper import is_project_exist
 from datawinners.project.utils import is_quota_reached
 from mangrove.utils.json_codecs import encode_json
+from mangrove.transport.xforms.xform import generate_xform
 from mangrove.utils.types import is_empty
 
 
 def create_questionnaire(post, manager, name, language, reporter_id, question_set_json=None,
-                         xform=None, is_open_survey=False, created_through = "Web Designer"):
+                         xform=None, is_open_survey=False, created_using = "DW-DESIGNER"):
 
     questionnaire_code = post['questionnaire-code'].lower()
     datasenders = json.loads(post.get('datasenders', "[]"))
@@ -46,7 +46,7 @@ def create_questionnaire(post, manager, name, language, reporter_id, question_se
                            fields=[], form_code=questionnaire_code, language=language,
                            devices=[u'sms', u'web', u'smartPhone'])
     questionnaire.xform = xform
-    questionnaire.created_through = created_through
+    questionnaire.created_through = created_using
 
     if is_open_survey:
         questionnaire.is_open_survey = post.get('is_open_survey')
@@ -150,6 +150,9 @@ def edit_project(request, project_id):
             changed_questions = get_changed_questions(old_fields, questionnaire.fields, subject=False)
             detail.update(changed_questions)
             questionnaire.save()
+            if(settings.BRAND_FEATURES.get('DW_BUILDER_PROJECT_TO_XLSFORMS', False)):
+                questionnaire.xform = generate_xform(get_database_manager(request.user), questionnaire.id, request.user.get_profile().reporter_id)
+                questionnaire.update_doc_and_save()
 
             deleted_question_codes = _get_deleted_question_codes(old_codes=old_field_codes,
                                                                  new_codes=questionnaire.field_codes())
