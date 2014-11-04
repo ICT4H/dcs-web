@@ -417,7 +417,7 @@ def questionnaire(request, project_id):
         active_language = request.LANGUAGE_CODE
         if "success" in [m.message for m in messages.get_messages(request)]:
             is_success = True
-        if questionnaire.xform:
+        if questionnaire.created_using == "XLSFORM":
                 try: # find a better way to check attachement exisits
                     questionnaire.get_attachments('questionnaire.xls')
                     show_xls_download_link = True
