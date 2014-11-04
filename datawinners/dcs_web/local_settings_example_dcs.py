@@ -129,6 +129,7 @@ DEBUG_BROWSER="firefox" # firefox | chrome | phantom | ie | htmlunit
 BRAND = "dcs"
 
 BRAND_FEATURES = {
+    'DW_BUILDER_PROJECT_TO_XLSFORMS':True
 }
 
 LOCALE_PATHS = (
