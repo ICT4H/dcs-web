@@ -45,7 +45,7 @@ def create_questionnaire(post, manager, name, language, reporter_id, question_se
                            fields=[], form_code=questionnaire_code, language=language,
                            devices=[u'sms', u'web', u'smartPhone'])
     questionnaire.xform = xform
-    questionnaire.created_through = created_using
+    questionnaire.created_using = created_using
 
     if is_open_survey:
         questionnaire.is_open_survey = post.get('is_open_survey')
