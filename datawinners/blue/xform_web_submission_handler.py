@@ -18,7 +18,7 @@ from mangrove.utils.dates import py_datetime_to_js_datestring
 
 class XFormWebSubmissionHandler():
 
-    def __init__(self, request):
+    def __init__(self, request, form_code=None):
         self.request = request
         self.request_user = request.user
         self.manager = get_database_manager(self.request_user)
@@ -34,11 +34,12 @@ class XFormWebSubmissionHandler():
                 source=self.request_user.email,
                 destination=''
             ))
+        self.form_code = form_code if form_code else self.request.POST['form_code']
         self.organization = Organization.objects.get(org_id=self.user_profile.org_id)
 
     def create_new_submission_response(self):
         try:
-            if not is_authorized_for_questionnaire(self.manager, self.request_user, self.request.POST['form_code']):
+            if not is_authorized_for_questionnaire(self.manager, self.request_user, self.form_code):
                 return HttpResponse(status=403)
             if self.organization.in_trial_mode:
                 check_quotas_for_trial(self.organization)
