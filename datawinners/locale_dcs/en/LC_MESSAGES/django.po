@@ -13,25 +13,25 @@ msgstr ""
 
 msgid "about_DW"
 msgstr ""
-"<h5>About DCS</h5><p>DCS is an online mobile data"
+"<h5>About Garner</h5><p>Garner is an online mobile data"
 "\tcollection service designed and\tbuilt for development professionals. </"
-"p><p>With DCS, you collect and analyze the data you need using the "
+"p><p>With Garner, you collect and analyze the data you need using the "
 "equipment you already have – a computer, the Internet and mobile "
 "phones. </p>"
  
 msgid "subscription_details"
 msgstr ""
 "<h5>Subscription Details</h5><p>Learn more about</p>"
-"<p><ul class=\"margin_left_10\"><li>Where DCS is available</li>"
+"<p><ul class=\"margin_left_10\"><li>Where Garner is available</li>"
 "<li>Key details of Monthly Subscription</li>"
 "<li>Our Consulting Service</li></ul></p>"
 
 
 msgid "Sign In to Your Account on DataWinners"
-msgstr "Sign In to Your Account on DCS"
+msgstr "Sign In to Your Account on Garner"
 
 msgid "new_ggg"
-msgstr "Sign In to Your Account on DCS"
+msgstr "Sign In to Your Account on Garner"
 
 msgid "agree-terms"
 msgstr "I agree to the Garner <a target=\"_blank\" href=\"/en/terms-and-conditions/\"  id=\"link-terms-and-conditions\">Terms and Conditions</a>"
