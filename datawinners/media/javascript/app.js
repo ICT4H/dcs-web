@@ -17658,11 +17658,39 @@ define('bootstrap', [], function() {
     return jQuery;
 });
 
+function getFormData(data) {
+    var formData = new FormData();
+    formData.append("form_data", data);
+    formData.append("form_code", questionnaire_code);
+    return addAttachmentData(formData);
+}
+
+function addAttachmentData(formData) {
+    var retainFiles = [];
+    var mediaInputs = $('form.or input[type="file"]')
+    mediaInputs.each(function () {
+        var file = this.files[0];
+        if (file) {
+            formData.append(file.name, file);
+        }
+        if (submissionUpdateUrl) {
+            var fileNotChangedDuringEdit = $(this).attr('data-loaded-file-name');
+            if (fileNotChangedDuringEdit) {
+                retainFiles.push(fileNotChangedDuringEdit);
+            }
+        }
+    });
+    if (retainFiles.length > 0)
+        formData.append("retain_files", retainFiles);
+
+    return formData;
+}
+
 function saveXformSubmission(callback) {
     form.validate();
     if (form.isValid()){
         DW.loading();
-        var data = form.getDataStr();
+        var dataXml = form.getDataStr();
         var saveURL = submissionUpdateUrl || submissionCreateUrl;
 
         var success = function (data, status) {
@@ -17677,7 +17705,16 @@ function saveXformSubmission(callback) {
             DW.trackEvent('advanced-qns-submission', 'advanced-qns-submission-failure');
         };
 
-        $.post(saveURL, {'form_data': data, 'form_code': questionnaire_code}).done(success).fail(error);
+        var formData = getFormData(dataXml);
+        $.ajax({
+            url: saveURL,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: success,
+            error: error
+        });
     }
 }
 requirejs( [ 'jquery', 'Modernizr', 'enketo-js/Form' ],

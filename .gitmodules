@@ -3,4 +3,4 @@
 	url = https://github.com/ICT4H/dcs-api.git
 [submodule "enketo-core"]
 	path = enketo-core
-	url = https://github.com/mangroveorg/enketo-core-dw.git
+	url = https://github.com/ICT4H/dcs-web-enketo-core.git
