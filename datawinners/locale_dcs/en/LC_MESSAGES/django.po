@@ -38,3 +38,14 @@ msgstr "I agree to the Garner <a target=\"_blank\" href=\"/en/terms-and-conditio
 
 msgid "To sign up for a DataWinners account, you need to agree to our Terms and Conditions"
 msgstr "To sign up for a Garner account, you need to agree to our <a class='terms_and_condition' href=\"/en/terms-and-conditions/\" target=\"_blank\">Terms and Conditions</a>"
+
+msgid "Activate Your DataWinners Account"
+msgstr "Activate Your Garner Account"
+
+msgid "DataWinners allows you to send your data 3 different ways. Choose the channel most convenient for you."
+msgstr "Garner allows you to send your data 3 different ways. Choose the channel most convenient for you."
+
+msgid "If you need help contact your project manager or send us an Email at <a href='mailto:support@datawinners.com'>support@datawinners.com</a>. We're here to help!"
+msgstr "If you need help contact your project manager or send us an Email at <a href='mailto:garner@thoughtworks.com'>garner@thoughtworks.com</a>. We're here to help!"
+
+
