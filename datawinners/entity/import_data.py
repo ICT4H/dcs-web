@@ -39,7 +39,7 @@ from mangrove.contrib.registration_validators import case_insensitive_lookup
 from mangrove.form_model.form_model import ENTITY_TYPE_FIELD_CODE
 from datawinners.utils import get_organization
 from datawinners.accountmanagement.models import NGOUserProfile, DataSenderOnTrialAccount
-from datawinners.settings import HNI_SUPPORT_EMAIL_ID, EMAIL_HOST_USER
+from datawinners.settings import HNI_SUPPORT_EMAIL_ID, DEFAULT_FROM_EMAIL
 from datawinners.questionnaire.helper import get_location_field_code
 from mangrove.transport.player.parser import XlsxParser
 
@@ -497,7 +497,7 @@ def send_email_to_data_sender(user, language_code, request=None, type="activatio
         if organization:
             ctx_dict.update({"org_number":get_organization_telephone_number(request)})
     message = render_to_string(action.get("template") + language_code + '.html', ctx_dict)
-    email = EmailMessage(subject, message, EMAIL_HOST_USER, [user.email], [HNI_SUPPORT_EMAIL_ID])
+    email = EmailMessage(subject, message, DEFAULT_FROM_EMAIL, [user.email], [HNI_SUPPORT_EMAIL_ID])
     email.content_subtype = "html"
     email.send()
 
