@@ -24,12 +24,11 @@ class XFormWebSubmissionHandler():
         self.manager = get_database_manager(self.request_user)
         self.player = XFormPlayerV2(self.manager, get_feeds_database(self.request_user))
         self.xml_submission_file = request.POST['form_data']
-        self.media_file = {}
-        if request.POST.get('media_data'):
-            self.media_file.update(json.loads(request.POST['media_data']))
+        self.retain_files = request.POST['retain_files'].split(',') if request.POST.get('retain_files') else None
 
         self.user_profile = NGOUserProfile.objects.get(user=self.request_user)
-        self.mangrove_request = Request(message=self.xml_submission_file, media=self.media_file,
+        self.mangrove_request = Request(message=self.xml_submission_file, media=request.FILES,
+            retain_files=self.retain_files,
             transportInfo=
             TransportInfo(transport=WEB,
                 source=self.request_user.email,
