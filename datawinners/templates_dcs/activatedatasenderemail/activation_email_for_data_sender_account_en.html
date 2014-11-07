@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head><title>Garner mailing</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content="width=device-width">
+</head>
+<body style="margin:0px; padding:0px; -webkit-text-size-adjust:none;">
+    <table width="100%" cellspacing="0" cellpadding="0" border="0"  bgcolor="#d0e2f0";>
+    <tbody>
+        <tr>
+            <td  align="center">
+                <br /><br />
+                <table  cellpadding="0" width="940" cellspacing="0" border="0" style="border-width: 1px;border-color: #DDDDDD; border-style: solid;">
+                        <tbody>
+                            <tr>
+                                <td  align="left" bgcolor="#333333" width="100%" height="46" colspan="2" style="color: #FFFFFF;font-family: Helvetica;font-size: 20px;">
+                                    &nbsp;&nbsp;
+                                        <span  style="border: none; text-decoration: none; font-family: Helvetica; color: #fff; ">
+                                            <span style="font-size: 22px;">
+                                            <b>Garner</b>
+                                            </span>
+                                             | Welcome to Garner
+                                        </span>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td bgcolor="#ffffff" valign="top" width="620" style=" font-family: 'Helvetica',Arial,'Liberation Sans',FreeSans,sans-serif; font-size: 12px !important;">
+                                    <table>
+                                        <tr>
+                                            <td width="10"></td>
+                                            <td style="text-align: justify; color: #333333; ">
+                                                <p>Hello {{ user.first_name }},</p>
+                                                <p>You are now registered as a Data Sender.<br />
+                                                    <a href="{{ protocol }}://{{ domain }}{% url activate_datasender_account uidb36=uid, token=token %}" style="color: #4379A2;font-weight: normal;text-decoration: none;">
+                                                        <span style="color: #4379A2;font-weight: normal;text-decoration: none;">
+                                                        Activate your Garner account
+                                                        </span>
+                                                    </a>
+                                                     within the next 7 days to send in data using {% ifnotequal account_type 'Pro' %}Web, Android Smartphone and Tablet, and SMS.{% else %}Web, Android Smartphone and Tablet.{% endifnotequal %}</p>
+                                                <p>
+                                                    <table>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <strong>How to Submit Data</strong><br />
+                                                    Garner allows you to send your data in {% ifnotequal account_type 'Pro' %}3{% else %}2{% endifnotequal %} different ways. Choose the channel most convenient for you:
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="5"></td>
+                                                            <td>
+                                                            <ol>
+                                                                {% ifnotequal account_type 'Pro' %}
+                                                                <li><strong>SMS:</strong> Use any simple mobile phone to send data using a single SMS. Ask your project manager for the SMS Questionnaire.</li>
+                                                                {% endifnotequal %}
+														        <li><strong>Web: </strong>Use any computer connected to the Internet to send in data.
+                                                                    Log in to your Garner account to fill out the Questionnaire online.</li>
+                                                                <li><strong>Android App: </strong>Download Questionnaires directly onto your Android Smartphone and Tablet to send data.</li>
+                                                            </ol>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+
+                                                </p>
+                                                <br />
+                                                <p>Have fun,<br /><br/>
+                                                Your Garner Team<br />
+                                                <a href="https://garner.twhosted.com" style="color: #4379A2;font-weight: normal;text-decoration: none;">
+                                                    <span style="color: #4379A2;font-weight: normal;text-decoration: none;">
+                                                    garner.twhosted.com
+                                                    </span>
+                                                </a>
+                                                </p><br />
+
+                                            </td>
+                                            <td width="10"></td>
+                                        </tr>
+                                    </table>
+                                 </td>
+                            </tr>
+                        </tbody>
+                </table>
+                <br /><br />
+            </td>
+        </tr>
+    </tbody>
+    </table>
+</body>
+</html>
