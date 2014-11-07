@@ -6,6 +6,7 @@ import datetime
 import logging
 from string import capitalize
 from datawinners import settings
+from django.utils.safestring import mark_safe
 
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.contrib.auth.decorators import login_required
@@ -42,6 +43,7 @@ from datawinners.alldata.helper import get_visibility_settings_for
 from datawinners.custom_report_router.report_router import ReportRouter
 from datawinners.utils import get_organization, get_organization_from_manager
 from mangrove.form_model.form_model import get_form_model_by_code, FormModel
+from mangrove.utils.dates import py_datetime_to_js_datestring
 from mangrove.utils.json_codecs import encode_json
 from datawinners.project.data_sender_helper import get_data_sender
 from datawinners.project.helper import SUBMISSION_DATE_FORMAT_FOR_SUBMISSION, is_project_exist
@@ -51,12 +53,32 @@ from datawinners.activitylog.models import UserActivityLog
 from datawinners.common.constant import DELETED_DATA_SUBMISSION, EDITED_DATA_SUBMISSION
 from datawinners.project.views.utils import get_form_context, get_project_details_dict_for_feed, is_original_question_changed_from_choice_answer_type, is_original_field_and_latest_field_of_type_choice_answer, convert_choice_options_to_options_text, filter_submission_choice_options_based_on_current_answer_choices
 from datawinners.project.submission_form import SurveyResponseForm
-from mangrove.transport.repository.survey_responses import get_survey_response_by_id
+from mangrove.transport.repository.survey_responses import get_survey_response_by_id, get_survey_responses
 from mangrove.transport.contract.survey_response import SurveyResponse
 
 
 websubmission_logger = logging.getLogger("websubmission")
 
+@login_required
+@session_not_expired
+@is_datasender
+@is_not_expired
+def maps(request, form_code):
+    manager = get_database_manager(request.user)
+
+    submission_list = []
+    submissions = get_survey_responses(manager, form_code, None, None,
+                                       view_name="undeleted_survey_response")
+    for submission in submissions:
+        submission_list.append({"complaint": submission.values["complaint"],
+                                "comment": submission.values["comment"],
+                                "long": submission.values["location"].split(',')[0],
+                                "lat": submission.values["location"].split(',')[1],
+                                "created": py_datetime_to_js_datestring(submission.created)
+        })
+
+    return render_to_response('project/submission_map.html', {"submission_details":mark_safe(json.dumps(submission_list))},
+                                  context_instance=RequestContext(request))
 
 @login_required
 @session_not_expired
