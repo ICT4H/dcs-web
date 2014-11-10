@@ -19,7 +19,7 @@ from datawinners.project.wizard_view import get_preview_and_instruction_links, c
 from datawinners.utils import get_organization
 from mangrove.datastore.entity_type import get_unique_id_types
 from mangrove.errors.MangroveException import QuestionCodeAlreadyExistsException, QuestionAlreadyExistsException, EntityQuestionAlreadyExistsException
-from mangrove.transport.xforms.xform import generate_xform
+from mangrove.transport.xforms.xform import  xform_for
 
 
 @login_required
@@ -80,7 +80,7 @@ def _create_project_post_response(request, manager):
         associate_account_users_to_project(manager, questionnaire)
         questionnaire.update_doc_and_save()
         if settings.BRAND_FEATURES.get('DW_BUILDER_PROJECT_TO_XLSFORMS', False):
-            questionnaire.xform = generate_xform(get_database_manager(request.user), questionnaire.id, request.user.get_profile().reporter_id)
+            questionnaire.xform = xform_for(get_database_manager(request.user), questionnaire.id, request.user.get_profile().reporter_id)
             questionnaire.update_doc_and_save()
         UserActivityLog().log(request, action=CREATED_QUESTIONNAIRE, project=questionnaire.name,
                               detail=questionnaire.name)
