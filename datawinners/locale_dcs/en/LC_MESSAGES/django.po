@@ -48,4 +48,5 @@ msgstr "Garner allows you to send your data 3 different ways. Choose the channel
 msgid "If you need help contact your project manager or send us an Email at <a href='mailto:support@datawinners.com'>support@datawinners.com</a>. We're here to help!"
 msgstr "If you need help contact your project manager or send us an Email at <a href='mailto:garner@thoughtworks.com'>garner@thoughtworks.com</a>. We're here to help!"
 
-
+msgid "View and manage the users of your DataWinners account."
+msgstr "View and manage the users of your Garner account."
