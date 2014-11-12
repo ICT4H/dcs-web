@@ -23,6 +23,11 @@
         var dataStrToEdit = "";
         var isQuotaReached = false;
         var questionnaire_code = '{{ questionnaire_code }}';
+
+        $(document).ready(function() {
+            // removing the success message delayed fade-out
+            $('.success-message-box').stop(true, true);
+        });
     </script>
 
     <script type="text/javascript" src="/media/javascript/common/form_edited_warning_dialog.js"></script>
