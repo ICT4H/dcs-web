@@ -333,7 +333,8 @@ def import_guest(request, project_id):
     manager = get_database_manager(request.user)
     questionnaire = Project.get(manager, project_id)
     organisation = get_organization(request)
-    success, message = True, 'Guest(s) added successfully.'
+    success, message = True, 'Guest(s) added successfully to survey. '\
+        'Use the \'Send survey email\' from the Actions to email survey link to selected guest(s)'
     public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
     public_project = PublicProject(project_id, public_survey, UniqueIdGenerator())
 

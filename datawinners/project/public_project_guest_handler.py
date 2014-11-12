@@ -48,7 +48,8 @@ class PublicProject():
                     connection._rollback()
                     return 'Failed to add guest to survey', False
 
-        return 'Guest added successfully to survey', True
+        return 'Guest added successfully to survey. '\
+            'Use the \'Send survey email\' from the Actions to email survey link to selected guest(s)', True
 
     # def add_guests(self, guests):
     #     projectGuests = []
