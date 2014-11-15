@@ -73,7 +73,7 @@ def _process_survey_response(survey_response_doc, dbm, logger):
 
         if not form_models:
             logger.error("No Questionnaire found for survey response:%s with form_code: %s" %
-                         survey_response.uuid, survey_response._doc['form_code'])
+                         (survey_response.uuid, survey_response._doc['form_code']))
             return None
 
         elif len(form_models) > 1:
