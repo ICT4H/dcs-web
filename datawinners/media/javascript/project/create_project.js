@@ -110,9 +110,20 @@ DW.controllers = {
         questionnaireCreationOptionsViewModel.showQuestionnaireCreationOptions(false);
         questionnaireViewModel.questionnaireCode(questionnaire_code);
         questionnaireViewModel.enableQuestionnaireTitleFocus(true);
+        questionnaireViewModel.isXformDesignerQuestionnaire(false);
         questionnaireViewModel.isXLSUploadQuestionnaire(true);
         questionnaireViewModel.isOpenSurvey(false);
         DW.trackEvent('questionnaire-creation-method', 'advanced-questionnaire');
+    },
+    "xformDesigner": function(){
+        questionnaireViewModel.clearQuestionnaire();
+        questionnaireCreationOptionsViewModel.showQuestionnaireCreationOptions(false);
+        questionnaireViewModel.questionnaireCode(questionnaire_code);
+        questionnaireViewModel.enableQuestionnaireTitleFocus(true);
+        questionnaireViewModel.isXLSUploadQuestionnaire(false);
+        questionnaireViewModel.isXformDesignerQuestionnaire(true);
+        questionnaireViewModel.isOpenSurvey(false);
+        DW.trackEvent('questionnaire-creation-method', 'xformDesigner-questionnaire');
     },
     "questionnaireCreationOptions": function () {
             questionnaireCreationOptionsViewModel.resetCreationOption();
@@ -129,6 +140,7 @@ DW.projectRouter = Sammy(function () {
         this.get('#questionnaire/load/:template_id', DW.controllers.templateQuestionnaire);
         this.get('#questionnaire/copy/:questionnaire_id', DW.controllers.copyQuestionnaire);
         this.get('#questionnaire/xlsupload/$', DW.controllers.uploadQuestionnaire);
+        this.get('#questionnaire/xformDesigner/$', DW.controllers.xformDesigner);
         this.get('project/wizard/create/$', DW.controllers.questionnaireCreationOptions);
 });
 

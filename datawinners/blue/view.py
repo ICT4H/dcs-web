@@ -21,7 +21,7 @@ from pyxform.errors import PyXFormError
 from django.core.mail import EmailMessage
 from datawinners import settings
 from datawinners.blue.xform_bridge import MangroveService, XlsFormParser, XFormTransformer, XFormSubmissionProcessor, \
-    get_generated_xform_id_name, XFormImageProcessor
+    get_generated_xform_id_name, XFormImageProcessor, FormParser
 from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler
 from django.utils.translation import ugettext as _
 
@@ -100,7 +100,7 @@ class ProjectUpload(View):
             tmp_file.seek(0)
             mangrove_service = MangroveService(request.user, xform_as_string, json_xform_data,
                                                questionnaire_code=questionnaire_code, project_name=project_name,
-                                               xls_form=tmp_file)
+                                               xls_form=tmp_file, created_using="XLSFORM")
             questionnaire_id, form_code = mangrove_service.create_project()
 
         except PyXFormError as e:
@@ -596,3 +596,65 @@ def public_survey(request, org_id, anonymous_link_id):
         return HttpResponseBadRequest()
 
     return render_to_response("project/public_web_questionnaire_message.html", context_instance=RequestContext(request))
+
+@csrf_exempt
+def create_xform_project(request):
+    try:
+        if request.method == 'POST':
+            xform_as_string = request.POST['xform']
+            json_xform_data = FormParser(xform_as_string).parse()
+            questionnaire_code = generate_questionnaire_code(get_database_manager(request.user))
+            mangrove_service = MangroveService(request.user, xform_as_string, questionnaire_code=questionnaire_code,json_xform_data=json_xform_data, created_using="XFORM-DESIGNER")
+            questionnaire_id, form_code = mangrove_service.create_project()
+
+    except PyXFormError as e:
+            logger.info("User: %s. Upload Error: %s", request.user.username, e.message)
+
+            message = transform_error_message(e.message)
+            return HttpResponse(content_type='application/json', content=json.dumps({
+                'success': False,
+                'error_msg': [message if message else ugettext(
+                    "all XLSForm features. Please check the list of unsupported features.")]
+            }))
+
+    except QuestionAlreadyExistsException as e:
+            logger.info("User: %s. Upload Error: %s", request.user.username, e.message)
+
+            return HttpResponse(content_type='application/json', content=json.dumps({
+                'success': False,
+                'error_msg': [_("Duplicate labels. All questions (labels) must be unique.")],
+                'message_prefix': _("Sorry! Current version of DataWinners does not support"),
+                'message_suffix': _("Update your XLSForm and upload again.")
+            }))
+
+    except Exception as e:
+
+            message = e.message if e.message else _("Errors in excel")
+
+            logger.info("User: %s. Upload Exception message: %s", request.user.username, e.message)
+
+            odk_message = translate_odk_message(e.message)
+            message = odk_message if odk_message else message
+            return HttpResponse(content_type='application/json', content=json.dumps({
+                'success': False,
+                'error_msg': [message],
+            }))
+
+    if not questionnaire_id:
+        return HttpResponse(json.dumps(
+            {
+                'success': False,
+                'duplicate_project_name': True,
+                'error_msg': [_("Questionnaire with same name already exists.Upload was cancelled.")]}
+        ), content_type='application/json')
+
+    return HttpResponse(
+        json.dumps(
+            {
+                "success": True,
+                "project_id": questionnaire_id,
+                "form_code": form_code
+            }),
+        content_type='application/json')
+
+

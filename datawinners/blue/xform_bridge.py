@@ -4,6 +4,7 @@ import re
 from xml.etree import ElementTree as ET
 
 from lxml import etree
+from pyxform.xform2json import XFormToDictBuilder
 from pyxform.xls2json import parse_file_to_json, parse_file_to_workbook_dict
 import xlrd
 import xmldict
@@ -202,6 +203,11 @@ class XlsFormParser():
         updated_xform = self.update_xform_with_questionnaire_name(xform)
         return [], updated_xform, questions
 
+    def parse_xform(self, xform_str):
+        xform_dict = XFormToDictBuilder(xform_str)
+        questions, question_errors = self._create_questions(xform_dict)
+        return questions
+
     def update_xform_with_questionnaire_name(self, xform):
         return re.sub(r"<h:title>\w+</h:", "<h:title>%s</h:" % self.questionnaire_name, xform)
 
@@ -343,10 +349,296 @@ class XlsFormParser():
 
         return set(errors)
 
+class FormParser():
+    type_dict = {'group': ['repeat', 'group'],
+                 'field': ['text', 'integer', 'decimal', 'date', 'geopoint', 'calculate', 'cascading_select'],
+                 'auto_filled': ['note', 'today'],
+                 'media': ['photo', 'audio', 'video'],
+                 'select': ['select one', 'select all that apply']
+    }
+    meta_data_types = ["start","end","today","imei","deviceid","subscriberid","phonenumber","simserial"]
+    recognised_types = list(itertools.chain(*type_dict.values()))
+    supported_types = [type for type in recognised_types if type not in type_dict['auto_filled']]
+    or_other_data_types = ['select all that apply or specify other', 'select one or specify other']
+    select_without_list_name = ['select_one', 'select_multiple']
+
+    def __init__(self, xform_str):
+        self.xform_str = xform_str
+        self.xform_dict = XFormToDictBuilder(self.xform_str)
+
+    def _validate_for_uppercase_names(self, field):
+        if filter(lambda x: x.isupper(), field['name']):
+            return _("Uppercase in names not supported")
+        return None
+
+    def _create_question(self, field, parent_field_code=None):
+        question = None
+        errors = []
+        if field['type'] in self.type_dict['group']:
+            question, errors = self._group(field, parent_field_code)
+        elif field['type'] in self.type_dict['field']:
+            question = self._field(field, parent_field_code)
+        elif field['type'] in self.type_dict['select']:
+            question = self._select(field, parent_field_code)
+        elif field['type'] in self.type_dict['media']:
+            question = self._media(field, parent_field_code)
+        return question, errors
+
+    def _create_questions(self, fields, parent_field_code=None):
+        questions = []
+        errors = []
+        for field in fields:
+            if field.get('control', None) and field['control'].get('bodyless', False): #ignore calculate type
+                continue
+            if field['type'] in self.supported_types:
+                try:
+                    question, field_errors = self._create_question(field, parent_field_code)
+
+                    if not field_errors and question:
+                        questions.append(question)
+                    else:
+                        errors.extend(field_errors)
+                except LabelForChoiceNotPresentException as e:
+                    errors.append(e.message)
+                except LabelForFieldNotPresentException as e:
+                    errors.append(e.message)
+        return questions, set(errors)
+
+    def _validate_group(self, errors, field):
+        if field['type'] == 'repeat':
+            try:
+                self._validate_for_nested_repeats(field)
+            except NestedRepeatsNotSupportedException as e:
+                errors.append(e.message)
+        child_errors = self._validate_fields_are_recognised(field['children'])
+        errors.extend(child_errors)
+
+    def _validate_fields_are_recognised(self, fields):
+        errors = []
+        for field in fields:
+            try:
+                self._validate_for_no_language(field)
+            except MultipleLanguagesNotSupportedException as e:
+                errors.append(e.message)
+            if field['type'] in self.recognised_types:
+                if field['type'] in self.type_dict['group']:
+                    self._validate_group(errors, field)
+                #errors.append(self._validate_for_uppercase_names(field))
+                errors.append(self._validate_for_prefetch_csv(field))
+            else:
+                if(field["type"] in self.meta_data_types):
+                    errors.append(_("%s as a datatype (metadata)") % _(field['type']))
+                elif(field["type"]) in self.or_other_data_types:
+                    errors.append(_("XLSForm \"or_other\" function for multiple choice or single choice questions"))
+                elif(field["type"]) in self.select_without_list_name:
+                    errors.append(_("missing list reference, check your select_one or select multiple question types"))
+                else: errors.append(_("%s as a datatype") % _(field['type']))
+            if field.get('media'):
+                for media_type in field['media'].keys():
+                    errors.append(_("attaching media to fields is not supported %s") % media_type)
+        return set(errors) - set([None])
+
+    def _validate_for_nested_repeats(self, field):
+        for f in field["children"]:
+            if f["type"] == "repeat":
+                raise NestedRepeatsNotSupportedException()
+            if f["type"] == "group":
+                self._validate_for_nested_repeats(f)
+
+    def _validate_for_no_language(self, field):
+        for header in ['label','hint']:
+            if self._has_languages(field.get(header)):
+                raise MultipleLanguagesNotSupportedException()
+        field.get("choices") and self._validate_for_no_language(field.get("choices")[0])
+        if field.get('bind') and self._has_languages(field.get('bind').get('jr:constraintMsg')):
+            raise MultipleLanguagesNotSupportedException()
+
+    def _has_languages(self,header):
+        return header and isinstance(header, dict) and len(header) >= 1
+
+    @staticmethod
+    def _get_media_in_choices(choices):
+        for choice in choices:
+            if choice.get('media'):
+                return choice['media'].keys()
+        return []
+
+    def _validate_media_in_choices(self, fields):
+        errors = []
+        for field in fields:
+            if field['type'] in self.type_dict['group']:
+                choice_errors = self._validate_media_in_choices(field['children'])
+                [errors.append(choice_error) for choice_error in choice_errors if choice_error]
+            choices = field.get('choices')
+            if choices:
+                media_type_in_choices = self._get_media_in_choices(choices)
+                for media_type in media_type_in_choices:
+                    errors.append(_("attaching media to choice fields not supported %s") % _(media_type))
+        return errors
+
+    def _validate_choice_names(self, fields):
+        errors = []
+        for field in fields:
+            if field['type'] in self.type_dict['group']:
+                errors.extend(self._validate_choice_names(field['children']))
+            choices = field.get('choices')
+            if choices:
+                name_list = [choice['name'].lower() for choice in choices]
+                name_list_without_duplicates = list(set(name_list))
+                if len(name_list) != len(name_list_without_duplicates):
+                    errors.append(_("duplicate names within one list (choices sheet)"))
+                if filter(lambda name: " " in unicode(name), name_list):
+                    errors.append(_("spaces in name column (choice sheet)"))
+        return errors
+
+    def parse(self):
+        questions, question_errors = self._create_questions(self.xform_dict.children)
+        return questions
+
+    def update_xform_with_questionnaire_name(self, xform):
+        return re.sub(r"<h:title>\w+</h:", "<h:title>%s</h:" % self.questionnaire_name, xform)
+
+    def _get_label(self, field):
+
+        if 'label' not in field:
+            if field['type'] == 'group' and 'control' in field:
+                if field['control']['appearance']=='field-list':
+                    return field['name']
+            elif field['type'] == 'calculate':
+                return field['name']
+            else:
+                raise LabelForFieldNotPresentException(field_name=field['name'])
+
+        if isinstance(field['label'], dict):
+            return field['label'].values()[0]
+        else:
+            return field['label']
+
+    def _group(self, field, parent_field_code=None):
+        group_label = self._get_label(field)
+
+        fieldset_type = 'entity'
+
+        if field['type'] == 'repeat':
+            fieldset_type = 'repeat'
+        elif field['type'] == 'group':
+            fieldset_type = 'group'
+
+        name = field['name']
+        questions, errors = self._create_questions(field['children'], field['name'])
+        question = {
+            'title': group_label,
+            'type': 'field_set',
+            "is_entity_question": False,
+            "code": name, "name": group_label,
+            "required": False,
+            "parent_field_code": parent_field_code,
+            "instruction": "No answer required",
+            "fieldset_type": fieldset_type,
+            "fields": questions
+        }
+        return question, errors
+
+    def _get_date_format(self, field):
+        appearance = self._get_appearance(field)
+        if appearance:
+            if 'month-year' in appearance:
+                return 'mm.yyyy'
+            if 'year' in appearance:
+                return 'yyyy'
+        return 'dd.mm.yyyy'
+
+    def _field(self, field, parent_field_code=None):
+        xform_dw_type_dict = {'geopoint': 'geocode', 'decimal': 'integer', CALCULATE: 'text'}
+        help_dict = {'text': 'word', 'integer': 'number', 'decimal': 'decimal or number', CALCULATE: 'calculated field'}
+        name = self._get_label(field)
+        code = field['name']
+        type = field['type']
+
+        question = {'title': name, 'type': xform_dw_type_dict.get(type, type), "is_entity_question": False,
+                    "code": code, "name": name, 'required': self.is_required(field),
+                    "parent_field_code": parent_field_code,
+                      "instruction": "Answer must be a %s" % help_dict.get(type, type)}  # todo help text need improvement
+        if type == 'date':
+            format = self._get_date_format(field)
+            question.update({'date_format': format, 'event_time_field_flag': False,
+                             "instruction": "Answer must be a date in the following format: day.month.year. Example: 25.12.2011"})
+
+
+        if type == CALCULATE:
+            question.update({"is_calculated": True})
+
+        return question
+
+    def _get_appearance(self,field):
+        if field.get('control') and field['control'].get('appearance'):
+            return field['control']['appearance']
+
+    def _select(self, field, parent_field_code=None):
+        if self._get_appearance(field) == 'label':
+            return
+        name = self._get_label(field)
+        code = field['name']
+        if field.get('choices'):
+            choices = [{'value': {'text': self._get_choice_label(f), 'val': f['name']}} for f in field.get('choices')]
+        else:
+            #cascade select
+            choices = [{'value': {'text': self._get_choice_label(f), 'val': f['name']}} for f in
+                       self.xform_dict['choices'].get(field['itemset'])]
+        question = {"title": name, "code": code, "type": "select", 'required': self.is_required(field),
+                    "parent_field_code": parent_field_code,
+                    "choices": choices, "is_entity_question": False}
+        if field['type'] == 'select one':
+            question.update({"type": "select1"})
+        return question
+
+    def _get_choice_label(self, choice_field):
+        if not choice_field.get('label', None):
+            raise LabelForChoiceNotPresentException(choice_field.get('name', ''))
+
+        return choice_field.get('label')
+
+    def is_required(self, field):
+        if field.get('bind') and 'yes' == str(field['bind'].get('required')).lower():
+            return True
+        return False
+
+    def _media(self, field, parent_field_code=None):
+        name = self._get_label(field)
+        code = field['name']
+        question = {"title": name, "code": code, "type": field['type'], 'required': self.is_required(field),
+                    "parent_field_code": parent_field_code,
+                    "is_entity_question": False}
+        return question
+
+    def _validate_for_prefetch_csv(self, field):
+        if 'bind' in field and 'calculate' in field['bind'] and 'pulldata(' in field['bind']['calculate']:
+            return _("Prefetch of csv not supported")
+        return None
+
+    def _validate_settings_page_is_not_present(self, xform_dict):
+        errors = []
+        setting_page_error = _("XLSForm settings worksheet and the related values in survey sheet.")
+        if xform_dict['title'] != xform_dict['name']:
+            errors.append(setting_page_error)
+
+        if xform_dict['id_string'] != xform_dict['name']:
+            errors.append(setting_page_error)
+
+        if xform_dict['default_language'] != 'default':
+            errors.append(setting_page_error)
+
+        if 'public_key' in xform_dict:
+            errors.append(setting_page_error)
+
+        if 'submission_url' in xform_dict:
+            errors.append(setting_page_error)
+
+        return set(errors)
 
 class MangroveService():
     def __init__(self, user, xform_as_string, json_xform_data, questionnaire_code=None, project_name=None,
-                 xls_form=None):
+                 xls_form=None, created_using=None):
         self.user = user
         user_profile = NGOUserProfile.objects.get(user=self.user)
         self.reporter_id = user_profile.reporter_id
@@ -360,6 +652,7 @@ class MangroveService():
         self.xform_with_form_code = self.add_form_code(xform_as_string, self.questionnaire_code)
         self.json_xform_data = json_xform_data
         self.xls_form = xls_form
+        self.created_using = created_using
 
     def _add_model_sub_element(self, root, name, value):
         generated_id = get_generated_xform_id_name(self.xform)
@@ -388,7 +681,7 @@ class MangroveService():
         questionnaire = create_questionnaire(post=project_json, manager=self.manager, name=self.name,
                                              language=self.language,
                                              reporter_id=self.reporter_id, question_set_json=self.json_xform_data,
-                                             xform=self.xform_with_form_code, created_using = "XLSFORM")
+                                             xform=self.xform_with_form_code, created_using = self.created_using)
 
         if not questionnaire.is_project_name_unique():
             return None,None

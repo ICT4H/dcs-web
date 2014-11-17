@@ -76,6 +76,9 @@ var questionnaireCreationOptionsViewModel = {
             else if(selectedOption == 3){
                 location.hash = 'questionnaire/xlsupload/';
             }
+            else if(selectedOption == 4){
+                location.hash = 'questionnaire/xformDesigner/';
+            }
         }
     };
 
@@ -90,6 +93,8 @@ var questionnaireCreationOptionsViewModel = {
         if(creationOption == 2 && this.selectedTemplateId())
             return true;
         if(creationOption == 3)
+            return true;
+        if(creationOption == 4)
             return true;
         return false;
     }, questionnaireCreationOptionsViewModel);
