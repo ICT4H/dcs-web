@@ -297,12 +297,13 @@ ul
 
 .toolPalette
 {
-    bottom: 1em;
+    bottom: 0em;
     left: 1em;
     user-select: none;
     -moz-user-select: -moz-none;
     -webkit-user-select: none;
     position: absolute;
+    width: 900px;
 }
 .toolPalette h3
 {
@@ -576,12 +577,12 @@ ul
 .propertiesPane
 {
     bottom: 0.5em;
-    padding: 1em;
     overflow-y: auto;
     position: absolute;
-    right:-30em;
+    right:-25em;
     top: 6em;
-    width: 27em;
+    width: 321px;
+    height: 586px;
 }
 
 .propertiesPane .propertyList li

@@ -2097,7 +2097,8 @@ var modalsNS = odkmaker.namespace.load("odkmaker.modals");
             c.find("#loadFile_name").val("")
         },exportDialog: function(c) {
                var post_data = {
-                   'xform': odkmaker.data.serialize()
+                   'xform': odkmaker.data.serialize(),
+                   'file' : JSON.stringify(odkmaker.data.extract())
                };
         var callback = function (response) {
             var redirect_url = '/project/overview/' + response.project_id;

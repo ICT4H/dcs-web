@@ -602,9 +602,11 @@ def create_xform_project(request):
     try:
         if request.method == 'POST':
             xform_as_string = request.POST['xform']
+            odk_format = request.POST['file']
+            json_odk_format = json.loads(odk_format)
             json_xform_data = FormParser(xform_as_string).parse()
             questionnaire_code = generate_questionnaire_code(get_database_manager(request.user))
-            mangrove_service = MangroveService(request.user, xform_as_string, questionnaire_code=questionnaire_code,json_xform_data=json_xform_data, created_using="XFORM-DESIGNER")
+            mangrove_service = MangroveService(request.user, xform_as_string, questionnaire_code=questionnaire_code,json_xform_data=json_xform_data, created_using="XFORM-DESIGNER", project_name=json_odk_format['title'], xls_form=json_odk_format)
             questionnaire_id, form_code = mangrove_service.create_project()
 
     except PyXFormError as e:
