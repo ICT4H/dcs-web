@@ -169,35 +169,25 @@ def get_submission_headers(request):
 @csrf_exempt
 @basicauth_allow_cors()
 def get_server_submissions(request):
-    user = User.objects.get(username='tester150411@gmail.com')
-    # NGOUserProfile.objects.filter(user=user)
-    dbm = get_database_manager(user)
-
-
+    dbm = get_database_manager(request.user)
     form_model = FormModel.get(dbm, request.GET.get('uuid'))
 
     search_parameters = {}
-    # 4934e8e8072d11e4ae2b001c42af7554_your_name
-
     start = int(request.GET.get('start', '0'))
     search_parameters.update({"start_result_number": start})
     length = int(request.GET.get('length', '10'))
-
     search_parameters.update({"number_of_results": length})
     search_parameters.update({"filter":'all'})
-
     search_parameters.update({"sort_field": "date"})
-    search_parameters.update({"order": ""})
-
+    search_parameters.update({"order": "-"})
     search_filters = {"submissionDatePicker":"All Dates", "datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
-
     search_parameters.update({"search_filters": search_filters})
     search_text = search_filters.get("search_text", '')
     search_parameters.update({"search_text": search_text})
 
     submission_query = SubmissionQueryMobile(form_model, search_parameters)
     header_dict = submission_query.get_header_dict()
-    query_count, search_count, submissions = submission_query.paginated_query(user, form_model.id)
+    query_count, search_count, submissions = submission_query.paginated_query(request.user, form_model.id)
 
     return enable_cors(HttpResponse(
         json.dumps(
@@ -209,12 +199,6 @@ def get_server_submissions(request):
                 "search_count": search_count,
                 'length': length
             }), content_type='application/json'))
-# type=all
-# sEcho=8 iColumns=6 sColumns= iDisplayStart=0 iDisplayLength=25 sSearch= bRegex=false sSearch_0= bRegex_0=false bSearchable_0=true
-# sSearch_1= bRegex_1=false bSearchable_1=true sSearch_2= bRegex_2=false bSearchable_2=true sSearch_3= bRegex_3=false bSearchable_3=true
-# sSearch_4= bRegex_4=false bSearchable_4=true sSearch_5= bRegex_5=false bSearchable_5=true iSortingCols=1 iSortCol_0=2 sSortDir_0=desc
-# bSortable_0=false bSortable_1=true bSortable_2=true bSortable_3=true bSortable_4=true bSortable_5=true disable_cache=1404814386137
-# search_filters={"submissionDatePicker":"All Dates","datasenderFilter":"","search_text":"ssdfsdf","dateQuestionFilters":{},"uniqueIdFilters":{}}
 
 @csrf_exempt
 @basicauth_allow_cors()

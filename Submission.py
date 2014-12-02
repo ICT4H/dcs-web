@@ -26,18 +26,13 @@ class SubmissionQueryMobile(Query):
 
     def get_header_dict(self):
         header = HeaderFactory(self.form_model).create_header(self.HEADER_FOR)
-        #{k,v for k1,v1 in header}
 
         return header.get_header_field_dict()
 
     def query(self, database_name):
         query_all_results = self.query_builder.query_all(database_name, self.form_model.id)
-
         # take all headers if nothing selected
-
-        # headers = ["4934e8e8072d11e4ae2b001c42af7554_your_name"]#self.query_params.get('headers')
         headers = HeaderFactory(self.form_model).create_header(self.HEADER_FOR)
-        # submission_headers = header.get_header_field_names()
         submission_headers = headers
         query_by_submission_type = self.query_builder.filter_by_submission_type(query_all_results, self.query_params)
         filtered_query = self.query_builder.add_query_criteria(submission_headers, query_by_submission_type,
