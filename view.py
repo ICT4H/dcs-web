@@ -4,11 +4,11 @@ import logging
 import re
 import json
 from sets import Set
-from IPython.core import magic
 
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+import magic
 from datawinners.dataextraction.helper import convert_date_string_to_UTC
 
 from datawinners.dcs_app.auth import basicauth_allow_cors, response_json_cors, enable_cors
