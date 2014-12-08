@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from django.utils.translation import get_language, ugettext
 
 from datawinners.search.index_utils import es_unique_id_code_field_name, es_questionnaire_field_name
@@ -7,6 +8,7 @@ from datawinners.search.submission_headers import HeaderFactory
 from datawinners.search.submission_index_constants import SubmissionIndexConstants
 from datawinners.search.submission_query import SubmissionQueryBuilder
 from mangrove.form_model.field import FieldSet
+from mangrove.utils.dates import py_datetime_to_js_datestring
 
 
 class SubmissionQueryMobile(Query):
@@ -84,9 +86,12 @@ class SubmissionQueryMobileResponseCreator():
                         if error_msg.find('| |') != -1:
                             error_msg = error_msg.split('| |,')[['en', 'fr'].index(language)]
                         submission[key] = error_msg
+                    elif key == "date":
+                        created_date_time = datetime.strptime(res.get(key), '%b. %d, %Y, %I:%M %p')
+                        submission[key.split('_', 1)[-1]] = py_datetime_to_js_datestring(created_date_time)
                     elif key in fieldset_fields.keys():
                         submission[key.split('_', 1)[-1]] = json.loads(res.get(key))
                     else:
-                        submission[key.split('_', 1)[-1]] = res.get(ugettext(key))
+                        submission[key.split('_', 1)[-1]] = res.get(key)
             submissions.append(submission)
         return submissions
