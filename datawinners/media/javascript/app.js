@@ -34084,7 +34084,6 @@ define( 'enketo-widget/file/filepicker',[ 'jquery', 'enketo-js/Widget', 'file-ma
         // show loaded file name regardless of whether widget is supported
         if ( existingFileName ) {
             this._showFileName( existingFileName, this.mediaType );
-            $input.removeAttr( 'data-loaded-file-name' );
         }
 
         if ( !fileManager || !fileManager.isSupported() ) {
@@ -34137,6 +34136,7 @@ define( 'enketo-widget/file/filepicker',[ 'jquery', 'enketo-js/Widget', 'file-ma
 
             // get the file
             file = this.files[ 0 ];
+            $input.removeAttr( 'data-loaded-file-name' );
 
             // process the file
             fileManager.getFileUrl( file )
