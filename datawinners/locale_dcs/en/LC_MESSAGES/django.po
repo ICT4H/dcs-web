@@ -50,3 +50,6 @@ msgstr "If you need help contact your project manager or send us an Email at <a 
 
 msgid "View and manage the users of your DataWinners account."
 msgstr "View and manage the users of your Garner account."
+
+msgid "To get started with DataWinners"
+msgstr "To get started with Garner"
