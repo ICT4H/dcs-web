@@ -476,6 +476,8 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
 
     def get_submission(self, submission_uuid):
         submission = get_survey_response_by_id(self.manager, submission_uuid)
+        if not submission:
+            return
         imageProcessor = XFormImageProcessor()
 
         return {'submission_uuid': submission.id,
