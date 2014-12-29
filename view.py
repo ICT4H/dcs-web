@@ -8,6 +8,7 @@ from sets import Set
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django_digest.decorators import httpdigest
 import magic
 from datawinners.dataextraction.helper import convert_date_string_to_UTC
 
@@ -18,6 +19,7 @@ from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHand
 from datawinners.dcs_app.Submission import SubmissionQueryMobile
 from datawinners.main.database import get_database_manager
 from datawinners.search.submission_headers import HeaderFactory
+from mangrove.errors.MangroveException import DataObjectNotFound
 from mangrove.form_model.form_model import FormModel
 from mangrove.transport.player.new_players import XFormPlayerV2
 
@@ -25,11 +27,16 @@ logger = logging.getLogger("datawinners.xlfrom.client")
 
 @csrf_exempt
 @basicauth_allow_cors()
-def get_questions(request):
+def get_questions_paginated_or_by_ids(request):
+    manager = get_database_manager(request.user)
     start = int(request.GET.get('start', '0'))
     length = int(request.GET.get('length', '10'))
+    ids = request.GET.getlist('id')
 
-    manager =  get_database_manager(request.user)
+    if ids:
+        projects = [_project_details(manager, project_id) for project_id in ids]
+        projects = list(filter(lambda x: x != None, projects))
+        return response_json_cors(projects)
 
     project_list = []
     rows = manager.load_all_rows_in_view('all_projects', descending=True)
@@ -43,6 +50,17 @@ def get_questions(request):
                                "total":len(project_list),
                                "start":start,
                                "length":length})
+
+def _project_details(manager, project_uuid):
+    try:
+        questionnaire = FormModel.get(manager, project_uuid)
+        return dict(name=questionnaire.name,
+            project_uuid=questionnaire.id,
+            version=questionnaire._doc.rev,
+            created=questionnaire.created.strftime("%d-%m-%Y"),
+            xform=re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()))
+    except DataObjectNotFound:
+        return
 
 @csrf_exempt
 @basicauth_allow_cors()
@@ -101,8 +119,15 @@ def check_submissions_status(request, project_uuid):
 
 @csrf_exempt
 @basicauth_allow_cors()
-def all_submissions_or_new(request, project_uuid):
+def all_submissions_or_by_ids_get_or_new_post(request, project_uuid):
     if request.method == 'GET':
+        ids = request.GET.getlist('id')
+        if ids:
+            survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
+            submissions = [get_submission_details(survey_request, submission_uuid) for submission_uuid in ids]
+            submissions = filter(lambda x: x!= None, submissions)
+            return response_json_cors(submissions)
+
         survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
         content = survey_request.get_submissions()
         return response_json_cors(content)
@@ -116,6 +141,9 @@ def all_submissions_or_new(request, project_uuid):
         except Exception as e:
             logger.exception("Exception in submission : \n%s" % e)
             return HttpResponseBadRequest()
+
+def get_submission_details(survey_request, submission_uuid):
+    return survey_request.get_submission(submission_uuid)
 
 def get_form_code_from_xform(xform):
     return re.search('<form_code>(.+?)</form_code>', xform).group(1)
