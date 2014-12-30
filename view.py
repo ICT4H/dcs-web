@@ -5,23 +5,20 @@ import re
 import json
 from sets import Set
 
-from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django_digest.decorators import httpdigest
 import magic
-from datawinners.dataextraction.helper import convert_date_string_to_UTC
 
+from datawinners.dataextraction.helper import convert_date_string_to_UTC
 from datawinners.dcs_app.auth import basicauth_allow_cors, response_json_cors, enable_cors
 from datawinners.blue.view import SurveyWebXformQuestionnaireRequest, logger
 from datawinners.blue.xform_bridge import XFormTransformer, XFormSubmissionProcessor
 from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler
-from datawinners.dcs_app.Submission import SubmissionQueryMobile
 from datawinners.main.database import get_database_manager
-from datawinners.search.submission_headers import HeaderFactory
 from mangrove.errors.MangroveException import DataObjectNotFound
 from mangrove.form_model.form_model import FormModel
 from mangrove.transport.player.new_players import XFormPlayerV2
+
 
 logger = logging.getLogger("datawinners.xlfrom.client")
 
@@ -31,7 +28,7 @@ def get_questions_paginated_or_by_ids(request):
     manager = get_database_manager(request.user)
     start = int(request.GET.get('start', '0'))
     length = int(request.GET.get('length', '10'))
-    ids = request.GET.getlist('id')
+    ids = request.GET.getlist('ids')
 
     if ids:
         projects = [_project_details(manager, project_id) for project_id in ids]
@@ -69,27 +66,6 @@ def authenticate_user(request):
 
 @csrf_exempt
 @basicauth_allow_cors()
-def get_question(request, project_uuid):
-    manager = get_database_manager(request.user)
-    questionnaire = FormModel.get(manager, project_uuid)
-    headers = HeaderFactory(questionnaire).create_header("mobile", False).get_header_dict()
-
-    project_temp = dict(name=questionnaire.name,
-                        project_uuid=questionnaire.id,
-                        version=questionnaire._doc.rev,
-                        headers=json.dumps(headers),
-                        created=questionnaire.created.strftime("%d-%m-%Y"),
-                        xform=re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()))
-    return response_json_cors(project_temp)
-
-'''
-id_version_dict={"12e3ed8a10af11e4b876001c42af7554":"1-4fbac7d730599bb9f9cea0bb6511e56d", "1b71e0bc130011e49e57001c42af7554": "3-6cfb65f3deaaadda8c8b36409efbd15d"}
-
-
-{"ids_not_found": [], "insync_ids": ["12e3ed8a10af11e4b876001c42af7554", "1b71e0bc130011e49e57001c42af7554"], "outdated_ids": []}
-'''
-@csrf_exempt
-@basicauth_allow_cors()
 def check_submissions_status(request, project_uuid):
     req_id_version_dict = json.loads(request.POST['id_version_dict'])
     outdated_ids = []
@@ -121,16 +97,16 @@ def check_submissions_status(request, project_uuid):
 @basicauth_allow_cors()
 def all_submissions_or_by_ids_get_or_new_post(request, project_uuid):
     if request.method == 'GET':
-        ids = request.GET.getlist('id')
+        ids = request.GET.getlist('ids')
         if ids:
             survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
             submissions = [get_submission_details(survey_request, submission_uuid) for submission_uuid in ids]
             submissions = filter(lambda x: x!= None, submissions)
             return response_json_cors(submissions)
-
-        survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
-        content = survey_request.get_submissions()
-        return response_json_cors(content)
+        else:
+            survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
+            slim_submissions = survey_request.get_submissions()
+            return response_json_cors(slim_submissions)
 
     elif request.method == 'POST':
         try:
@@ -151,12 +127,8 @@ def get_form_code_from_xform(xform):
 
 @csrf_exempt
 @basicauth_allow_cors()
-def submission_get_or_update(request, project_uuid, submission_uuid):
-    if request.method == 'GET':
-        survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
-        content = survey_request.get_submission(submission_uuid)
-        return response_json_cors(content)
-    elif request.method == 'POST':
+def submission_update(request, project_uuid, submission_uuid):
+    if request.method == 'POST':
         try:
             form_code = get_form_code_from_xform(request.POST['form_data']);
             response = XFormWebSubmissionHandler(request=request, form_code=form_code).\
@@ -180,70 +152,22 @@ def submit_submission(request):
         logger.exception("Exception in submission : \n%s" % e)
         return HttpResponseBadRequest()
 
-def get_submission_headers(request):
-    user = User.objects.get(username='tester150411@gmail.com')
-    # NGOUserProfile.objects.filter(user=user)
-    dbm = get_database_manager(user)
-
-    form_model = FormModel.get(dbm, request.GET.get('uuid'))
-
-    # {"submissionDatePicker":"All Dates","datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
-    headers = SubmissionQueryMobile(form_model, query_params=None).get_header_dict()
-
-    return response_json_cors({
-                'data': headers
-            })
-
-@csrf_exempt
-@basicauth_allow_cors()
-def get_server_submissions(request):
-    dbm = get_database_manager(request.user)
-    form_model = FormModel.get(dbm, request.GET.get('uuid'))
-
-    search_parameters = {}
-    start = int(request.GET.get('start', '0'))
-    search_parameters.update({"start_result_number": start})
-    length = int(request.GET.get('length', '10'))
-    search_parameters.update({"number_of_results": length})
-    search_parameters.update({"filter":'all'})
-    search_parameters.update({"sort_field": "date"})
-    search_parameters.update({"order": "-"})
-    search_filters = {"submissionDatePicker":"All Dates", "datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
-    search_parameters.update({"search_filters": search_filters})
-    search_text = search_filters.get("search_text", '')
-    search_parameters.update({"search_text": search_text})
-
-    submission_query = SubmissionQueryMobile(form_model, search_parameters)
-    header_dict = submission_query.get_header_dict()
-    query_count, search_count, submissions = submission_query.paginated_query(request.user, form_model.id)
-
-    return enable_cors(HttpResponse(
-        json.dumps(
-            {
-                'data': submissions,
-                'headers': header_dict.values(),
-                'total': query_count,
-                'start': start,
-                "search_count": search_count,
-                'length': length
-            }), content_type='application/json'))
-
 @csrf_exempt
 @basicauth_allow_cors()
 def get_projects_status(request):
-    outdated_projects = []
+    conflicted_projects = []
     manager =  get_database_manager(request.user)
     client_projects = json.loads(request.POST['projects'])
 
     for client_project in client_projects:
         try:
             server_project = FormModel.get(manager, client_project['id'])
-        except Exception as e:
-            outdated_projects.append({'id': client_project['id'], 'status': 'server-deleted'})
-            continue
-        if server_project.revision != client_project['rev']:
-            outdated_projects.append({'id': server_project.id, 'status': 'outdated'})
-    return response_json_cors(outdated_projects)
+            if server_project.revision != client_project['rev']:
+                conflicted_projects.append({'id': server_project.id, 'status': 'outdated'})
+        except Exception:
+            conflicted_projects.append({'id': client_project['id'], 'status': 'server-deleted'})
+
+    return response_json_cors(conflicted_projects)
 
 @csrf_exempt
 @basicauth_allow_cors()
@@ -264,7 +188,7 @@ def attachment_get(request, survey_response_id, file_name):
 
 @csrf_exempt
 @basicauth_allow_cors()
-def get_delta_submission(request):
+def get_delta_submission(request, project_uuid):
     survey_request = SurveyWebXformQuestionnaireRequest(request, request.GET.get('uuid'), XFormSubmissionProcessor())
     to_time = convert_date_string_to_UTC(datetime.now().strftime("%d-%m-%Y"), datetime.now().time().strftime("%H:%M:%S"))
     from_time = convert_date_string_to_UTC(request.GET.get('last_fetch'))
