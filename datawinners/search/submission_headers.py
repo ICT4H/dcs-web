@@ -6,7 +6,7 @@ from django.utils.translation import ugettext
 from datawinners.search.index_utils import es_unique_id_code_field_name, es_questionnaire_field_name
 from datawinners.search.submission_index_constants import SubmissionIndexConstants
 from datawinners.utils import translate
-from mangrove.form_model.form_model import header_fields, _header_fields_for_mobile, header_fields_for_mobile
+from mangrove.form_model.form_model import header_fields
 
 
 class SubmissionHeader():
