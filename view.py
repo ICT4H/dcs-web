@@ -104,8 +104,11 @@ def all_submissions_or_by_ids_get_or_new_post(request, project_uuid):
             submissions = filter(lambda x: x!= None, submissions)
             return response_json_cors(submissions)
         else:
+            start = int(request.GET.get('start', '0'))
+            page_size = int(request.GET.get('length', '10'))
+            page = start if start == 0 else start / page_size
             survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
-            slim_submissions = survey_request.get_submissions()
+            slim_submissions = survey_request.get_submissions(page, page_size)
             return response_json_cors(slim_submissions)
 
     elif request.method == 'POST':
