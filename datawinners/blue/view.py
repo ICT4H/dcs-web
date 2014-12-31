@@ -444,10 +444,10 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
         html += '</ul>'
         return html
 
-    def get_submissions(self):
+    def get_submissions(self, start, length):
         submission_list = []
         submissions = get_survey_responses(self.manager, self.questionnaire.id, None, None,
-                                           view_name="undeleted_survey_response")
+                                           view_name="undeleted_survey_response", page_number=start, page_size=length)
         for submission in submissions:
             submission_list.append({'submission_uuid': submission.id,
                                     'version': submission.version,
