@@ -9,12 +9,17 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpRespon
 from django.views.decorators.csrf import csrf_exempt
 import magic
 
+from datawinners.project.submission.submission_search import get_submissions_paginated, get_submission_count, \
+    get_submissions_without_user_filters_count
+from datawinners.accountmanagement.localized_time import get_country_time_delta
 from datawinners.dataextraction.helper import convert_date_string_to_UTC
 from datawinners.dcs_app.auth import basicauth_allow_cors, response_json_cors, enable_cors
 from datawinners.blue.view import SurveyWebXformQuestionnaireRequest, logger
 from datawinners.blue.xform_bridge import XFormTransformer, XFormSubmissionProcessor
 from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler
 from datawinners.main.database import get_database_manager
+from datawinners.search.submission_query import SubmissionQueryResponseCreator
+from datawinners.utils import get_organization
 from mangrove.errors.MangroveException import DataObjectNotFound
 from mangrove.form_model.form_model import FormModel
 from mangrove.transport.player.new_players import XFormPlayerV2
@@ -106,9 +111,8 @@ def all_submissions_or_by_ids_get_or_new_post(request, project_uuid):
         else:
             start = int(request.GET.get('start', '0'))
             page_size = int(request.GET.get('length', '10'))
-            page = start if start == 0 else start / page_size
             survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
-            slim_submissions = survey_request.get_submissions(page, page_size)
+            total_count, slim_submissions = survey_request.get_submissions(start, page_size)
             return response_json_cors(slim_submissions)
 
     elif request.method == 'POST':
@@ -199,3 +203,44 @@ def get_delta_submission(request, project_uuid):
 
     return response_json_cors({'submissions':content,
                                'last_fetch': datetime.now().strftime("%d-%m-%Y")})
+
+@csrf_exempt
+@basicauth_allow_cors()
+def get_server_submissions(request):
+    dbm = get_database_manager(request.user)
+    form_model = FormModel.get(dbm, request.GET.get('uuid'))
+
+    search_parameters = {}
+    start = int(request.GET.get('start', '0'))
+    search_parameters.update({"start_result_number": start})
+    length = int(request.GET.get('length', '10'))
+    search_parameters.update({"number_of_results": length})
+    search_parameters.update({"filter":'all'})
+    search_parameters.update({"headers_for":'mobile'})
+    search_parameters.update({'response_fields': ['ds_id', 'ds_name', 'date', 'status']})
+
+    search_parameters.update({"sort_field": "date"})
+    search_parameters.update({"order": "-"})
+    search_filters = {"submissionDatePicker":"All Dates", "datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
+    search_parameters.update({"search_filters": search_filters})
+    search_text = search_filters.get("search_text", '')
+    search_parameters.update({"search_text": search_text})
+
+    organization = get_organization(request)
+    local_time_delta = get_country_time_delta(organization.country)
+    search_results, query_fields = get_submissions_paginated(dbm, form_model, search_parameters, local_time_delta)
+    submission_count_with_filters = get_submission_count(dbm, form_model, search_parameters, local_time_delta)
+    submission_count_without_filters = get_submissions_without_user_filters_count(dbm, form_model, search_parameters)
+    submissions = SubmissionQueryResponseCreator(form_model, local_time_delta).create_response(query_fields,
+                                                                                               search_results)
+
+    return enable_cors(HttpResponse(
+        json.dumps(
+            {
+                'data': submissions,
+                'headers': '',
+                'total': submission_count_without_filters,
+                'start': start,
+                "search_count": submission_count_with_filters,
+                'length': length
+            }), content_type='application/json'))
