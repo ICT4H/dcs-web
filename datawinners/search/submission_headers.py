@@ -108,14 +108,13 @@ class SuccessSubmissionHeader(SubmissionHeader):
 
 
 class MobileSubmissionHeader(SubmissionHeader):
-    def update_static_header_info(self):
-        header_dict = OrderedDict()
-        header_dict.update({SubmissionIndexConstants.DATASENDER_NAME_KEY: "Data Sender"})
-        header_dict.update({"date": "Submission Date"})
-        return header_dict
 
-    def get_header_fields(self, key_attribute):
-        return header_fields_for_mobile(self.form_model, key_attribute)
+    def get_header_dict(self):
+        header_dict = OrderedDict()
+        header_dict.update({SubmissionIndexConstants.DATASENDER_ID_KEY: translate("Datasender Id", self.language, ugettext)})
+        header_dict.update({SubmissionIndexConstants.DATASENDER_NAME_KEY: translate("Data Sender", self.language, ugettext)})
+        header_dict.update({"date": translate("Submission Date", self.language, ugettext)})
+        return header_dict
 
 
 class ErroredSubmissionHeader(SubmissionHeader):

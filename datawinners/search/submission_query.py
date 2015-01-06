@@ -78,7 +78,7 @@ class SubmissionQueryResponseCreator(object):
                                                  entity_name=res.get(key), submission=submission)
                     elif key == SubmissionIndexConstants.DATASENDER_NAME_KEY:
                         self._populate_datasender(res, submission)
-                    elif key == 'status':
+                    elif key == 'status' and res.get(key):
                         submission.append(ugettext(res.get(key)))
                     elif key == SubmissionIndexConstants.SUBMISSION_DATE_KEY:
                         self._convert_to_localized_date_time(key, res, submission)
