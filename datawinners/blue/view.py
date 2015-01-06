@@ -19,14 +19,11 @@ from django.views.generic.base import View
 from django.template.defaultfilters import slugify
 from pyxform.errors import PyXFormError
 from django.core.mail import EmailMessage
-from datawinners import settings
-    get_generated_xform_id_name, XFormImageProcessor
 from django.utils.translation import ugettext as _
 
 from datawinners import settings
 from datawinners.blue.xform_bridge import MangroveService, XlsFormParser, XFormTransformer, XFormSubmissionProcessor, \
     get_generated_xform_id_name, XFormImageProcessor
-from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler
 from datawinners.accountmanagement.models import Organization
 from datawinners.blue.error_translation_utils import transform_error_message, translate_odk_message
 from datawinners.project.public_project_guest_handler import GuestSubmission, InvalidLinkException, SubmissionTakenError, AnonymousSubmission
@@ -45,9 +42,8 @@ from datawinners.project.views.views import SurveyWebQuestionnaireRequest
 from datawinners.questionnaire.questionnaire_builder import QuestionnaireBuilder
 from mangrove.form_model.form_model import get_form_model_by_code
 from mangrove.form_model.project import Project
-
 from mangrove.transport.repository.survey_responses import get_survey_response_by_id, get_survey_responses, \
-    survey_responses_by_form_model_id
+    survey_responses_by_form_model_id, get_view_paginated
 from mangrove.utils.dates import py_datetime_to_js_datestring
 
 
@@ -449,15 +445,15 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
 
     def get_submissions(self, start, length):
         submission_list = []
-        submissions = get_survey_responses(self.manager, self.questionnaire.id, None, None,
-                                           view_name="undeleted_survey_response", page_number=start, page_size=length)
+
+        total_count, submissions = get_view_paginated(self.manager, self.questionnaire.id, skip_records=start, page_size=length)
         for submission in submissions:
             submission_list.append({'submission_uuid': submission.id,
                                     'version': submission.version,
                                     'project_uuid': self.questionnaire.id,
                                     'created': py_datetime_to_js_datestring(submission.created)
             })
-        return submission_list
+        return total_count, submission_list
 
     def get_submission_from(self, from_time, to_time):
         submission_list = []
