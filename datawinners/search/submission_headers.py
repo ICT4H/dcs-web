@@ -6,7 +6,7 @@ from django.utils.translation import ugettext
 from datawinners.search.index_utils import es_unique_id_code_field_name, es_questionnaire_field_name
 from datawinners.search.submission_index_constants import SubmissionIndexConstants
 from datawinners.utils import translate
-from mangrove.form_model.form_model import header_fields
+from mangrove.form_model.form_model import header_fields, header_fields_for_mobile
 
 
 class SubmissionHeader():
@@ -108,15 +108,16 @@ class SuccessSubmissionHeader(SubmissionHeader):
 
 
 class MobileSubmissionHeader(SubmissionHeader):
-    def update_static_header_info(self):
+
+    def get_header_dict(self):
         header_dict = OrderedDict()
-        header_dict.update({SubmissionIndexConstants.DATASENDER_NAME_KEY: "Data Sender"})
-        header_dict.update({"date": "Submission Date"})
+        header_dict.update({SubmissionIndexConstants.DATASENDER_ID_KEY: translate("Datasender Id", self.language, ugettext)})
+        header_dict.update({SubmissionIndexConstants.DATASENDER_NAME_KEY: translate("Data Sender", self.language, ugettext)})
+        header_dict.update({"date": translate("Submission Date", self.language, ugettext)})
         return header_dict
 
     def get_header_fields(self, key_attribute):
         return header_fields_for_mobile(self.form_model, key_attribute)
-
 
 class ErroredSubmissionHeader(SubmissionHeader):
     def update_static_header_info(self):
