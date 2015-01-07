@@ -12,8 +12,8 @@ urlpatterns = patterns('',
     url(r'^client/projects/$', get_questions_paginated_or_by_ids),
     url(r'^client/project_status/$', get_projects_status),
 
+    url(r'^client/projects/(?P<project_uuid>\w+?)/submissions/(?P<submission_uuid>\w+?)/$', submission_update),
     url(r'^client/projects/(?P<project_uuid>\w+?)/submissions/', all_submissions_or_by_ids_get_or_new_post),
-    url(r'^client/projects/(?P<project_uuid>\w+?)/submissions/(?P<submission_uuid>\w+?)$', submission_update),
     url(r'^client/projects/(?P<project_uuid>\w+?)/submission_status/$', check_submissions_status),
 
     url(r'^client/auth/$', authenticate_user),
