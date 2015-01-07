@@ -135,7 +135,11 @@ def get_form_code_from_xform(xform):
 @csrf_exempt
 @basicauth_allow_cors()
 def submission_update(request, project_uuid, submission_uuid):
-    if request.method == 'POST':
+    if request.method == 'GET':
+        survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
+        content = survey_request.get_submission(submission_uuid)
+        return response_json_cors(content)
+    elif request.method == 'POST':
         try:
             form_code = get_form_code_from_xform(request.POST['form_data']);
             response = XFormWebSubmissionHandler(request=request, form_code=form_code).\
