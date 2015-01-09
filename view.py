@@ -105,8 +105,7 @@ def all_submissions_or_by_ids_get_or_new_post(request, project_uuid):
         ids = request.GET.getlist('ids')
         if ids:
             survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
-            submissions = [get_submission_details(survey_request, submission_uuid) for submission_uuid in ids]
-            submissions = filter(lambda x: x!= None, submissions)
+            submissions = survey_request.get_many_submissions(ids)
             return response_json_cors(submissions)
         else:
             start = int(request.GET.get('start', '0'))
@@ -124,9 +123,6 @@ def all_submissions_or_by_ids_get_or_new_post(request, project_uuid):
         except Exception as e:
             logger.exception("Exception in submission : \n%s" % e)
             return HttpResponseBadRequest()
-
-def get_submission_details(survey_request, submission_uuid):
-    return survey_request.get_submission(submission_uuid)
 
 def get_form_code_from_xform(xform):
     return re.search('<form_code>(.+?)</form_code>', xform).group(1)
@@ -208,43 +204,62 @@ def get_delta_submission(request, project_uuid):
     return response_json_cors({'submissions':content,
                                'last_fetch': datetime.now().strftime("%d-%m-%Y")})
 
-@csrf_exempt
-@basicauth_allow_cors()
-def get_server_submissions(request):
+
+def _get_slim_submission_paginated(request):
     dbm = get_database_manager(request.user)
     form_model = FormModel.get(dbm, request.GET.get('uuid'))
-
-    search_parameters = {}
-    start = int(request.GET.get('start', '0'))
-    search_parameters.update({"start_result_number": start})
     length = int(request.GET.get('length', '10'))
+    start = int(request.GET.get('start', '0'))
+    search_parameters = {}
+    search_parameters.update({"start_result_number": start})
     search_parameters.update({"number_of_results": length})
-    search_parameters.update({"filter":'all'})
-    search_parameters.update({"headers_for":'mobile'})
+    search_parameters.update({"filter": 'all'})
+    search_parameters.update({"headers_for": 'mobile'})
     search_parameters.update({'response_fields': ['ds_id', 'ds_name', 'date', 'status']})
-
     search_parameters.update({"sort_field": "date"})
     search_parameters.update({"order": "-"})
-    search_filters = {"submissionDatePicker":"All Dates", "datasenderFilter":"","search_text":"","dateQuestionFilters":{},"uniqueIdFilters":{}}
+    search_filters = {"submissionDatePicker": "All Dates", "datasenderFilter": "", "search_text": "",
+                      "dateQuestionFilters": {}, "uniqueIdFilters": {}}
     search_parameters.update({"search_filters": search_filters})
     search_text = search_filters.get("search_text", '')
     search_parameters.update({"search_text": search_text})
-
     organization = get_organization(request)
     local_time_delta = get_country_time_delta(organization.country)
     search_results, query_fields = get_submissions_paginated(dbm, form_model, search_parameters, local_time_delta)
     submission_count_with_filters = get_submission_count(dbm, form_model, search_parameters, local_time_delta)
     submission_count_without_filters = get_submissions_without_user_filters_count(dbm, form_model, search_parameters)
-    submissions = SubmissionQueryResponseCreator(form_model, local_time_delta).create_response(query_fields,
-                                                                                               search_results)
+    submissions = SubmissionQueryResponseCreator(form_model, local_time_delta) \
+        .create_response(query_fields, search_results)
+    return {
+        'data': submissions,
+        'headers': '',
+        'total': submission_count_without_filters,
+        'start': start,
+        "search_count": submission_count_with_filters,
+        'length': length
+    }
 
+def _get_slim_submissions(request):
     return enable_cors(HttpResponse(
-        json.dumps(
-            {
-                'data': submissions,
-                'headers': '',
-                'total': submission_count_without_filters,
-                'start': start,
-                "search_count": submission_count_with_filters,
-                'length': length
-            }), content_type='application/json'))
+        json.dumps(_get_slim_submission_paginated(request)),
+                    content_type='application/json'))
+
+@csrf_exempt
+@basicauth_allow_cors()
+def get_server_submissions(request):
+    if request.method == 'GET':
+        is_full_submission_requested = request.GET.get('view') and request.GET.get('view') == 'full'
+        if is_full_submission_requested:
+            return _get_full_submissions_paginated(request, request.GET.get('uuid'))
+        else:
+            return _get_slim_submissions(request)
+
+def _get_full_submissions_paginated(request, project_uuid):
+    slim_submission_paginated = _get_slim_submission_paginated(request)
+    ID_INDEX = 0
+    submission_ids = [slim_submission[ID_INDEX] for slim_submission in slim_submission_paginated['data']]
+    survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
+    submissions_response = survey_request.get_many_submissions(submission_ids)
+    submissions_response_paginated = slim_submission_paginated
+    submissions_response_paginated.update({'data': submissions_response})
+    return response_json_cors(submissions_response_paginated)
