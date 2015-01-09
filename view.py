@@ -233,9 +233,9 @@ def _get_slim_submission_paginated(request):
     return {
         'data': submissions,
         'headers': '',
-        'total': submission_count_without_filters,
+        'total': submission_count_with_filters,
         'start': start,
-        "search_count": submission_count_with_filters,
+        "search_count": len(submissions),
         'length': length
     }
 
