@@ -43,7 +43,7 @@ from datawinners.questionnaire.questionnaire_builder import QuestionnaireBuilder
 from mangrove.form_model.form_model import get_form_model_by_code
 from mangrove.form_model.project import Project
 from mangrove.transport.repository.survey_responses import get_survey_response_by_id, get_survey_responses, \
-    survey_responses_by_form_model_id, get_view_paginated
+    survey_responses_by_form_model_id, get_view_paginated, get_many_survey_response_by_ids
 from mangrove.utils.dates import py_datetime_to_js_datestring
 
 
@@ -491,18 +491,23 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
         submission = get_survey_response_by_id(self.manager, submission_uuid)
         if not submission:
             return
-        imageProcessor = XFormImageProcessor()
 
-        return {'submission_uuid': submission.id,
-                'version': submission.version,
-                'project_uuid': self.questionnaire.id,
-                'created': py_datetime_to_js_datestring(submission.created),
-                'media_file_names_string': imageProcessor
-                    .get_media_files_str(self.questionnaire.fields, submission.values),
+        return self._create_submission_response(submission)
+
+    def _create_submission_response(self, submission):
+        media_file_names = XFormImageProcessor().get_media_files_str(self.questionnaire.fields, submission.values)
+        return {'submission_uuid': submission.id, 'version': submission.version,
+                'project_uuid': self.questionnaire.id, 'created': py_datetime_to_js_datestring(submission.created),
+                'media_file_names_string': media_file_names,
                 'xml': self._model_str_of(submission.id, get_generated_xform_id_name(self.questionnaire.xform)),
-                'data': json.dumps(submission.values)
-        }
+                'data': json.dumps(submission.values)}
 
+    def get_many_submissions(self, submission_uuids):
+        submissions = get_many_survey_response_by_ids(self.manager, submission_uuids)
+        if not submissions:
+            return
+
+        return [self._create_submission_response(submission) for submission in submissions]
 
 @csrf_exempt
 def new_xform_submission_post(request):
