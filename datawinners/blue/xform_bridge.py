@@ -449,25 +449,27 @@ class MangroveService():
         self.json_xform_data = xls_parser_response.json_xform_data
         self.xls_form = xls_form
 
-    def _add_model_sub_element(self, root, name, value):
+    def _add_form_code_to_model_node(self, root, value):
         generated_id = get_generated_xform_id_name(self.xform)
-        model = '{http://www.w3.org/2002/xforms}%s' % generated_id
-        [self._add(r, name, value) for r in root.iter(model)]
+        model_node = '{http://www.w3.org/2002/xforms}%s' % generated_id
+        [self._add_form_code_to_instance_node(r, value) for r in root.iter(model_node)]
 
-        node_set = '/%s/%s' % (generated_id, name)
+        node_set = '/%s/%s' % (generated_id, 'form_code')
+        self._add_bind_to_model_node(node_set, root)
+
+    def _add_form_code_to_instance_node(self, instance, value):
+        e = ET.SubElement(instance, '{http://www.w3.org/2002/xforms}form_code')
+        e.text = value
+
+    def _add_bind_to_model_node(self, node_set, root):
         [ET.SubElement(r, '{http://www.w3.org/2002/xforms}bind', {'nodeset': node_set, 'type': "string"}) for r in
          root.getiterator() if
          r.tag == '{http://www.w3.org/2002/xforms}model']
 
-    def _add(self, instance, name, value):
-        e = ET.SubElement(instance, '{http://www.w3.org/2002/xforms}%s' % name)
-        e.text = value
-        return e
-
     def add_form_code(self, form_code):
         ET.register_namespace('', 'http://www.w3.org/2002/xforms')
         root = ET.fromstring(self.xform.encode('utf-8'))
-        self._add_model_sub_element(root, 'form_code', form_code)
+        self._add_form_code_to_model_node(root, form_code)
         return '<?xml version="1.0"?>%s' % ET.tostring(root)
 
     def create_project(self):
