@@ -21,6 +21,7 @@ from datawinners.search.submission_query import SubmissionQueryResponseCreator
 from datawinners.utils import get_organization
 from mangrove.errors.MangroveException import DataObjectNotFound
 from mangrove.form_model.form_model import FormModel
+from mangrove.form_model.project import Project
 from mangrove.transport.player.new_players import XFormPlayerV2
 
 
@@ -54,14 +55,29 @@ def get_questions_paginated_or_by_ids(request):
 
 def _project_details(manager, project_uuid):
     try:
-        questionnaire = FormModel.get(manager, project_uuid)
-        return dict(name=questionnaire.name,
-            project_uuid=questionnaire.id,
-            version=questionnaire._doc.rev,
-            created=questionnaire.created.strftime("%d-%m-%Y"),
-            xform=re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()))
+        project = Project.get(manager, project_uuid)
+        project_response = dict(name=project.name, project_uuid=project.id, version=project._doc.rev,
+                                created=project.created.strftime("%d-%m-%Y"),
+                                xform=re.sub(r"\n", " ", XFormTransformer(project.xform).transform()))
+        _update_response_with_relation(project, project_response)
+        return project_response
     except DataObjectNotFound:
+        #TODO raise not found exception or some mechanism to propagate this above
         return
+
+def _update_response_with_relation(project, project_response):
+    if project.is_child_project:
+        project_response.update({'project_type': 'child',
+                'parent_info':{'action_label': project.parent_info.get('action_label'),
+                               'parent_field_codes': ','.join(project.parent_info.get('parent_field_codes', []))},
+                'child_ids':''})
+
+    elif project.is_parent_project:
+        project_response.update({'project_type': 'parent',
+                'child_ids': project.child_ids,
+                'parent_info':{'action_label':'', 'parent_field_codes': ''}})
+    else:
+        project_response.update({'project_type': 'none', 'parent_info':{'action_label':'', 'parent_field_codes': ''}, 'child_ids':''})
 
 @csrf_exempt
 @basicauth_allow_cors()
