@@ -1,0 +1,86 @@
+import os
+import unittest
+
+from django.contrib.auth.models import User
+import time
+from datawinners.alldata.helper import get_all_project_for_user
+from datawinners.alldata.views import get_project_list
+from datawinners.blue.correlated_xlxform import CorrelatedForms, NoCommonFieldsException
+
+from datawinners.blue.xform_bridge import XlsFormParser, MangroveService
+from datawinners.main.database import get_database_manager
+from datawinners.project import helper
+from mangrove.form_model.project import Project
+
+
+DIR = os.path.dirname(__file__)
+
+class TestCorrelatedXlsForms(unittest.TestCase):
+
+    def setUp(self):
+        self.test_data = os.path.join(DIR, 'testdata')
+        self.REPAYMENT = os.path.join(self.test_data, 'repayment.xls')
+        self.LOAN_ACCOUNT = os.path.join(self.test_data, 'loan-account.xls')
+        self.NO_MATCHING_FIELDS = os.path.join(self.test_data, 'no-fields-matching-repayment.xls')
+        self.user = User.objects.get(username="tester150411@gmail.com")
+        self.dbm = get_database_manager(self.user)
+        self.suffix = str(time.time())
+        self.repayment_project_id = self._create_test_projects('Repayment-' + self.suffix, self.REPAYMENT)
+        self.loan_account_id = self._create_test_projects('Loan account-'+ self.suffix, self.LOAN_ACCOUNT)
+
+    def test_should_add_parent_info_to_child_questionnaire(self):
+        correlated_forms = CorrelatedForms(self.user)
+
+        correlated_forms.relate_forms(self.loan_account_id, self.repayment_project_id, 'Repayment')
+
+        updated_child_project = Project.get(self.dbm, self.repayment_project_id)
+        self._asset_parent_field_codes(updated_child_project)
+        self.assertEqual(updated_child_project.parent_info.get("action_label"), 'Repayment')
+        self.assertTrue(updated_child_project.is_child_project)
+
+    def _asset_parent_field_codes(self, updated_child_project):
+        self.assertListEqual(sorted(updated_child_project.parent_info.get("parent_field_codes")),
+                             sorted(['borrower_id', 'borrower_name', 'loan_ac_number']))
+
+    def test_should_verify_parent_and_child_project_has_at_least_one_common_field_to_establish_relation(self):
+        correlated_forms = CorrelatedForms(self.user)
+        project_with_no_matching_fields_with_loan_account = self._create_test_projects('no-matching-fields-'
+                                                                               + self.suffix, self.NO_MATCHING_FIELDS)
+        with self.assertRaises(NoCommonFieldsException):
+            correlated_forms.relate_forms(self.loan_account_id, project_with_no_matching_fields_with_loan_account,
+                                          'New Child')
+
+    def test_should_add_child_id_to_parent_questionnaire(self):
+        correlated_forms = CorrelatedForms(self.user)
+
+        correlated_forms.relate_forms(self.loan_account_id, self.repayment_project_id, 'Repayment')
+
+        updated_parent_project = Project.get(self.dbm, self.loan_account_id)
+        self.assertIn(self.repayment_project_id, updated_parent_project.child_ids)
+        self.assertTrue(updated_parent_project.is_parent_project)
+
+    def test_should_hide_common_parent_fields_in_child_xform_when_accessed_by_dcs_apis(self):
+        # This needs to be done only for dcs app. For odk and web the parent fields remain editable.
+        pass
+
+    def _create_test_projects(self, prj_name, xlxform):
+        errors, xform, json_xform_data = XlsFormParser(xlxform, prj_name).parse()
+        mangroveService = MangroveService(self.user, xform, json_xform_data, project_name=prj_name)
+        project_id, form_code = mangroveService.create_project()
+        return project_id
+
+    def dtest_delete_prj_not_required(self):
+        self._delete_all_projects_except()
+
+    def _delete_all_projects_except(self):
+        # $('span.report_links .delete_project').map(function(i, e){console.log(e['href']);});
+        # repayement, loacn ac
+        dont_delete_prj_ids = ['e53e5d9ca15511e4a5e5001c42af7554', 'e596c4faa15511e4a5e5001c42af7554']
+        questionnaires = get_all_project_for_user(self.user)
+        ids = [q['value']['_id'] for q in questionnaires if q['value']['_id'] not in dont_delete_prj_ids]
+        [_del_project(Project.get(self.dbm, id)) for id in ids]
+
+
+def _del_project(project):
+    helper.delete_project(project)
+    return project.delete()
