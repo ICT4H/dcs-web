@@ -16,7 +16,7 @@ urlpatterns = patterns('',
 
     url(r'^client/projects/(?P<project_uuid>\w+?)/submissions/(?P<submission_uuid>\w+?)$', update_submission_or_get_by_id),
     url(r'^client/projects/(?P<project_uuid>\w+?)/submissions/', paginated_submissions_or_by_id_or_create),
-    url(r'^client/projects/(?P<project_uuid>\w+?)/submission_status/$', check_submissions_status),
+        url(r'^client/projects/(?P<project_uuid>\w+?)/submission_status/$', check_submissions_status),
     url(r'^client/(?P<project_uuid>\w+?)/delta/$', get_delta_submission),
 
     url(r'^client/attachment/(?P<survey_response_id>\w+?)$', attachment_post),

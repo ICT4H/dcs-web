@@ -71,11 +71,14 @@ def authenticate_user(request):
 @csrf_exempt
 @basicauth_allow_cors()
 def check_submissions_status(request, project_uuid):
-    req_id_version_dict = json.loads(request.POST['id_version_dict'])
+    req_id_version_array = json.loads(request.POST['submissions'])
     outdated_ids = []
     insync_ids = []
+    req_id_version_dict = {}
 
     manager = get_database_manager(request.user)
+    for single_dict in req_id_version_array:
+        req_id_version_dict[single_dict['id']] = single_dict['rev']
 
     req_ids = req_id_version_dict.keys()
     rows = manager.load_all_rows_in_view("survey_response_by_survey_response_id", keys=req_ids)
@@ -179,19 +182,21 @@ def submit_submission(request):
 @csrf_exempt
 @basicauth_allow_cors()
 def get_projects_status(request):
-    conflicted_projects = []
+    response_projects = []
     manager =  get_database_manager(request.user)
     client_projects = json.loads(request.POST['projects'])
 
     for client_project in client_projects:
         try:
             server_project = FormModel.get(manager, client_project['id'])
-            if server_project.revision != client_project['rev']:
-                conflicted_projects.append({'id': server_project.id, 'status': 'outdated'})
+            if(server_project._doc.void):
+                response_projects.appened({'id': client_project['id'], 'status': 'server-deleted'})
+            elif server_project.revision != client_project['rev'] :
+                response_projects.append({'id': server_project.id, 'status': 'outdated'})
         except Exception:
-            conflicted_projects.append({'id': client_project['id'], 'status': 'server-deleted'})
+            response_projects.append({'id': client_project['id'], 'status': 'server-deleted'})
 
-    return response_json_cors(conflicted_projects)
+    return response_json_cors(response_projects)
 
 @csrf_exempt
 @basicauth_allow_cors()
