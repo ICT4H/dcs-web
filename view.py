@@ -262,7 +262,7 @@ def _get_slim_submission_paginated(request, project_uuid):
     search_text = search_filters.get("search_text", '')
     search_parameters.update({"search_text": search_text})
     organization = get_organization(request)
-    local_time_delta = get_country_time_delta(organization.country)
+    local_time_delta = get_country_time_delta('IN')
     search_results, query_fields = get_submissions_paginated(dbm, form_model, search_parameters, local_time_delta)
     submission_count_with_filters = get_submission_count(dbm, form_model, search_parameters, local_time_delta)
     submissions = SubmissionQueryResponseCreator(form_model, local_time_delta) \
