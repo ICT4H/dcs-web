@@ -13,6 +13,7 @@ from datawinners.settings import ELASTIC_SEARCH_URL, ELASTIC_SEARCH_TIMEOUT
 from datawinners.search.query import QueryBuilder, Query
 from mangrove.form_model.field import FieldSet, SelectField, MediaField
 from mangrove.form_model.form_model import get_field_by_attribute_value
+from mangrove.utils.dates import py_datetime_to_js_datestring
 
 
 class SubmissionQueryResponseCreator(object):
@@ -53,6 +54,11 @@ class SubmissionQueryResponseCreator(object):
         datetime_local = convert_utc_to_localized(self.localized_time_delta, submission_date_time)
         submission.append(datetime_local.strftime("%b. %d, %Y, %H:%M"))
 
+    def _convert_to_iso_format_date_time(self, key, res, submission):
+        submission_date_time = datetime.datetime.strptime(res.get(key), "%b. %d, %Y, %I:%M %p")
+        js_date_time = py_datetime_to_js_datestring(submission_date_time)
+        submission.append(js_date_time)
+
     def _get_media_field_codes(self):
         return [es_questionnaire_field_name(field.code, self.form_model.id, field.parent_field_code) for
                 field in
@@ -80,7 +86,7 @@ class SubmissionQueryResponseCreator(object):
                     elif key == 'status' and res.get(key):
                         submission.append(ugettext(res.get(key)))
                     elif key == SubmissionIndexConstants.SUBMISSION_DATE_KEY:
-                        self._convert_to_localized_date_time(key, res, submission)
+                        self._convert_to_iso_format_date_time(key, res, submission)
                     elif key == 'error_msg':
                         self._populate_error_message(key, language, res, submission)
                     elif key in fieldset_fields.keys():
