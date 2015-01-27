@@ -7,6 +7,8 @@ from datawinners.accountmanagement.localized_time import convert_utc_to_localize
 from datawinners.search.index_utils import es_unique_id_code_field_name, es_questionnaire_field_name
 from datawinners.search.submission_index_constants import SubmissionIndexConstants
 from mangrove.form_model.field import FieldSet, SelectField, MediaField, PhotoField, UniqueIdField
+from mangrove.form_model.field import FieldSet, SelectField, MediaField
+from mangrove.utils.dates import py_datetime_to_js_datestring
 
 
 class SubmissionQueryResponseCreator(object):
@@ -47,6 +49,11 @@ class SubmissionQueryResponseCreator(object):
         datetime_local = convert_utc_to_localized(self.localized_time_delta, submission_date_time)
         submission.append(datetime_local.strftime("%b. %d, %Y, %H:%M"))
 
+    def _convert_to_iso_format_date_time(self, key, res, submission):
+        submission_date_time = datetime.datetime.strptime(res.get(key), "%b. %d, %Y, %I:%M %p")
+        js_date_time = py_datetime_to_js_datestring(submission_date_time)
+        submission.append(js_date_time)
+
     def _get_media_field_codes(self):
         return [es_questionnaire_field_name(field.code, self.form_model.id, field.parent_field_code) for
                 field in
@@ -81,7 +88,7 @@ class SubmissionQueryResponseCreator(object):
                     elif key == 'status' and res.get(key):
                         submission.append(ugettext(res.get(key)))
                     elif key == SubmissionIndexConstants.SUBMISSION_DATE_KEY:
-                        self._convert_to_localized_date_time(key, res, submission)
+                        self._convert_to_iso_format_date_time(key, res, submission)
                     elif key == 'error_msg':
                         self._populate_error_message(key, language, res, submission)
                     elif key in fieldset_fields.keys():
