@@ -1,12 +1,11 @@
 import os
 import unittest
+import time
 
 from django.contrib.auth.models import User
-import time
-from datawinners.alldata.helper import get_all_project_for_user
-from datawinners.alldata.views import get_project_list
-from datawinners.blue.correlated_xlxform import CorrelatedForms, NoCommonFieldsException
 
+from datawinners.alldata.helper import get_all_project_for_user
+from datawinners.blue.correlated_xlxform import CorrelatedForms, NoCommonFieldsException
 from datawinners.blue.xform_bridge import XlsFormParser, MangroveService
 from datawinners.main.database import get_database_manager
 from datawinners.project import helper
@@ -25,8 +24,18 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         self.user = User.objects.get(username="tester150411@gmail.com")
         self.dbm = get_database_manager(self.user)
         self.suffix = str(time.time())
+        #do this before create projects
+        self.retain_project_ids = self._project_ids_existing_before_this_test()
+        # self._delete_prj_created_by_this_test_run()
         self.repayment_project_id = self._create_test_projects('Repayment-' + self.suffix, self.REPAYMENT)
         self.loan_account_id = self._create_test_projects('Loan account-'+ self.suffix, self.LOAN_ACCOUNT)
+
+    def tearDown(self):
+        self._delete_prj_created_by_this_test_run()
+
+    def xtest_should_delete_all_projects(self):
+        self.retain_project_ids = []
+        self._delete_prj_created_by_this_test_run()
 
     def test_should_add_parent_info_to_child_questionnaire(self):
         correlated_forms = CorrelatedForms(self.user)
@@ -34,13 +43,15 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         correlated_forms.relate_forms(self.loan_account_id, self.repayment_project_id, 'Repayment')
 
         updated_child_project = Project.get(self.dbm, self.repayment_project_id)
-        self._asset_parent_field_codes(updated_child_project)
+        self._asset_parent_fields_code_label(updated_child_project)
         self.assertEqual(updated_child_project.parent_info.get("action_label"), 'Repayment')
         self.assertTrue(updated_child_project.is_child_project)
 
-    def _asset_parent_field_codes(self, updated_child_project):
-        self.assertListEqual(sorted(updated_child_project.parent_info.get("parent_field_codes")),
-                             sorted(['borrower_id', 'borrower_name', 'loan_ac_number']))
+    def _asset_parent_fields_code_label(self, updated_child_project):
+        self.assertEqual(updated_child_project.parent_info.get("parent_fields_code_label"),
+                             {'loan_ac_number': 'Loan a/c number',
+                              'borrower_id': 'Borrower ID',
+                              'borrower_name': 'Borrower Name'})
 
     def test_should_verify_parent_and_child_project_has_at_least_one_common_field_to_establish_relation(self):
         correlated_forms = CorrelatedForms(self.user)
@@ -69,18 +80,19 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         project_id, form_code = mangroveService.create_project()
         return project_id
 
-    def dtest_delete_prj_not_required(self):
+
+    def _project_ids_existing_before_this_test(self):
+        questionnaires = get_all_project_for_user(self.user)
+        return [q['value']['_id'] for q in questionnaires]
+
+    def _delete_prj_created_by_this_test_run(self):
         self._delete_all_projects_except()
 
     def _delete_all_projects_except(self):
-        # $('span.report_links .delete_project').map(function(i, e){console.log(e['href']);});
-        # repayement, loacn ac
-        dont_delete_prj_ids = ['e53e5d9ca15511e4a5e5001c42af7554', 'e596c4faa15511e4a5e5001c42af7554']
         questionnaires = get_all_project_for_user(self.user)
-        ids = [q['value']['_id'] for q in questionnaires if q['value']['_id'] not in dont_delete_prj_ids]
-        [_del_project(Project.get(self.dbm, id)) for id in ids]
+        ids = [q['value']['_id'] for q in questionnaires if q['value']['_id'] not in self.retain_project_ids]
+        [self._del_project(Project.get(self.dbm, id)) for id in ids]
 
-
-def _del_project(project):
-    helper.delete_project(project)
-    return project.delete()
+    def _del_project(self, project):
+        helper.delete_project(project)
+        return project.delete()
