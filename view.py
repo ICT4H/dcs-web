@@ -69,12 +69,13 @@ def _update_response_with_relation(project, project_response):
     if project.is_child_project:
         project_response.update({'project_type': 'child',
                 'parent_info':{'action_label': project.parent_info.get('action_label'),
-                               'parent_field_codes': ','.join(project.parent_info.get('parent_field_codes', []))},
+                               'parent_fields_code_label_str':
+                                   json.dumps(project.parent_info.get('parent_fields_code_label', ""))},
                 'child_ids':''})
 
     elif project.is_parent_project:
         project_response.update({'project_type': 'parent',
-                'child_ids': project.child_ids,
+                'child_ids': ','.join(project.child_ids),
                 'parent_info':{'action_label':'', 'parent_field_codes': ''}})
     else:
         project_response.update({'project_type': 'none', 'parent_info':{'action_label':'', 'parent_field_codes': ''}, 'child_ids':''})
