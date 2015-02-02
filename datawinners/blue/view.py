@@ -5,7 +5,8 @@ import os
 import re
 from tempfile import NamedTemporaryFile
 import traceback
-
+from datetime import datetime
+import time
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -26,6 +27,7 @@ from datawinners.blue.xform_bridge import MangroveService, XlsFormParser, XFormT
     get_generated_xform_id_name, XFormImageProcessor
 from datawinners.accountmanagement.models import Organization
 from datawinners.blue.error_translation_utils import transform_error_message, translate_odk_message
+from datawinners.dataextraction.helper import convert_date_string_to_UTC
 from datawinners.project.public_project_guest_handler import GuestSubmission, InvalidLinkException, SubmissionTakenError, AnonymousSubmission
 from datawinners.settings import EMAIL_HOST_USER, HNI_SUPPORT_EMAIL_ID
 from datawinners.feeds.database import get_feeds_database
@@ -44,7 +46,7 @@ from mangrove.form_model.form_model import get_form_model_by_code
 from mangrove.form_model.project import Project
 from mangrove.transport.repository.survey_responses import get_survey_response_by_id, get_survey_responses, \
     survey_responses_by_form_model_id, get_view_paginated, get_many_survey_response_by_ids
-from mangrove.utils.dates import py_datetime_to_js_datestring
+from mangrove.utils.dates import py_datetime_to_js_datestring, convert_date_time_to_epoch
 
 
 logger = logging.getLogger("datawinners.xls-questionnaire")
@@ -453,19 +455,27 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
         return total_count, submission_list
 
     def get_submission_from(self, from_time, to_time):
-        submission_list = []
+        new_submissions = []
+        updated_submissions = []
         submissions = get_survey_responses(self.manager, self.questionnaire.id, from_time, to_time,
                                            view_name="undeleted_survey_response_on_modified")
         for submission in submissions:
-            submission_list.append({'submission_uuid': submission.id,
-                'version': submission.version,
-                'project_uuid': self.questionnaire.id,
-                'created': py_datetime_to_js_datestring(submission.created),
-                'xml': self._model_str_of(submission.id, get_generated_xform_id_name(self.questionnaire.xform)),
-                'data': json.dumps(submission.values),
-                'modified':  py_datetime_to_js_datestring(submission.modified)
-            })
-        return submission_list
+            submission_created_utc = convert_date_time_to_epoch(submission.created)
+            if from_time < submission_created_utc:
+                self._add_submission_to_array(new_submissions, submission)
+            else:
+                self._add_submission_to_array(updated_submissions, submission)
+        return new_submissions, updated_submissions
+
+    def _add_submission_to_array(self, array, submission):
+        array.append({'submission_uuid': submission.id,
+            'version': submission.version,
+            'project_uuid': self.questionnaire.id,
+            'created': py_datetime_to_js_datestring(submission.created),
+            'xml': self._model_str_of(submission.id, get_generated_xform_id_name(self.questionnaire.xform)),
+            'data': json.dumps(submission.values),
+            'modified':  py_datetime_to_js_datestring(submission.modified)
+        })
 
     def get_submission(self, submission_uuid):
         submission = get_survey_response_by_id(self.manager, submission_uuid)
