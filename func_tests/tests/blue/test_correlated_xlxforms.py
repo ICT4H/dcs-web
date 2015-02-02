@@ -5,7 +5,7 @@ import time
 from django.contrib.auth.models import User
 
 from datawinners.alldata.helper import get_all_project_for_user
-from datawinners.blue.correlated_xlxform import CorrelatedForms, NoCommonFieldsException
+from datawinners.blue.correlated_xlxform import CorrelatedForms, NoCommonFieldsException, MultipleChildrenNotSupported
 from datawinners.blue.xform_bridge import XlsFormParser, MangroveService
 from datawinners.main.database import get_database_manager
 from datawinners.project import helper
@@ -23,17 +23,17 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         self.NO_MATCHING_FIELDS = os.path.join(self.test_data, 'no-fields-matching-repayment.xls')
         self.user = User.objects.get(username="tester150411@gmail.com")
         self.dbm = get_database_manager(self.user)
-        self.suffix = str(time.time())
-        #do this before create projects
+        self.random_project_name = str(time.time())
+        #Do this before creating projects for this test suite
         self.retain_project_ids = self._project_ids_existing_before_this_test()
-        # self._delete_prj_created_by_this_test_run()
-        self.repayment_project_id = self._create_test_projects('Repayment-' + self.suffix, self.REPAYMENT)
-        self.loan_account_id = self._create_test_projects('Loan account-'+ self.suffix, self.LOAN_ACCOUNT)
+        self.repayment_project_id = self._create_test_projects('Repayment-' + self.random_project_name, self.REPAYMENT)
+        self.loan_account_id = self._create_test_projects('Loan account-'+ self.random_project_name, self.LOAN_ACCOUNT)
 
     def tearDown(self):
         self._delete_prj_created_by_this_test_run()
 
-    def xtest_should_delete_all_projects(self):
+    def xtest_is_helper_to_delete_all_projects(self):
+        #need to create a django command for this
         self.retain_project_ids = []
         self._delete_prj_created_by_this_test_run()
 
@@ -56,7 +56,7 @@ class TestCorrelatedXlsForms(unittest.TestCase):
     def test_should_verify_parent_and_child_project_has_at_least_one_common_field_to_establish_relation(self):
         correlated_forms = CorrelatedForms(self.user)
         project_with_no_matching_fields_with_loan_account = self._create_test_projects('no-matching-fields-'
-                                                                               + self.suffix, self.NO_MATCHING_FIELDS)
+                                                                               + self.random_project_name, self.NO_MATCHING_FIELDS)
         with self.assertRaises(NoCommonFieldsException):
             correlated_forms.relate_forms(self.loan_account_id, project_with_no_matching_fields_with_loan_account,
                                           'New Child')
@@ -69,6 +69,14 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         updated_parent_project = Project.get(self.dbm, self.loan_account_id)
         self.assertIn(self.repayment_project_id, updated_parent_project.child_ids)
         self.assertTrue(updated_parent_project.is_parent_project)
+
+    #TODO remove when multiple children support is build
+    def test_should_not_allow_to_have_multiple_children(self):
+        correlated_forms = CorrelatedForms(self.user)
+        correlated_forms.relate_forms(self.loan_account_id, self.repayment_project_id, 'Repayment')
+
+        with self.assertRaises(MultipleChildrenNotSupported):
+            correlated_forms.relate_forms(self.loan_account_id, self.repayment_project_id, 'Repayment')
 
     def test_should_hide_common_parent_fields_in_child_xform_when_accessed_by_dcs_apis(self):
         # This needs to be done only for dcs app. For odk and web the parent fields remain editable.
