@@ -23,6 +23,7 @@ from mangrove.errors.MangroveException import DataObjectNotFound
 from mangrove.form_model.form_model import FormModel
 from mangrove.form_model.project import Project
 from mangrove.transport.player.new_players import XFormPlayerV2
+from mangrove.utils.dates import convert_date_time_to_epoch
 
 
 logger = logging.getLogger("datawinners.xlfrom.client")
@@ -57,7 +58,7 @@ def _project_details(manager, project_uuid):
     try:
         project = Project.get(manager, project_uuid)
         project_response = dict(name=project.name, project_uuid=project.id, version=project._doc.rev,
-                                created=project.created.strftime("%d-%m-%Y"),
+                                created=str(project.created),
                                 xform=re.sub(r"\n", " ", XFormTransformer(project.xform).transform()))
         _update_response_with_relation(project, project_response)
         return project_response
@@ -236,12 +237,13 @@ def attachment_get(request, survey_response_id, file_name):
 @basicauth_allow_cors()
 def get_delta_submission(request, project_uuid):
     survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
-    to_time = convert_date_string_to_UTC(datetime.now().strftime("%d-%m-%Y"), datetime.now().time().strftime("%H:%M:%S"))
-    from_time = convert_date_string_to_UTC(request.GET.get('last_fetch'))
-    content = survey_request.get_submission_from(from_time, to_time)
+    to_time = convert_date_time_to_epoch(datetime.utcnow())
+    from_time = int(request.GET.get('last_fetch'))
+    new_submissions, updated_submissions = survey_request.get_submission_from(from_time, to_time)
 
-    return response_json_cors({'submissions':content,
-                               'last_fetch': datetime.now().strftime("%d-%m-%Y")})
+    return response_json_cors({'new_submissions':new_submissions,
+                               'updated_submissions':updated_submissions,
+                               'last_fetch': convert_date_time_to_epoch(datetime.utcnow())})
 
 
 def _get_slim_submission_paginated(request, project_uuid):
