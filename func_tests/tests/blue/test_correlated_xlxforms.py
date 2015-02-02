@@ -29,14 +29,6 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         self.repayment_project_id = self._create_test_projects('Repayment-' + self.random_project_name, self.REPAYMENT)
         self.loan_account_id = self._create_test_projects('Loan account-'+ self.random_project_name, self.LOAN_ACCOUNT)
 
-    def tearDown(self):
-        self._delete_prj_created_by_this_test_run()
-
-    def xtest_is_helper_to_delete_all_projects(self):
-        #need to create a django command for this
-        self.retain_project_ids = []
-        self._delete_prj_created_by_this_test_run()
-
     def test_should_add_parent_info_to_child_questionnaire(self):
         correlated_forms = CorrelatedForms(self.user)
 
@@ -87,20 +79,3 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         mangroveService = MangroveService(self.user, xform, json_xform_data, project_name=prj_name)
         project_id, form_code = mangroveService.create_project()
         return project_id
-
-
-    def _project_ids_existing_before_this_test(self):
-        questionnaires = get_all_project_for_user(self.user)
-        return [q['value']['_id'] for q in questionnaires]
-
-    def _delete_prj_created_by_this_test_run(self):
-        self._delete_all_projects_except()
-
-    def _delete_all_projects_except(self):
-        questionnaires = get_all_project_for_user(self.user)
-        ids = [q['value']['_id'] for q in questionnaires if q['value']['_id'] not in self.retain_project_ids]
-        [self._del_project(Project.get(self.dbm, id)) for id in ids]
-
-    def _del_project(self, project):
-        helper.delete_project(project)
-        return project.delete()
