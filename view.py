@@ -251,20 +251,19 @@ def _get_slim_submission_paginated(request, project_uuid):
     form_model = FormModel.get(dbm, project_uuid)
     length = int(request.GET.get('length', '10'))
     start = int(request.GET.get('start', '0'))
+    search_text = request.GET.get('search_str')
     search_parameters = {}
     search_parameters.update({"start_result_number": start})
     search_parameters.update({"number_of_results": length})
     search_parameters.update({"filter": 'all'})
-    search_parameters.update({"headers_for": 'mobile'})
+    search_parameters.update({"headers_for": 'all'})
     search_parameters.update({'response_fields': ['ds_id', 'ds_name', 'date', 'status']})
     search_parameters.update({"sort_field": "date"})
     search_parameters.update({"order": "-"})
-    search_filters = {"submissionDatePicker": "All Dates", "datasenderFilter": "", "search_text": "",
+    search_filters = {"submissionDatePicker": "All Dates", "datasenderFilter": "", "search_text": search_text,
                       "dateQuestionFilters": {}, "uniqueIdFilters": {}}
     search_parameters.update({"search_filters": search_filters})
-    search_text = search_filters.get("search_text", '')
     search_parameters.update({"search_text": search_text})
-    organization = get_organization(request)
     local_time_delta = get_country_time_delta('IN')
     search_results, query_fields = get_submissions_paginated(dbm, form_model, search_parameters, local_time_delta)
     submission_count_with_filters = get_submission_count(dbm, form_model, search_parameters, local_time_delta)
