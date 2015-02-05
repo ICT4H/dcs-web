@@ -21,6 +21,7 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         self.LOAN_ACCOUNT = os.path.join(self.test_data, 'loan-account.xls')
         self.NO_MATCHING_FIELDS = os.path.join(self.test_data, 'no-fields-matching-repayment.xls')
         self.REPEAT = os.path.join(self.test_data,'repeat.xls')
+        self.REPEAT_PARENT = os.path.join(self.test_data,'repeat-parent.xls')
         self.user = User.objects.get(username="tester150411@gmail.com")
         self.dbm = get_database_manager(self.user)
         self.random_project_name = str(time.time())
@@ -81,6 +82,29 @@ class TestCorrelatedXlsForms(unittest.TestCase):
             correlated_forms.relate_forms(project_with_repeat_field, self.repayment_project_id, 'Repayment')
 
 
+    def test_should_relate_child_containing_field_set_question(self):
+        project_with_repeat_field = self._create_test_projects('Project-with-repeat-'
+                                                                               + self.random_project_name, self.REPEAT)
+        project_repeat_parent = self._create_test_projects('Project-repeat-parent'
+                                                                               + self.random_project_name, self.REPEAT_PARENTT)
+
+        correlated_forms = CorrelatedForms(self.user)
+        correlated_forms.relate_forms(project_repeat_parent, project_with_repeat_field, 'Repayment')
+
+    def test_should_add_parent_info_to_child_questionnaire(self):
+        correlated_forms = CorrelatedForms(self.user)
+        project_with_repeat_field = self._create_test_projects('Project-with-repeat-'
+                                                                               + self.random_project_name, self.REPEAT)
+        project_repeat_parent = self._create_test_projects('Project-repeat-parent'
+                                                                               + self.random_project_name, self.REPEAT_PARENT)
+        correlated_forms.relate_forms(project_repeat_parent, project_with_repeat_field, 'Child-with-repeat')
+
+        updated_child_project = Project.get(self.dbm, project_with_repeat_field)
+
+        self.assertEqual(updated_child_project.parent_info.get("parent_fields_code_label"),
+                                                                {'familyname': 'What is the family name?'})
+        self.assertEqual(updated_child_project.parent_info.get("action_label"), 'Child-with-repeat')
+        self.assertTrue(updated_child_project.is_child_project)
 
     def _create_test_projects(self, prj_name, xlxform):
         errors, xform, json_xform_data = XlsFormParser(xlxform, prj_name).parse()
