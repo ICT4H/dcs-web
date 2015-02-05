@@ -81,17 +81,7 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         with self.assertRaises(ParentProjectWithFieldSetNotSupported):
             correlated_forms.relate_forms(project_with_repeat_field, self.repayment_project_id, 'Repayment')
 
-
     def test_should_relate_child_containing_field_set_question(self):
-        project_with_repeat_field = self._create_test_projects('Project-with-repeat-'
-                                                                               + self.random_project_name, self.REPEAT)
-        project_repeat_parent = self._create_test_projects('Project-repeat-parent'
-                                                                               + self.random_project_name, self.REPEAT_PARENTT)
-
-        correlated_forms = CorrelatedForms(self.user)
-        correlated_forms.relate_forms(project_repeat_parent, project_with_repeat_field, 'Repayment')
-
-    def test_should_add_parent_info_to_child_questionnaire(self):
         correlated_forms = CorrelatedForms(self.user)
         project_with_repeat_field = self._create_test_projects('Project-with-repeat-'
                                                                                + self.random_project_name, self.REPEAT)
