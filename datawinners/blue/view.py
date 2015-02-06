@@ -458,27 +458,22 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
         return total_count, submission_list
 
     def get_submission_from(self, from_time, to_time):
-        new_submissions = []
-        updated_submissions = []
-        submissions = get_survey_responses(self.manager, self.questionnaire.id, from_time, to_time,
+        submissions = {}
+        _submissions = get_survey_responses(self.manager, self.questionnaire.id, from_time, to_time,
                                            view_name="undeleted_survey_response_on_modified")
-        for submission in submissions:
-            submission_created_utc = convert_date_time_to_epoch(submission.created)
-            if from_time < submission_created_utc:
-                self._add_submission_to_array(new_submissions, submission)
-            else:
-                self._add_submission_to_array(updated_submissions, submission)
-        return new_submissions, updated_submissions
+        for submission in _submissions:
+            submissions[submission.id] =  self.get_formatted_submission(submission)
+        return submissions
 
-    def _add_submission_to_array(self, array, submission):
-        array.append({'submission_uuid': submission.id,
+    def get_formatted_submission(self, submission):
+        return {'submission_uuid': submission.id,
             'version': submission.version,
             'project_uuid': self.questionnaire.id,
             'created': py_datetime_to_js_datestring(submission.created),
             'xml': self._model_str_of(submission.id, get_generated_xform_id_name(self.questionnaire.xform)),
             'data': json.dumps(submission.values),
             'modified':  py_datetime_to_js_datestring(submission.modified)
-        })
+        }
 
     def get_submission(self, submission_uuid):
         submission = get_survey_response_by_id(self.manager, submission_uuid)
