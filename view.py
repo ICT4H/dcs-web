@@ -239,10 +239,9 @@ def get_delta_submission(request, project_uuid):
     survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
     to_time = convert_date_time_to_epoch(datetime.utcnow())
     from_time = int(request.GET.get('last_fetch'))
-    new_submissions, updated_submissions = survey_request.get_submission_from(from_time, to_time)
+    submissions = survey_request.get_submission_from(from_time, to_time)
 
-    return response_json_cors({'new_submissions':new_submissions,
-                               'updated_submissions':updated_submissions,
+    return response_json_cors({'submissions':submissions,
                                'last_fetch': convert_date_time_to_epoch(datetime.utcnow())})
 
 
