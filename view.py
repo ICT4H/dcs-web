@@ -70,6 +70,7 @@ def _update_response_with_relation(project, project_response):
     if project.is_child_project:
         project_response.update({'project_type': 'child',
                 'parent_info':{'action_label': project.parent_info.get('action_label'),
+                               'parent_uuid': project.parent_info.get('parent_uuid', ""),
                                'parent_fields_code_label_str':
                                    json.dumps(project.parent_info.get('parent_fields_code_label', ""))},
                 'child_ids':''})
