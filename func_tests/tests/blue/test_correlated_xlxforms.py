@@ -36,6 +36,7 @@ class TestCorrelatedXlsForms(unittest.TestCase):
 
         updated_child_project = Project.get(self.dbm, self.repayment_project_id)
         self._asset_parent_fields_code_label(updated_child_project)
+        self.assertEqual(updated_child_project.parent_info.get("parent_uuid"), self.loan_account_id)
         self.assertEqual(updated_child_project.parent_info.get("action_label"), 'Repayment')
         self.assertTrue(updated_child_project.is_child_project)
 
