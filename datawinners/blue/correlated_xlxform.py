@@ -27,7 +27,7 @@ class CorrelatedForms():
             raise MultipleChildrenNotSupported()
 
         code_label_dict = self._get_code_label_dict(parent_project, common_fields)
-        child_project.set_parent_info(code_label_dict, new_child_action_label_from_parent)
+        child_project.set_parent_info(parent_id, code_label_dict, new_child_action_label_from_parent)
         parent_project.add_child(child_id)
         parent_project.save(process_post_update=False)
         child_project.save(process_post_update=False)
