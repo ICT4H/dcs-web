@@ -1,6 +1,6 @@
 {% load i18n %}
 <span class="links float_right">
-       {% if not project.xform or not is_field_set_field_present%}
+       {% if is_import_enabled%}
            <a href="javascript:void(0);" class="export_link">{% trans "Export Submissions" %}</a> |
            <a href="javascript:void(0);" data-projectname="{{ encoded_project_name }}"
               data-formcode="{{ questionnaire_code }}" data-projectid="{{ project.id }}"
