@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if len(args) != 2:
+        if len(args) < 2:
             print "Please provide parent and child project uuids"
             return
 
