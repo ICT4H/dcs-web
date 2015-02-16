@@ -4,6 +4,7 @@ import logging
 import re
 import json
 from sets import Set
+from datawinners.blue.correlated_xlxform import ParentXform
 
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -57,9 +58,11 @@ def get_questions_paginated_or_by_ids(request):
 def _project_details(manager, project_uuid):
     try:
         project = Project.get(manager, project_uuid)
+        xform = project.xform
+        updated_xform = ParentXform().make_all_fields_read_only(xform) if project.is_parent_project else xform
         project_response = dict(name=project.name, project_uuid=project.id, version=project._doc.rev,
                                 created=str(project.created),
-                                xform=re.sub(r"\n", " ", XFormTransformer(project.xform).transform()))
+                                xform=re.sub(r"\n", " ", XFormTransformer(updated_xform).transform()))
         _update_response_with_relation(project, project_response)
         return project_response
     except DataObjectNotFound:
