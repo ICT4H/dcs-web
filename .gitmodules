@@ -1,6 +1,3 @@
-[submodule "datawinners/dcs_app"]
-	path = datawinners/dcs_app
-	url = https://github.com/ICT4H/dcs-api.git
 [submodule "enketo-core"]
 	path = enketo-core
 	url = https://github.com/ICT4H/dcs-web-enketo-core.git
