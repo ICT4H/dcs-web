@@ -1,3 +1,4 @@
+from xml.etree import ElementTree as ET
 import os
 import unittest
 import time
@@ -5,7 +6,7 @@ import time
 from django.contrib.auth.models import User
 
 from datawinners.blue.correlated_xlxform import CorrelatedForms, NoCommonFieldsException, MultipleChildrenNotSupported, \
-    ParentProjectWithFieldSetNotSupported
+    ParentProjectWithFieldSetNotSupported, ParentXform
 from datawinners.blue.xform_bridge import XlsFormParser, MangroveService
 from datawinners.main.database import get_database_manager
 from mangrove.form_model.project import Project
@@ -22,6 +23,7 @@ class TestCorrelatedXlsForms(unittest.TestCase):
         self.NO_MATCHING_FIELDS = os.path.join(self.test_data, 'no-fields-matching-repayment.xls')
         self.REPEAT = os.path.join(self.test_data,'repeat.xls')
         self.REPEAT_PARENT = os.path.join(self.test_data,'repeat-parent.xls')
+        self.TWO_FIELDS_XFORM = os.path.join(self.test_data,'two-fields-xform.xml')
         self.user = User.objects.get(username="tester150411@gmail.com")
         self.dbm = get_database_manager(self.user)
         self.random_project_name = str(time.time())
@@ -96,6 +98,18 @@ class TestCorrelatedXlsForms(unittest.TestCase):
                                                                 {'familyname': 'What is the family name?'})
         self.assertEqual(updated_child_project.parent_info.get("action_label"), 'Child-with-repeat')
         self.assertTrue(updated_child_project.is_child_project)
+
+    def test_parent_project_fields_are_read_only(self):
+        xform_as_string = open(self.TWO_FIELDS_XFORM, 'r').read()
+
+        output = ParentXform().make_all_fields_read_only(xform_as_string)
+
+        bind_tag = '{http://www.w3.org/1999/xhtml}head/{http://www.w3.org/2002/xforms}model/{http://www.w3.org/2002/xforms}bind'
+        self._assert_readonly_is_true(output, bind_tag)
+
+    def _assert_readonly_is_true(self, source_xml_str, bind_tag):
+        root = ET.fromstring(source_xml_str.encode('utf-8'))
+        [self.assertTrue('true()', r.attrib['readonly']) for r in root.iterfind(bind_tag)]
 
     def _create_test_projects(self, prj_name, xlxform):
         errors, xform, json_xform_data = XlsFormParser(xlxform, prj_name).parse()

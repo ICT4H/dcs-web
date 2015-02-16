@@ -1,0 +1,28 @@
+<?xml version="1.0"?><html:html xmlns="http://www.w3.org/2002/xforms" xmlns:html="http://www.w3.org/1999/xhtml">
+  <html:head>
+    <html:title>simple</html:title>
+    <model>
+      <instance>
+        <tmpnJwdmA id="tmpnJwdmA">
+          <your_name />
+          <your_age />
+          <meta>
+            <instanceID />
+          </meta>
+        <form_code>004</form_code></tmpnJwdmA>
+      </instance>
+      <bind nodeset="/tmpnJwdmA/your_name" type="string" />
+      <bind nodeset="/tmpnJwdmA/your_age" type="int" />
+      <bind calculate="concat('uuid:', uuid())" nodeset="/tmpnJwdmA/meta/instanceID" readonly="true()" type="string" />
+      <bind nodeset="/tmpnJwdmA/form_code" type="string" />
+    </model>
+  </html:head>
+  <html:body>
+    <input ref="/tmpnJwdmA/your_name">
+      <label>What is your name?</label>
+    </input>
+    <input ref="/tmpnJwdmA/your_age">
+      <label>How many years old are you?</label>
+    </input>
+  </html:body>
+</html:html>

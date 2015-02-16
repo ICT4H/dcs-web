@@ -1,8 +1,8 @@
 from sets import Set
+from xml.etree import ElementTree as ET
 
 from datawinners.main.database import get_database_manager
 from mangrove.form_model.project import Project
-
 
 class CorrelatedForms():
 
@@ -49,3 +49,17 @@ class NoCommonFieldsException(Exception):
 
 class MultipleChildrenNotSupported(Exception):
     pass
+
+
+class ParentXform():
+
+    def make_all_fields_read_only(self, xform_xml):
+        ET.register_namespace('', 'http://www.w3.org/2002/xforms')
+
+        root = ET.fromstring(xform_xml.encode('utf-8'))
+        bind_element = '{http://www.w3.org/1999/xhtml}head/{http://www.w3.org/2002/xforms}model/{http://www.w3.org/2002/xforms}bind'
+        [self._make_field_read_only(el) for el in root.iterfind(bind_element)]
+        return '<?xml version="1.0"?>%s' % ET.tostring(root)
+
+    def _make_field_read_only(self, el):
+        el.set('readonly', 'true()')
