@@ -88,9 +88,8 @@ def _add_search_filters(search_filter_param, form_model, local_time_delta, query
 
 
 def _add_filters(form_model, search_parameters, local_time_delta, search):
-    filter_param = search_parameters.get('filter')
-    search = _query_by_submission_type(filter_param, search)
-    query_fields = _get_query_fields(form_model, search_parameters.get('headers_for', filter_param))
+    search = _query_by_submission_type(search_parameters.get('filter'), search)
+    query_fields = _get_query_fields(form_model, search_parameters.get('filter'))
     search = _add_search_filters(search_parameters.get('search_filters'), form_model, local_time_delta, query_fields,
                                  search)
     return query_fields, search
