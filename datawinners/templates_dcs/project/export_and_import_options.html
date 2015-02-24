@@ -1,6 +1,6 @@
 {% load i18n %}
 <span class="links float_right">
-       {% if is_import_enabled%}
+       {% if is_simple_adv_form%}
            <a href="javascript:void(0);" class="export_link">{% trans "Export Submissions" %}</a> |
            <a href="javascript:void(0);" data-projectname="{{ encoded_project_name }}"
               data-formcode="{{ questionnaire_code }}" data-projectid="{{ project.id }}"
