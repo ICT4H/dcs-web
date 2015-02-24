@@ -1,6 +1,7 @@
 import json
 import logging
 from collections import OrderedDict
+import re
 
 from babel.dates import format_datetime
 import elasticutils
@@ -29,10 +30,7 @@ UNKNOWN = "N/A"
 
 
 def get_code_from_es_field_name(es_field_name, form_model_id):
-    for item in es_field_name.split('_'):
-        if item != 'value' and item != form_model_id:
-            return item
-
+    return re.sub(r'(%s_|_exact$)' %form_model_id, '', es_field_name, 2)
 
 def create_submission_mapping(dbm, latest_form_model, old_form_model):
     SubmissionSearchStore(dbm, latest_form_model, old_form_model).update_store()
