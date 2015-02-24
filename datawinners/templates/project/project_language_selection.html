@@ -58,9 +58,9 @@
     </div>
 
     <div id="project_language_section">
-        {% if project.xform %}
+        {% if project.is_simple_adv_form %}
             <div class="warning-message-box">
-                <p>{% trans "This feature is not applicable for excel upload feature." %}</p></div>
+                <p>{% trans "This feature is not applicable for forms with repeat and group fields." %}</p></div>
         {% else %}
              <div>
                 <h6 class="title_set_SMS">
