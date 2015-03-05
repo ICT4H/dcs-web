@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
     def _correlate_projects(self):
         correlated_forms = CorrelatedForms(self.user)
-        if correlated_forms.relate_forms(self.parent_uuid, self.child_uuid, self.new_child_action_label):
+        if correlated_forms.relate_parent_and_child_forms(self.parent_uuid, self.child_uuid, self.new_child_action_label):
             print('Project related successfully')
         else:
             print('Failed to relate project')

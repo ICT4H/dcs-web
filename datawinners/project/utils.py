@@ -42,7 +42,8 @@ def make_project_links(project, entity_type=None):
                      'automatic_sms_link': reverse('project-language', args=[project_id]),
                      'project_guests': reverse('project_guests', args=[project_id]),
                      'add_project_guests_link': reverse('add_project_guests', args=[project_id]),
-                     'public_survey_details': reverse('public_survey_details', args=[project_id])
+                     'public_survey_details': reverse('public_survey_details', args=[project_id]),
+                     'correlate_link':  reverse('correlate_link', args=[project_id])
                     }
 
     project_links.update(make_subject_links(project_id, entity_type))

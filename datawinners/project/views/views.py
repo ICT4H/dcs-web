@@ -2,6 +2,9 @@
 import json
 import datetime
 import logging
+from datawinners.blue.correlated_xlxform import NoCommonFieldsException
+from datawinners.blue.correlated_xlxform import CorrelatedForms, ParentProjectWithFieldSetNotSupported
+from django import forms
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
@@ -47,7 +50,7 @@ from datawinners.project.submission_form import SurveyResponseForm
 from datawinners.project.web_questionnaire_form import SubjectRegistrationForm
 from datawinners.project.wizard_view import edit_project, get_preview_and_instruction_links
 from datawinners.scheduler.smsclient import NoSMSCException
-from datawinners.alldata.helper import get_visibility_settings_for
+from datawinners.alldata.helper import get_visibility_settings_for, get_all_project_for_user
 from datawinners.custom_report_router.report_router import ReportRouter
 from datawinners.entity.helper import process_create_data_sender_form, get_organization_telephone_number
 from datawinners.entity import import_data as import_module
@@ -448,6 +451,87 @@ def questionnaire(request, project_id):
                                    'unique_id_types': get_unique_id_types(manager),
                                    'preview_links': get_preview_and_instruction_links()},
                                   context_instance=RequestContext(request))
+
+
+def get_eligible_parent_options(current_project_uuid, manager, request):
+    questionnaires = get_all_project_for_user(request.user)
+    projects = [Project.get(manager, q['value']['_id']) for q in questionnaires]
+    # not current project and not child project
+    eligible_parent_options = [(p.id, p.name) for p in projects if p.id != current_project_uuid and not p.is_child_project]
+    return eligible_parent_options
+
+def get_correlated_form(eligible_parent_choices, current_project):
+    is_eligible_child = current_project.is_child_project or not current_project.is_parent_project
+    if not is_eligible_child:
+        return CorrelationForm(parent_choices=())
+
+    form = CorrelationForm(eligible_parent_choices)
+    parent_uuids = current_project.parent_uuids
+
+    if parent_uuids and len(parent_uuids) > 0:
+        supported_parent = parent_uuids[0]
+        form.fields['parent_uuid'].initial = supported_parent
+    return form
+
+def get_context_values(questionnaire, eligible_parent_choices):
+    project_id = questionnaire.id
+    project_links = make_project_links(questionnaire)
+    is_eligible_child = questionnaire.is_child_project or not questionnaire.is_parent_project
+
+    return 'project/correlate_forms.html', {
+            'project': questionnaire,
+            'project_id': project_id,
+            'project_links': project_links,
+            'post_url': reverse(edit_project, args=[project_id]),
+            'preview_links': get_preview_and_instruction_links(),
+            'correlation_form': get_correlated_form(eligible_parent_choices, questionnaire),
+            'is_eligible_child': is_eligible_child
+    }
+
+@valid_web_user
+@is_project_exist
+@is_datasender
+def correlate_forms(request, project_id):
+    manager = get_database_manager(request.user)
+    questionnaire = Project.get(manager, project_id)
+    if questionnaire.is_void():
+        return HttpResponseRedirect(settings.HOME_PAGE + "?deleted=true")
+
+    eligible_parent_options = get_eligible_parent_options(questionnaire.id, manager, request)
+    if request.method == 'GET':
+        template_url, context_values = get_context_values(questionnaire, eligible_parent_options)
+        return render_to_response(template_url, context_values,
+                                  context_instance=RequestContext(request))
+
+    if request.method == 'POST':
+        form = CorrelationForm(eligible_parent_options, request.POST)
+        if form.is_valid():
+            parent_uuid = form.cleaned_data.get('parent_uuid')
+            correlated_forms = CorrelatedForms(request.user)
+            try:
+                successfully_related = correlated_forms.relate_parent_and_child_forms(parent_uuid, questionnaire.id, 'Add new')
+                success, msg = (True, 'Updated') if successfully_related else (False, 'Some thing unexpected happened, please try again')
+            except NoCommonFieldsException:
+                success, msg = (False, 'There are no common fields.')
+            except ParentProjectWithFieldSetNotSupported:
+                success, msg = (False, 'Project with repeat or group field cannot be a master/parent project.')
+        else:
+            success, msg = (False, 'Invalid input.')
+
+        updated_questionnaire = Project.get(manager, project_id)
+        template_url, context_values = get_context_values(updated_questionnaire, eligible_parent_options)
+        context_values.update({'message': msg, 'success': success})
+        return render_to_response(template_url,
+                                      context_values,
+                                      context_instance=RequestContext(request))
+
+class CorrelationForm(forms.Form):
+
+    parent_uuid = forms.ChoiceField(widget=forms.RadioSelect, choices=())
+
+    def __init__(self, parent_choices=None, *args, **kwargs):
+        self.base_fields['parent_uuid'].choices = parent_choices
+        super(CorrelationForm, self).__init__(*args, **kwargs)
 
 
 @valid_web_user

@@ -15,16 +15,25 @@ class CorrelatedForms():
         child_field_codes = self._get_field_codes(child_project)
         return parent_field_codes.intersection(child_field_codes)
 
-    def relate_forms(self, parent_id, child_id, new_child_action_label_from_parent):
-        parent_project = Project.get(self.dbm, parent_id)
+    def _remove_child_and_save_parent(self, parent_project, child_id):
+        parent_project.remove_child(child_id);
+        parent_project.save()
+
+    def _remove_child_from_parent(self, project_ids, child_id):
+        if project_ids:
+            [self._remove_child_and_save_parent(Project.get(self.dbm, p), child_id) for p in project_ids]
+
+    def relate_parent_and_child_forms(self, parent_id, child_id, new_child_action_label_from_parent):
         child_project = Project.get(self.dbm, child_id)
+        self._remove_child_from_parent(child_project.parent_uuids, child_id)
+        #TODO write test to verify that parent is reloaded to avoid ResourceConflict('Document update conflict.',)
+        parent_project = Project.get(self.dbm, parent_id)
         common_fields = list(self._get_common_fields(parent_project, child_project))
+        # FIXME wrong validation; common fields should not have field set
         if parent_project.is_field_set_field_present():
             raise ParentProjectWithFieldSetNotSupported()
         if len(common_fields) == 0:
             raise NoCommonFieldsException()
-        if parent_project.is_parent_project:
-            raise MultipleChildrenNotSupported()
 
         code_label_dict = self._get_code_label_dict(parent_project, common_fields)
         child_project.set_parent_info(parent_id, code_label_dict, new_child_action_label_from_parent)
@@ -45,9 +54,6 @@ class ParentProjectWithFieldSetNotSupported(Exception):
     pass
 
 class NoCommonFieldsException(Exception):
-    pass
-
-class MultipleChildrenNotSupported(Exception):
     pass
 
 
