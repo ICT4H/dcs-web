@@ -74,6 +74,9 @@
             <a id="questionnaire_tab" href="{{ project_links.questionnaire_link }}"
                class="{{ disable_link_class }}">{% trans "Questionnaire" %}</a>
         </li>
+        <li class="{% ifactivetab 'tab_nav' 'correlate' %}active{% else %}inactive{% endifactivetab %}">
+            <a id="correlate_tab" href="{{ project_links.correlate_link }}" class="{{ disable_link_class }}">{% trans "Correlate" %}</a>
+        </li>
         <li class="{% ifactivetab 'tab_nav' 'data_senders' %}active{% else %}inactive{% endifactivetab %}">
             <a id="data_senders_tab" href="{{ project_links.registered_datasenders_link}}"
                class="{{ disable_link_class }}">{% trans "My Data Senders" %}</a>

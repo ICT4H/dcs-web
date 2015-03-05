@@ -9,9 +9,9 @@ from datawinners.project.views.import_submissions_views import ImportSubmissionV
 from datawinners.project.wizard_view import edit_project, reminder_settings, get_templates, get_template_details
 from datawinners.project.preview_views import sms_preview, web_preview, smart_phone_preview
 from datawinners.project.views import submission_views
-from datawinners.project.views.views import questionnaire, create_data_sender_and_web_user, questionnaire_preview, subject_registration_form_preview, sender_registration_form_preview, project_overview, \
+from datawinners.project.views.views import create_data_sender_and_web_user, questionnaire_preview, subject_registration_form_preview, sender_registration_form_preview, project_overview, \
     registered_subjects, broadcast_message, sent_reminders, delete_project, undelete_project, edit_my_subject_questionnaire, project_has_data, subject_web_questionnaire, survey_web_questionnaire, edit_my_subject, get_questionnaire_ajax, \
-    rename_project, change_ds_group
+    rename_project, change_ds_group, correlate_forms, questionnaire
 
 js_info_dict = {
     'domain': 'djangojs',
@@ -41,6 +41,7 @@ urlpatterns = patterns('',
                        url(r'^project/wizard/edit/(?P<project_id>\w+?)/$', edit_project, name="edit_project"),
                        url(r'^project/overview/(?P<project_id>\w+?)/$', project_overview, name="project-overview"),
                        url(r'^project/language/(?P<project_id>\w+?)/$', QuestionnaireLanguageView.as_view(), name="project-language"),
+                       url(r'^project/correlate_link/(?P<project_id>\w+?)/$', correlate_forms, name='correlate_link'),
                        url(r'^project/registered_subjects/(?P<project_id>\w+?)/$', registered_subjects,
                            name="registered_subjects_default"),
                        url(r'^project/registered_subjects/(?P<project_id>\w+?)/entity/(?P<entity_type>.+?)/$', registered_subjects,
