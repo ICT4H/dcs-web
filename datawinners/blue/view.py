@@ -483,9 +483,11 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
         return submissions
 
     def get_formatted_submission(self, submission):
+        media_file_names = XFormImageProcessor().get_media_files_str(self.questionnaire.fields, submission.values)
         return {'submission_uuid': submission.id,
             'version': submission.version,
             'project_uuid': self.questionnaire.id,
+            'media_file_names_string': media_file_names,
             'created': py_datetime_to_js_datestring(submission.created),
             'xml': self._model_str_of(submission.id, get_generated_xform_id_name(self.questionnaire.xform)),
             'data': json.dumps(submission.values),
