@@ -62,7 +62,8 @@ def _project_details(manager, project_uuid):
         updated_xform = ParentXform().make_all_fields_read_only(xform) if project.is_parent_project else xform
         project_response = dict(name=project.name, project_uuid=project.id, version=project._doc.rev,
                                 created=str(project.created),
-                                xform=re.sub(r"\n", " ", XFormTransformer(updated_xform).transform()))
+                                xform=re.sub(r"\n", " ", XFormTransformer(updated_xform).transform()),
+                                has_media_field=project.is_media_type_fields_present)
         _update_response_with_relation(project, project_response)
         return project_response
     except DataObjectNotFound:
