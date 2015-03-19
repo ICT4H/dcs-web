@@ -450,10 +450,10 @@ msgid "Contact Info"
 msgstr ""
 
 msgid "Datawinner site admin"
-msgstr ""
+msgstr "Site admin"
 
 msgid "Datawinner administration"
-msgstr ""
+msgstr "Site administration"
 
 msgid "Failed Submissions"
 msgstr ""
@@ -549,14 +549,14 @@ msgid "help_project_creation"
 msgstr "Each project = one questionnaire. Don’t worry, you can create as many different projects as you like."
 
 msgid "How to use Datawinners"
-msgstr ""
+msgstr "How to use"
 
 msgid "Click on the triangle to the left of 'How to use DataWinners' to expand or collapse the box."
-msgstr ""
+msgstr "Click on the triangle to the left of 'How to use' to expand or collapse the box."
 
 msgid "help_how_to_use_dw"
 msgstr ""
-"DataWinners is the do-it-yourself Data Collection and Communication tool you "
+"Thia is a do-it-yourself Data Collection and Communication tool you "
 "need to make better decisions.<br />Click on the Create a New Project button "
 "to get started."
 
@@ -589,7 +589,7 @@ msgid ""
 msgstr ""
 
 msgid "To get started with DataWinners"
-msgstr ""
+msgstr "To get started"
 
 msgid "order_to_create_project"
 msgstr "create a new Questionnaire"
@@ -623,7 +623,7 @@ msgstr ""
 "cell B2, type Data Sender.  In cell C2, type the name of your Data Sender"
 "(example:  John Smith).  In cell D2, type the mobile telephone number of the "
 "Data Sender.In cell E2, type a unique ID code for the Data Sender."
-"DataWinners will automatically generate a unique ID number if you leave this "
+"We will automatically generate a unique ID number if you leave this "
 "cell blank.In cell F2, type the location of the Data Sender.In cell G2 type "
 "the GPS coordinates of the Data Sender (Right click on cell G2, choose "
 "\"Format Cells\",Choose \"Text\", then click \"OK\".  Then enter the GPS "
@@ -689,7 +689,7 @@ msgstr ""
 "B2, type the Subject type (example: Clinic). In cell C2, type the nameof "
 "your Subject (example:  Northern Clinic). In cell D2, type the mobile "
 "telephone number of the Subject.In cell E2, type a unique ID code for the "
-"Subject. DataWinners will automatically generate a unique ID number if you "
+"Subject. We will automatically generate a unique ID number if you "
 "leave this cell blank.In cell F2, type the location of the Subject. In "
 "cellG2 type the GPS coordinates of the Subject (Right click on cell G2, "
 "choose \"Format Cells\", Choose \"Text\",then click \"OK\". Then enter the "
@@ -793,10 +793,10 @@ msgstr ""
 "send you answers to yourquestionnaire. They are usually based in the field."
 "<br /><br />You can <strong>register Data Senders</strong> by entering some "
 "basic information (name, location,telephone number) about each Data Sender."
-"DataWinners will use the Data Sender's telephone number as the "
+"We will use the Data Sender's telephone number as the "
 "<strong>Unique Identification Number</strong>.By registering your Data "
 "Senders now they won't have to send you this information (example: name) "
-"each timethey respond to your questionnaire. DataWinners will recognize each "
+"each timethey respond to your questionnaire. We will recognize each "
 "Data Sender by his or her registeredtelephone number.<br /><br />"
 
 msgid "r_tooltip_datasenders_sender"
@@ -1081,7 +1081,7 @@ msgstr ""
 msgid "r_tooltip_profile_subjects"
 msgstr ""
 "Click one of the radio buttons to tell us the subject of your questionnaire. "
-"DataWinners willprovide you the step-by-step instructions for your choice. "
+"We will provide you the step-by-step instructions for your choice. "
 "Don’t worry, you can always decideor change your mind later."
 
 msgid "Question"
@@ -1093,14 +1093,14 @@ msgstr ""
 msgid "q_tooltip_question_detail_code"
 msgstr ""
 "Each question in a questionnaire is identified by its own "
-"unique<strong>Question Code</strong>. This Question Code tells DataWinners "
-"whatquestion is answered by the Data Sender.<br/><br/>"
+"unique<strong>Question Code</strong>. This Question Code tells us "
+"what question is answered by the Data Sender.<br/><br/>"
 
 msgid "r_tooltip_question_detail_code"
 msgstr ""
 "Enter a 1 or 2 character code (letters, numbers or both). Your Data "
 "Senderstype the \"+\" code followed by the question code (example: +rpd) for "
-"each question.This will tell DataWinners what question the Data Sender is "
+"each question.This will tell us what question the Data Sender is "
 "answering."
 
 msgid "Answer Type"
@@ -1272,7 +1272,7 @@ msgid "/media/files/DataWinners_InstallDataWinnersOnYourSmartphone.en.pdf"
 msgstr ""
 
 msgid "Install DataWinners on your Smartphone"
-msgstr ""
+msgstr "Install on your Smartphone"
 
 msgid "Tutorial"
 msgstr ""
@@ -1296,11 +1296,11 @@ msgid "Questionnaire Code:"
 msgstr ""
 
 msgid "tooltip_for_reminder"
-msgstr "For each Submission Deadline, DataWinners will divide authorized Data Senders into two groups:  those who have submitted and those who have not. DataWinners will then send automatic SMS reminders to the non-submitters."
+msgstr "For each Submission Deadline, we will divide authorized Data Senders into two groups:  those who have submitted and those who have not. We will then send automatic SMS reminders to the non-submitters."
 
 msgid "q_tooltip_questionnaire_code"
 msgstr ""
-"All questionnaires have a Unique Questionnaire Code. DataWinners uses this "
+"All questionnaires have a Unique Questionnaire Code. We uses this "
 "unique code to correctly identify your questionnaire. Use the recommended "
 "code or change it if you like."
 
@@ -1317,7 +1317,7 @@ msgid "Save"
 msgstr ""
 
 msgid "tooltip_question_sms"
-msgstr "Submissions that go beyond 160 characters cannot be received by DataWinners. This running count shows an\
+msgstr "Submissions that go beyond 160 characters cannot be received by us. This running count shows an\
  approximate number of characters needed to respond to all questions in your Questionnaire."
 
 msgid "Print"
@@ -1345,7 +1345,7 @@ msgid "SMS Questionnaire Code:"
 msgstr ""
 
 msgid "tooltip_question_code"
-msgstr "All Questionnaires have a unique Questionnaire Code. DataWinners uses this code to link SMS submissions to the correct Questionnaire. Use a code that is short and easy for your Data Senders to understand."
+msgstr "All Questionnaires have a unique Questionnaire Code. We uses this code to link SMS submissions to the correct Questionnaire. Use a code that is short and easy for your Data Senders to understand."
 
 msgid "SMS Preview"
 msgstr ""
@@ -1419,10 +1419,10 @@ msgstr ""
 "send you answers to yourquestionnaire. They are usually based in the field."
 "<br /><br />You can <strong>register Data Senders</strong> by entering some "
 "basic information (name, location,telephone number) about each Data Sender."
-"DataWinners will use the Data Sender's telephone number as the "
+"We will use the Data Sender's telephone number as the "
 "<strong>Unique Identification Number</strong>.By registering your Data "
 "Senders now they won't have to send you this information (example: name) "
-"each timethey respond to your questionnaire. DataWinners will recognize each "
+"each timethey respond to your questionnaire. We will recognize each "
 "Data Sender by his or her registeredtelephone number."
 
 msgid "r_tooltip_reminders"
@@ -1466,7 +1466,7 @@ msgid "See the data you received"
 msgstr ""
 
 msgid "See if DataWinners received your SMS. (Go to "
-msgstr ""
+msgstr "See if site has received your SMS. (Go to "
 
 msgid "All Data Records "
 msgstr ""
@@ -1494,9 +1494,9 @@ msgstr ""
 "Your Data Senders collect data about <strong>Subjects</strong>, which are "
 "often people (patients, farmers)or things (health clinics, retail shops). "
 "<strong>Subjects</strong> can also be staff who send you theirmonthly "
-"activity reports.<br /><br />DataWinners gives you the option to "
+"activity reports.<br /><br />We gives you the option to "
 "<strong>Register Subjects</strong> by entering basic data (name,location, "
-"subject type) about each subject. DataWinners will then give each subject a "
+"subject type) about each subject. We will then give each subject a "
 "<strong>UniqueIdentification Number ('ID')</strong>. Data Senders will "
 "always identify <strong>Subjects by</strong> theirID. This saves time and "
 "space in the SMS because Data Senders will not have to type the name, "
@@ -1615,7 +1615,7 @@ msgid "Login"
 msgstr ""
 
 msgid "Sign In to Your Account on DataWinners"
-msgstr ""
+msgstr "Sign In to Your Account"
 
 msgid "Not registered?"
 msgstr ""
@@ -1658,7 +1658,7 @@ msgstr ""
 
 msgid ""
 "Type the full email address you use to sign in to your DataWinners Account."
-msgstr ""
+msgstr "Type the full email address you use to sign in to your Account."
 
 msgid "We will email you a code to this Email."
 msgstr ""
@@ -1721,7 +1721,7 @@ msgid "Settings have been updated successfully"
 msgstr ""
 
 msgid "Your organization does not have a telephone number assigned. Please contact DataWinners Support."
-msgstr ""
+msgstr "Your organization does not have a telephone number assigned. Please contact Support."
 
 msgid "We could not import your data ! You are using a document format we canʼt import. Please use the excel (.xls) template file!"
 msgstr ""
@@ -1733,7 +1733,7 @@ msgid "Register Changes"
 msgstr "Register"
 
 msgid "Sign Up to Try DataWinners Free"
-msgstr ""
+msgstr "Sign Up to Try Free"
 
 msgid "Your Organization"
 msgstr ""
@@ -1748,7 +1748,7 @@ msgid "Sign in here"
 msgstr ""
 
 msgid "Sign Up To Start Using DataWinners Now"
-msgstr ""
+msgstr "Sign Up To Start Using Now"
 
 msgid "Sign in"
 msgstr ""
@@ -1891,14 +1891,14 @@ msgid "User has been added successfully"
 msgstr ""
 
 msgid "agree-terms"
-msgstr "I agree to the DataWinners <a target=\"_blank\" href=\"/en/terms-and-conditions/\"  id=\"link-terms-and-conditions\">Terms and Conditions</a>"
+msgstr "I agree to the <a target=\"_blank\" href=\"/en/terms-and-conditions/\"  id=\"link-terms-and-conditions\">Terms and Conditions</a>"
 
 
 msgid "I Agree"
 msgstr ""
 
 msgid "To sign up for a DataWinners account, you need to agree to our Terms and Conditions"
-msgstr "To sign up for a DataWinners account, you need to agree to our <a class='terms_and_condition' href=\"/en/terms-and-conditions/\" target=\"_blank\">Terms and Conditions</a>"
+msgstr "To sign up for a account, you need to agree to our <a class='terms_and_condition' href=\"/en/terms-and-conditions/\" target=\"_blank\">Terms and Conditions</a>"
 
 msgid "learn-about-partners-clients"
 msgstr "Learn more about our <a href=\"/en/about-us/partners\">partners</a> &amp; "
@@ -2032,10 +2032,10 @@ msgid "Time Period"
 msgstr ""
 
 msgid "tooltip_error_language"
-msgstr "Data Senders receive an automatic reply SMS from DataWinners after every Submission.  There are two types of automatic reply SMS:  1) Questionnaire-level (Example: “Thank you David.  We received your SMS.) and; 2) Account-level (Example:  Error.  You are not registered as a Data Sender. Please contact your supervisor.”). Select your language preference for the Questionnaire-level reply SMS here. You can set your language preference for the Account-level reply SMS on the Languages page."
+msgstr "Data Senders receive an automatic reply SMS from us after every Submission.  There are two types of automatic reply SMS:  1) Questionnaire-level (Example: “Thank you David.  We received your SMS.) and; 2) Account-level (Example:  Error.  You are not registered as a Data Sender. Please contact your supervisor.”). Select your language preference for the Questionnaire-level reply SMS here. You can set your language preference for the Account-level reply SMS on the Languages page."
 
 msgid "tooltip_language_checkbox"
-msgstr " Click on the blue background to slide this switch to “OFF” and click the Save button to stop DataWinners from sending out automatic reply messages for this questionnaire.  <br /> Click on the grey background to slide this switch to “ON” and click the Save button to reactivate."
+msgstr " Click on the blue background to slide this switch to “OFF” and click the Save button to stop us from sending out automatic reply messages for this questionnaire.  <br /> Click on the grey background to slide this switch to “ON” and click the Save button to reactivate."
 
 msgid "Your project"
 msgstr ""
@@ -2067,7 +2067,7 @@ msgid "Learn more about us"
 msgstr ""
 
 msgid "What is DataWinners"
-msgstr ""
+msgstr "What is this service"
 
 msgid "Success Stories"
 msgstr ""
@@ -2246,15 +2246,14 @@ msgid "Add Senders"
 msgstr ""
 
 msgid "SMS sent to telephone company. Upon receipt of delivery confirmation, DataWinners will update the counter on the "
-msgstr ""
+msgstr "SMS sent to telephone company. Upon receipt of delivery confirmation, We will update the counter on the "
 
 msgid "Your message could not be sent."
-msgstr "You cannot send SMS because your DataWinners account hasn’t been configured to send SMS. Please contact our support team: support@datawinners.com"
+msgstr "You cannot send SMS because your account hasn’t been configured to send SMS. Please contact our support team"
 
 
-msgid "You cannot send messages to the following number as it is set up to explicitly receive Data Sender Submissions. For more information contact support@datawinners.com: %(failed_numbers)s."
-msgstr "You cannot send messages to the following number as it is set up to explicitly receive Data Sender Submissions: %(failed_numbers)s. \
- We have successfully sent your message to all other numbers. For more information contact support@datawinners.com."
+msgid "You cannot send messages to the following number as it is set up to explicitly receive Data Sender Submissions. For more information contact support@datawi: %(failed_numbers)s."
+msgstr "You cannot send messages to the following number. For more information contact support."
 
 
 msgid "Please Select..."
@@ -2624,7 +2623,7 @@ msgstr "If you delete this question, any previously collected data will be lost.
 
 msgid "learn_more_delete_question"
 msgstr "<br/>View your received data by a particular Reporting Period (Example: All reports sent in for January) instead of when the reports were actually received (Example: All reports sent in between January 1 – 31).<br/>"
-       "This is very useful if you give your Data Senders until February 5<sup>th</sup> to submit their January report.<br/> DataWinners will correctly separate the reports into their correct reporting period. "
+       "This is very useful if you give your Data Senders until February 5<sup>th</sup> to submit their January report.<br/> We will correctly separate the reports into their correct reporting period. "
        "You can translate or edit this question, but try to keep the same meaning (Example: “What month and year are you reporting on?”)"
        "<br/><br/><a class='hide_link' href=\"javascript:void(0);\">Hide Help</a>"
 
@@ -2779,7 +2778,7 @@ msgid "Fill out the template with your %(entity_type)s' information"
 msgstr ""
 
 msgid "The last question is optional.  If you already have ID numbers for your %(entity_type)s, fill them in.  If not, DataWinners will generate them for you"
-msgstr ""
+msgstr "The last question is optional.  If you already have ID numbers for your %(entity_type)s, fill them in.  If not, we will generate them for you"
 
 msgid "Save the template on your computer"
 msgstr ""
@@ -3630,10 +3629,10 @@ msgid "Your Free Basic Account Has Expired"
 msgstr ""
 
 msgid "Thank you for test-driving DataWinners during the past year."
-msgstr ""
+msgstr "Thank you for test-driving during the past year."
 
 msgid "Subscribe now to continue using your DataWinners Account and the<br/>data you have collected over the past year."
-msgstr ""
+msgstr "Subscribe now to continue using your Account and the<br/>data you have collected over the past year."
 
 msgid "Your organization's account Administrator %s cannot be deleted"
 msgstr ""
@@ -3675,7 +3674,7 @@ msgid "If you are reporting on a specific Subject, you must use the Subject’s 
 msgstr ""
 
 msgid "DataWinners Automatic Reply SMS"
-msgstr ""
+msgstr "Automatic Reply SMS"
 
 msgid "Refer to the Example SMS Answer and re-type your SMS"
 msgstr ""
@@ -3966,10 +3965,10 @@ msgid "Deleted User(s)"
 msgstr ""
 
 msgid "Note, the following Data Senders will not be deleted as they are DataWinners users:"
-msgstr ""
+msgstr "Note, the following Data Senders will not be deleted as they are users:"
 
 msgid "You cannot delete the following Data Senders as they are DataWinners users:"
-msgstr ""
+msgstr "You cannot delete the following Data Senders as they are users:"
 
 msgid "Deleted User"
 msgstr ""
@@ -3981,7 +3980,7 @@ msgid "You have not registered a reporter yet."
 msgstr ""
 
 msgid "View and manage the users of your DataWinners account."
-msgstr ""
+msgstr "View and manage the users of your account."
 
 msgid "You have made changes to your Questionnaire."
 msgstr ""
@@ -4038,7 +4037,7 @@ msgid "Select a Data Sender"
 msgstr ""
 
 msgid "You have successfully signed up with DataWinners"
-msgstr ""
+msgstr "You have successfully signed up"
 
 msgid "Last Step: Activate your account"
 msgstr ""
@@ -4053,7 +4052,7 @@ msgid "Assign a unique ID for each Identification Number."
 msgstr ""
 
 msgid "Leave this column blank if you want DataWinners to assign an ID for you."
-msgstr ""
+msgstr "Leave this column blank if you want to assign an ID automatically for you."
 
 msgid "Enter a Word with a maximum %s of characters."
 msgstr ""
@@ -4191,16 +4190,16 @@ msgid "How to Send Data"
 msgstr ""
 
 msgid "DataWinners allows you to send your data 3 different ways. Choose the channel most convenient for you."
-msgstr ""
+msgstr "We allows you to send your data 3 different ways. Choose the channel most convenient for you."
 
 msgid "Use any computer connected to the Internet to send in data. Log in to your DataWinners account to fill out the Questionnaire online."
-msgstr ""
+msgstr "Use any computer connected to the Internet to send in data. Log in to your account to fill out the Questionnaire online."
 
 msgid "Android Smartphone"
 msgstr ""
 
 msgid "Use any Android Smartphone to send data. Download the Questionnaires directly onto your phone. Log in to your DataWinners account for further instructions."
-msgstr ""
+msgstr "Use any Android Smartphone to send data. Download the Questionnaires directly onto your phone."
 
 msgid "Use any simple mobile phone to send data using a single SMS. Ask your project manager for the SMS Questionnaire."
 msgstr ""
@@ -4227,7 +4226,7 @@ msgid "You have successfully activated your account. Happy data submission!"
 msgstr ""
 
 msgid "Your account has been deactivated. Please contact the datawinners support at <a href='mailto:support@datawinners.com'>support@datawinners.com</a> for reactivation of the account."
-msgstr "Your account has been deactivated. Please contact the datawinners support at <a href='mailto:support@datawinners.com'>support@datawinners.com</a> for reactivation of the account."
+msgstr "Your account has been deactivated. Please contact the support."
 
 msgid "Back to All Subjects List"
 msgstr "Back to All Subjects List"
@@ -4254,19 +4253,19 @@ msgid "You have reached your limit of 1000 free Submissions. Subscribe to a mont
 msgstr ""
 
 msgid "Your DataWinners account has been deactivated. "
-msgstr ""
+msgstr "Your account has been deactivated. "
 
 msgid "To reactivate it, subscribe to a monthly subscription by contacting your Project Manager or DW Support at <a href='mailto:support@datawinners.com'>support@datawinners.com</a>."
-msgstr ""
+msgstr "To reactivate it, contact support."
 
 msgid "Get the Most out of Datawinners!"
-msgstr ""
+msgstr "Get the Most out of service!"
 
 msgid "Find Out What Datawinners Can Do For You!"
-msgstr ""
+msgstr "Find Out What We Can Do For You!"
 
 msgid "Datawinners | We're here to Help!"
-msgstr ""
+msgstr "Datawinners | We're here to Help!"
 
 msgid "Datawinners | Join our Online Community!"
 msgstr ""
@@ -4284,16 +4283,16 @@ msgid "Datawinners | Share Your Experience!"
 msgstr ""
 
 msgid "Your Datawinners Subscription is About to End!"
-msgstr ""
+msgstr "Your Subscription is About to End!"
 
 msgid "Your Free Subscription to Datawinners Ends Tomorrow - Download Your Data!"
-msgstr ""
+msgstr "Your Free Subscription to Ends Tomorrow - Download Your Data!"
 
 msgid "Datawinners | Your Account Has Expired!"
-msgstr ""
+msgstr "Your Account Has Expired!"
 
 msgid "We'd like to invite You to Back to Datawinners!"
-msgstr ""
+msgstr "We'd like to invite You to Back!"
 
 msgid "DataWinners | 50 SMS Submission Limit Almost Reached: Upgrade to Continue Collecting Data via SMS!"
 msgstr ""
@@ -4302,7 +4301,7 @@ msgid "DataWinners | Submission Limit Reached: Upgrade to Continue Collecting Da
 msgstr ""
 
 msgid "Your DataWinners Submission Limit is Approaching!"
-msgstr ""
+msgstr "Your Submission Limit is Approaching!"
 
 msgid " of 160 characters used"
 msgstr ""
@@ -4326,7 +4325,7 @@ msgid "The Data Sender(s) are removed from project(s) successfully"
 msgstr ""
 
 msgid "Note, the following Data Senders were not removed as they are DataWinners users: "
-msgstr ""
+msgstr "Note, the following Data Senders were not removed as they are users: "
 
 msgid "The Data Sender(s) are added to Questionnaire(s) successfully"
 msgstr ""
@@ -4542,7 +4541,7 @@ msgstr ""
 
 
 msgid "Data Senders must use Identification Numbers that are already registered in Datawinners."
-msgstr ""
+msgstr "Data Senders must use Identification Numbers that are already registered in."
 
 msgid "more_wrong_question"
 msgstr "..."
@@ -4551,7 +4550,7 @@ msgid "Error. You are not registered as a Data Sender. Please contact your super
 msgstr ""
 
 msgid "Sorry, this number has already been used for a different DataWinners Basic account."
-msgstr ""
+msgstr "Sorry, this number has already been used for a different Basic account."
 
 msgid "Answer must be the Identification Number of the %s you are reporting on."
 msgstr ""
@@ -4569,7 +4568,7 @@ msgid "The Data Sender you are submitting on behalf of cannot submit to this Que
 msgstr ""
 
 msgid "DataWinners analyzes"
-msgstr "DataWinners analyzes each SMS Submission and automatically sends back an SMS reply."
+msgstr "Analyzes each SMS Submission and automatically sends back an SMS reply."
 
 msgid "%s with %s = %s not found."
 msgstr ""
@@ -4590,7 +4589,7 @@ msgid "Answer must be in the following format: xx.xxxx yy.yyyy Example: -18.1324
 msgstr ""
 
 msgid "account wide sms help text"
-msgstr "These are general Automatic Reply SMS for your organization’s DataWinners account that are not Questionnaire-specific. Edit/translate these messages to fit your needs. Note: Any changes you make will apply for all Data Senders and all the Questionnaires."
+msgstr "These are general Automatic Reply SMS for your organization’s account that are not Questionnaire-specific. Edit/translate these messages to fit your needs. Note: Any changes you make will apply for all Data Senders and all the Questionnaires."
 
 msgid "Automatic reply messages turned off for this questionnaire."
 msgstr ""
@@ -4632,13 +4631,13 @@ msgid "Oops, something went wrong. You deleted a personalized response (gray box
 msgstr ""
 
 msgid "questionnaire reply learn more text part1"
-msgstr "Click the drop down to choose an existing language or add a new one to meet your needs. Translate each automatic reply SMS. For some replies, DataWinners creates a personalized response. These personalized messages have text inside a gray box (example:"
+msgstr "Click the drop down to choose an existing language or add a new one to meet your needs. Translate each automatic reply SMS. For some replies, we creates a personalized response. These personalized messages have text inside a gray box (example:"
 
 msgid "customized reply learn more text part2"
-msgstr "). For each reply, DataWinners will personalize the information found in the rectangle."
+msgstr "). For each reply, we will personalize the information found in the rectangle."
 
 msgid "account wide sms learn more text part1"
-msgstr "Translate each automatic reply SMS. For some replies, DataWinners creates a personalized response. These personalized messages have text inside a gray box (example:"
+msgstr "Translate each automatic reply SMS. For some replies, we creates a personalized response. These personalized messages have text inside a gray box (example:"
 
 msgid "nested repeats not supported"
 msgstr "more than one level of repeated questions."
@@ -4659,7 +4658,7 @@ msgid "q_tooltip_advanced_questionnaire_option"
 msgstr "Use this option if you want to create advanced features in your Questionnaire such as skip logic or repeated sets of questions.<br/>Click on Upload an XLSForm to find out more!<br></br>"
 
 msgid "r_tooltip_advanced_questionnaire_option"
-msgstr "This is our first release of the Upload XLSForm feature.  Please help us to improve it by sending any feedback to <a> support@datawinners.com. </a>"
+msgstr "This is our first release of the Upload XLSForm feature.  Please help us to improve it by sending any feedback to support. </a>"
 
 msgid "Prefetch of csv not supported"
 msgstr "preloading of CSV data (the PullData() function)."
@@ -4680,7 +4679,7 @@ msgid "Label mandatory for question with name [%s]"
 msgstr "optional labels. Label is a mandatory field for question with name [%s]"
 
 msgid "Please upload an excel file"
-msgstr "The file you are trying to upload is unsupported. DataWinners only support .xls and .xlxs files."
+msgstr "The file you are trying to upload is unsupported. We only support .xls and .xlxs files."
 
 msgid "Label mandatory for choice option with name %s"
 msgstr "optional labels. Label is a mandatory field for choice option with name [%s]"
@@ -4776,10 +4775,10 @@ msgid "SMS Text"
 msgstr ""
 
 msgid "help_text_month"
-msgstr "With DataWinners you can send reminders up to 7 days before and after your monthly deadline to your registered Data Senders who have not yet submitted data. All Reminders are sent out around 8:00 AM EAT"
+msgstr "You can send reminders up to 7 days before and after your monthly deadline to your registered Data Senders who have not yet submitted data. All Reminders are sent out around 8:00 AM EAT"
 
 msgid "help_text_week"
-msgstr "With DataWinners you can send reminders up to 3 days before and after your weekly deadline to your registered Data Senders who have not yet submitted data. All Reminders are sent out around 8:00 AM EAT"
+msgstr "With us you can send reminders up to 3 days before and after your weekly deadline to your registered Data Senders who have not yet submitted data. All Reminders are sent out around 8:00 AM EAT"
 
 msgid "le_for_french"
 msgstr "  on  "
