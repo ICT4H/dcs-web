@@ -21,10 +21,10 @@ msgstr ""
  
 msgid "subscription_details"
 msgstr ""
-"<h5>Subscription Details</h5><p>Learn more about</p>"
-"<p><ul class=\"margin_left_10\"><li>Where Garner is available</li>"
-"<li>Key details of Monthly Subscription</li>"
-"<li>Our Consulting Service</li></ul></p>"
+"<h5>Install Android Application</h5>"
+"<p><img src='/media/images/qrcode.png' alt='qrcode'></p>"
+"<p>Or, <a target='_blank' href='https://www.dropbox.com/s/0uvdjzklmsybu57/garner.apk?dl=0'>click here</a> from your android phone browser to install.</p>"
+"<p>In case install is blocked, enable Unknown sources in Settings > Security. <a target='_blank' href='http://developer.android.com/distribute/tools/open-distribution.html#unknown-sources'>Read more.</a></p>"
 
 
 msgid "Sign In to Your Account on DataWinners"
