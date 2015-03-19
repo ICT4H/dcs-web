@@ -46,9 +46,9 @@
 
     <div>
         {% if is_eligible_child %}
-            <h5 class="margin_top_15">Select master/parent form below</h5>
-            <p class="margin_top_15">Forms that don't have groups or fields and are not parent/master to other forms are listed below.
-            <br />Selected form should have atleast one field identical to current form.</p>
+            <h5 class="margin_top_15">Select master/parent form to correlate</h5>
+            <p class="margin_top_15">Forms that don't have groups or fields and are not parent/master of other forms are listed below.
+            <br />Selected form should have at least one question name common with current form. Please ensure that common field is not part of group or repeat question.</p>
             {% if message %}
                <div id="flash-message" class="{% if success %}success-message-box{% else %}message-box{% endif %}">
                    {{ message }}
@@ -56,7 +56,7 @@
             {% endif %}
             <div class="margin_top_15"></div>
             <form action="{% url correlate_link project_id %}" method="post" class="correlated_forms">{% csrf_token %}
-                <p class="margin_bottom_10"><input class="button" type="submit" value="Update form" /></p>
+                <p class="margin_bottom_10"><input class="button" type="submit" value="Correlate" /></p>
                 {% for field in correlation_form %}
                     <p>{{ field }}</p>
                     {% if field.errors %}
@@ -67,7 +67,7 @@
                 {% endfor %}
             </form>
         {% else %}
-            <h5 class="margin_top_15">Parent project...</h5>
+            <h5 class="margin_top_15">This form is already parent/master of another form.</h5>
 
         {% endif %}
     </div>

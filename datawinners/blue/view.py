@@ -91,7 +91,7 @@ class ProjectUpload(View):
                 return HttpResponse(content_type='application/json', content=json.dumps({
                     'success': False,
                     'error_msg': error_list,
-                    'message_prefix': _("Sorry! We does not support"),
+                    'message_prefix': _("Sorry! We do not support"),
                     'message_suffix': _("Update your XLSForm and upload again.")
                 }))
             tmp_file.seek(0)
