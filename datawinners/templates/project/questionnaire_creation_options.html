@@ -9,21 +9,7 @@
         </div>
         <h6 class="create_questionnaire_help">{% trans "Start with a blank Questionnaire and add your list of questions" %}</h6>
 
-        <div id="copy_existing_questionnaire" class="questionnaire_type_header" data-bind="click: getExistingQuestionnaireList">
-            <span class="header">{% trans "Copy an Existing Questionnaire" %}</span>
-        </div>
 
-        <div>
-            {% include 'project/copy_existing_questionnaires.html' %}
-        </div>
-
-        <div class="questionnaire_type_header" data-bind="click: getTemplates">
-            <span class="header">{% trans "Use a Template" %}</span>
-        </div>
-
-        <div>
-            {% include 'project/questionnaire_template.html' %}
-        </div>
         <div class="advanced_questionnaire_section_header">
             <span>{% trans "Advanced Option (Beta Version)" %}</span>
             <img class="help_icon submission_date_help_icon" src="/media/images/help_icon.png">
@@ -40,7 +26,7 @@
             <span class="header">{% trans "Upload an XLSForm" %}</span>
         </div>
         <div>
-            <h6 class="create_questionnaire_help">{% trans "Choose this option to create a Questionnaire with advanced features by uploading an XLSForm (Excel file)" %} <a class="dialog-anchor xls_learn_more">{% trans "Learn More" %}</a></h6>
+            <h6 class="create_questionnaire_help">{% trans "Choose this option to create a Questionnaire with advanced features by uploading an XLSForm (Excel file)" %}</h6>
         </div>
     </div>
     <div class="right_aligned_button create_project">
