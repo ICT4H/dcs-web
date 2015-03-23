@@ -67,13 +67,7 @@ var questionnaireCreationOptionsViewModel = {
             if (selectedOption == 0) {
                 location.hash = 'questionnaire/new';
             }
-            else if (selectedOption == 2) {
-                location.hash = 'questionnaire/load/' + that.selectedTemplateId();
-            }
             else if(selectedOption == 1){
-                location.hash = 'questionnaire/copy/' + that.selectedQuestionnaireId();
-            }
-            else if(selectedOption == 3){
                 location.hash = 'questionnaire/xlsupload/';
             }
         }
@@ -83,13 +77,7 @@ var questionnaireCreationOptionsViewModel = {
         var creationOption = this.selectedCreationOption();
         if(creationOption === false)
             return false;
-        if(creationOption == 0)
-            return true;
-        if(creationOption == 1 && this.selectedQuestionnaireId())
-            return true;
-        if(creationOption == 2 && this.selectedTemplateId())
-            return true;
-        if(creationOption == 3)
+        if(creationOption == 0 || creationOption == 1)
             return true;
         return false;
     }, questionnaireCreationOptionsViewModel);
