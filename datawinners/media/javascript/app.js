@@ -11620,9 +11620,15 @@ define( 'enketo-js/plugins',[ 'jquery' ], function( $ ) {
      */
     $.fn.clearInputs = function( ev ) {
         ev = ev || 'edit';
+        var is_clone = false;
         return this.each( function() {
+            if($( this ).find( '.file-preview').length > 0){
+                is_clone = true
+            }
             //remove media previews
             $( this ).find( '.file-preview' ).remove();
+            $( this ).find( '.remove-file' ).remove();
+            $( this ).find( '.get_image_link' ).remove();
             //remove input values
             $( this ).find( 'input, select, textarea' ).each( function() {
                 var type = $( this ).attr( 'type' );
@@ -11649,7 +11655,7 @@ define( 'enketo-js/plugins',[ 'jquery' ], function( $ ) {
                         /* falls through */
                     case 'hidden':
                     case 'textarea':
-                        if ( $( this ).val() !== '' ) {
+                        if ( is_clone === false) {
                             $( this ).val( '' ).trigger( ev );
                         }
                         break;
@@ -11749,7 +11755,7 @@ define( 'enketo-js/extend',['require'],function( window ) {
 
         offset.minstotal = this.getTimezoneOffset();
         offset.direction = ( offset.minstotal < 0 ) ? '+' : '-';
-        offset.hrspart = pad2( Math.abs( Math.floor( offset.minstotal / 60 ) ) );
+        offset.hrspart = pad2( Math.abs( Math.floor( Math.abs(offset.minstotal) / 60 ) ) );
         offset.minspart = pad2( Math.abs( Math.floor( offset.minstotal % 60 ) ) );
 
         return new Date( this.getTime() - ( offset.minstotal * 60 * 1000 ) ).toISOString()
@@ -15279,7 +15285,7 @@ define( 'enketo-js/Form',[ 'enketo-js/FormModel', 'enketo-js/widgets', 'jquery',
          */
 
         function Form( formSelector, dataStr, dataStrToEdit, unsubmitted ) {
-            var model, dataToEdit, cookies, form, $form, $formClone, repeatsPresent, fixExpr,
+            var model, dataToEdit, cookies, form, $form, $formClone, repeatsPresent, fixExpr, _getMaxSize,
                 loadErrors = [];
 
             /**
@@ -15563,6 +15569,10 @@ define( 'enketo-js/Form',[ 'enketo-js/FormModel', 'enketo-js/widgets', 'jquery',
                 return expr;
             };
 
+            _getMaxSize = function() {
+                var maxSize = $( document ).data( 'maxSubmissionSize' ) || 5 * 1024 * 1024;
+                return maxSize;
+            }
 
             /**
              * Inner Class dealing with the HTML Form
@@ -16984,6 +16994,9 @@ define( 'enketo-js/Form',[ 'enketo-js/FormModel', 'enketo-js/widgets', 'jquery',
 
                     $clone.clearInputs( '' );
 
+                    // Re-initiate widgets in clone after default values have been set
+                    widgets.destroy( $clone );
+                    widgets.init( $clone );
                     // Note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
                     // has the same ref attribute as the nodeset attribute of the repeat. This would cause a problem determining 
                     // the proper index if .or-repeat was not included in the selector
@@ -17016,9 +17029,7 @@ define( 'enketo-js/Form',[ 'enketo-js/FormModel', 'enketo-js/widgets', 'jquery',
                     // this will trigger setting default values and other stuff
                     $clone.trigger( 'addrepeat', index + 1 );
 
-                    // Re-initiate widgets in clone after default values have been set
-                    widgets.destroy( $clone );
-                    widgets.init( $clone );
+
 
                     //p.report();
                     return true;
@@ -17081,16 +17092,28 @@ define( 'enketo-js/Form',[ 'enketo-js/FormModel', 'enketo-js/widgets', 'jquery',
                     // event.stopImmediatePropagation();
 
                     // set file input values to the actual name of file (without c://fakepath or anything like that)
+                    var isValidFile = false;
+
                     if ( n.val.length > 0 && n.inputType === 'file' && $( this )[ 0 ].files[ 0 ] && $( this )[ 0 ].files[ 0 ].size > 0 ) {
                         n.val = $( this )[ 0 ].files[ 0 ].name;
+                        isValidFile = true;
                     }
 
                     if ( event.type === 'validate' ) {
                         // the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
                         // if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
                         validCons = ( n.enabled && n.inputType !== 'hidden' ) ? model.node( n.path, n.ind ).validate( n.constraint, n.xmlType ) : true;
-                    } else {
-                        validCons = model.node( n.path, n.ind ).setVal( n.val, n.constraint, n.xmlType );
+                    }
+                    else {
+                        if(isValidFile){
+                            if($( this )[ 0 ].files[ 0 ].size <= _getMaxSize())
+                            {
+                                validCons = model.node( n.path, n.ind ).setVal( n.val, n.constraint, n.xmlType );
+                            }
+                        }
+                        else{
+                            validCons = model.node( n.path, n.ind ).setVal( n.val, n.constraint, n.xmlType );
+                        }
                         // geotrace and geoshape are very complex data types that require various change events
                         // to avoid annoying users, we ignore the INVALID onchange validation result
                         validCons = ( validCons === false && ( n.xmlType === 'geotrace' || n.xmlType === 'geoshape' ) ) ? null : validCons;
@@ -19359,7 +19382,7 @@ function getFormData(data) {
 
 function addAttachmentData(formData) {
     var retainFiles = [];
-    var mediaInputs = $('form.or input[type="file"]')
+    var mediaInputs = $('form.or input[type="file"]');
     if (!mediaInputs)
         return formData;
 
@@ -19432,7 +19455,6 @@ requirejs( [ 'jquery', 'Modernizr', 'enketo-js/Form', 'file-manager' ],
 
         $( '#validate-form' ).before( formStr );
         $("form").trigger("initializePostFormLoadAction");
-        initializeForm();
         $("form").trigger("postFormLoadAction");
 
         //validate handler for validate button
@@ -19453,6 +19475,7 @@ requirejs( [ 'jquery', 'Modernizr', 'enketo-js/Form', 'file-manager' ],
                 alert( 'loadErrors: ' + loadErrors.join( ', ' ) );
             }
         }
+        initializeForm();
 
         //get query string parameter
 
@@ -30377,7 +30400,7 @@ define( 'enketo-widget/geo/geopicker',[ 'jquery', 'enketo-js/Widget', 'text!enke
                 };
                 // make the request for the Google Maps script asynchronously
                 apiKeyQueryParam = ( googleApiKey ) ? "&key=" + googleApiKey : "";
-                loadUrl = "http://maps.google.com/maps/api/js?v=3.exp" + apiKeyQueryParam + "&sensor=false&libraries=places&callback=gmapsLoaded";
+                loadUrl = "https://maps.google.com/maps/api/js?v=3.exp" + apiKeyQueryParam + "&sensor=false&libraries=places&callback=gmapsLoaded";
                 require( [ loadUrl ] );
                 // ensure if won't be requested again
                 googleMapsScriptRequested = true;
@@ -34621,6 +34644,7 @@ define( 'enketo-widget/file/filepicker',[ 'jquery', 'enketo-js/Widget', 'file-ma
             that = this;
 
         this.mediaType = $input.attr( 'accept' );
+        if (! this.mediaType) this.mediaType = $input.attr( 'data' );
 
         $input
             .attr( 'disabled', 'disabled' )
@@ -34631,16 +34655,48 @@ define( 'enketo-widget/file/filepicker',[ 'jquery', 'enketo-js/Widget', 'file-ma
                 '<div class="widget file-picker">' +
                 '<div class="fake-file-input"></div>' +
                 '<div class="file-feedback"></div>' +
-                '<div class="file-preview"></div>' +
                 '</div>' )
             .insertAfter( $input );
+        var $filePreview = $('<div class="file-preview"></div>');
+        $filePreview.insertAfter($input.parent());
         this.$feedback = this.$widget.find( '.file-feedback' );
-        this.$preview = this.$widget.find( '.file-preview' );
+        this.$preview = $filePreview;
+        var $downloadLink = $('<span class="get_image_link"></span>');
+        $downloadLink.insertAfter(this.$preview);
+        this.$downloadLink = $downloadLink;
         this.$fakeInput = this.$widget.find( '.fake-file-input' );
+        this.$deleteButton = $('<button class="remove-file"> Remove </button>');
+
+        Filepicker.prototype._showRemoveButton = function( preview, $input) {
+           var that = this;
+           that.$deleteButton.insertAfter(preview);
+           that.$deleteButton.click(function(){
+                $input.val( '' );
+                that._showPreview( null );
+                that._showFileName( null );
+                that.$deleteButton.remove();
+                $input.removeAttr( 'data-loaded-file-name' );
+                $input.trigger( 'change.file' );
+                that.$downloadLink.remove();
+           });
+
+        };
+        // show loaded file name regardless of whether widget is supported
+        this.showDownloadLinkAndPreview = function(existingFileName){
+            var submission_id = $('document').context.defaultView.surveyResponseId;
+            var location_image = "/download/attachment/"+submission_id+"/";
+            if (this.mediaType == "image/*"){
+                this._showPreview(location_image+"preview_"+existingFileName, this.mediaType);
+            }
+            this.$downloadLink.append('<a href="'+location_image+existingFileName+'" class="get_image_link">'+'Download file'+'</a>');
+            this._showRemoveButton(this.$preview, $input);
+        };
+
 
         // show loaded file name regardless of whether widget is supported
         if ( existingFileName ) {
             this._showFileName( existingFileName, this.mediaType );
+            this.showDownloadLinkAndPreview(existingFileName);
         }
 
         if ( !fileManager || !fileManager.isSupported() ) {
@@ -34680,25 +34736,50 @@ define( 'enketo-widget/file/filepicker',[ 'jquery', 'enketo-js/Widget', 'file-ma
 
     Filepicker.prototype._changeListener = function() {
         var that = this;
+        var old_files;
+        this.element.onclick = function(){
+//            storing the previously selected file to use when upload cancelled
+            old_files = $( this )[0].files;
+            return true;
+        };
 
         $( this.element ).on( 'change.passthrough.' + this.namespace, function( event ) {
             var file,
                 $input = $( this );
 
+            // get the file
+            file = this.files[ 0 ];
+
+            // To handle cancel issue on webkit browsers
+            if (file == undefined) {
+                event.stopPropagation();
+                if ($input.val()==''){
+                    that.$preview.empty();
+                    that.$deleteButton.remove();
+                    that.$downloadLink.remove();
+                    $(this).removeAttr( 'data-loaded-file-name' );
+                    that._showFileName( null );
+                    $input.trigger( 'change.file' );
+                }
+                else {
+                    $( this )[0].files = old_files;
+                }
+                event.preventDefault();
+                return false;
+            }
             // trigger eventhandler to update instance value
             if ( event.namespace === 'passthrough' ) {
                 $input.trigger( 'change.file' );
                 return false;
             }
 
-            // get the file
-            file = this.files[ 0 ];
-            $input.removeAttr( 'data-loaded-file-name' );
+            $(this).removeAttr( 'data-loaded-file-name' );
 
             // process the file
             fileManager.getFileUrl( file )
                 .then( function( url ) {
                     that._showPreview( url, that.mediaType );
+                    that._showRemoveButton(that.$preview, $input);
                     that._showFeedback( '' );
                     that._showFileName( file );
                     $input.trigger( 'change.passthrough' );
@@ -34706,14 +34787,22 @@ define( 'enketo-widget/file/filepicker',[ 'jquery', 'enketo-js/Widget', 'file-ma
                 .catch( function( error ) {
                     $input.val( '' );
                     that._showPreview( null );
+                    that._showFileName( null );
                     that._showFeedback( error.message, 'error' );
+                    $input.trigger( 'change.passthrough' );
                 } );
         } );
     };
 
     Filepicker.prototype._showFileName = function( file ) {
-        var fileName = ( typeof file === 'object' && file.name ) ? file.name : file;
-        this.$fakeInput.text( fileName );
+        if (file){
+            var fileName = ( typeof file === 'object' && file.name ) ? file.name : file;
+            this.$fakeInput.text( fileName );
+        }
+        else {
+
+            this.$fakeInput.text( '' );
+        }
     };
 
     Filepicker.prototype._showFeedback = function( message, status ) {
@@ -34726,7 +34815,7 @@ define( 'enketo-widget/file/filepicker',[ 'jquery', 'enketo-js/Widget', 'file-ma
     Filepicker.prototype._showPreview = function( url, mediaType ) {
         var $el;
 
-        this.$widget.find( '.file-preview' ).empty();
+
 
         switch ( mediaType ) {
             case 'image/*':
@@ -34742,8 +34831,10 @@ define( 'enketo-widget/file/filepicker',[ 'jquery', 'enketo-js/Widget', 'file-ma
                 $el = $( '<span>No preview for this mediatype</span>' );
                 break;
         }
-
+        this.$preview.empty();
         if ( url ) {
+//            Clearing preview before updating
+            this.$downloadLink.empty();
             this.$preview.append( $el.attr( 'src', url ) );
         }
     };
