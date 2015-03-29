@@ -24,7 +24,7 @@ from mangrove.errors.MangroveException import DataObjectNotFound
 from mangrove.form_model.form_model import FormModel
 from mangrove.form_model.project import Project
 from mangrove.transport.player.new_players import XFormPlayerV2
-from mangrove.utils.dates import convert_date_time_to_epoch
+from mangrove.utils.dates import convert_date_time_to_epoch, utcnow
 
 
 logger = logging.getLogger("datawinners.xlfrom.client")
@@ -63,7 +63,8 @@ def _project_details(manager, project_uuid):
         project_response = dict(name=project.name, project_uuid=project.id, version=project._doc.rev,
                                 created=str(project.created),
                                 xform=re.sub(r"\n", " ", XFormTransformer(updated_xform).transform()),
-                                has_media_field=project.is_media_type_fields_present)
+                                has_media_field=project.is_media_type_fields_present,
+                                last_updated=utcnow().isoformat())
         _update_response_with_relation(project, project_response)
         return project_response
     except DataObjectNotFound:
@@ -208,6 +209,7 @@ def get_projects_status(request):
     response_projects = []
     manager =  get_database_manager(request.user)
     client_projects = json.loads(request.POST['projects'])
+    current_date_time = utcnow().isoformat()
 
     for client_project in client_projects:
         try:
@@ -219,7 +221,7 @@ def get_projects_status(request):
         except Exception:
             response_projects.append({'id': client_project['id'], 'status': 'server-deleted'})
 
-    return response_json_cors(response_projects)
+    return response_json_cors({'outdated_projects': response_projects, 'last_updated': current_date_time})
 
 @csrf_exempt
 @basicauth_allow_cors()
