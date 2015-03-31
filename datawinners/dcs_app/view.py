@@ -4,6 +4,7 @@ import logging
 import re
 import json
 from sets import Set
+from datawinners.alldata.helper import get_all_project_for_user
 from datawinners.blue.correlated_xlxform import ParentXform
 
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, HttpResponse
@@ -43,9 +44,9 @@ def get_questions_paginated_or_by_ids(request):
         return response_json_cors(projects)
 
     project_list = []
-    rows = manager.load_all_rows_in_view('all_projects', descending=True)
+    rows = get_all_project_for_user(request.user)
     for row in rows:
-        questionnaire = FormModel.get(manager, row['id'])
+        questionnaire = FormModel.get(manager, row['value']['_id'])
         if questionnaire.xform:
             project_temp = dict(name=questionnaire.name, project_uuid=questionnaire.id, version=questionnaire._doc.rev)
             project_list.append(project_temp)
