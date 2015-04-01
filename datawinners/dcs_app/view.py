@@ -39,7 +39,7 @@ def get_questions_paginated_or_by_ids(request):
     ids = request.GET.getlist('ids')
 
     if ids:
-        projects = [_project_details(manager, project_id) for project_id in ids]
+        projects = [_project_details(manager, project_id, request.user) for project_id in ids]
         projects = list(filter(lambda x: x != None, projects))
         return response_json_cors(projects)
 
@@ -56,7 +56,7 @@ def get_questions_paginated_or_by_ids(request):
                                "start":start,
                                "length":length})
 
-def _project_details(manager, project_uuid):
+def _project_details(manager, project_uuid, user):
     try:
         project = Project.get(manager, project_uuid)
         xform = project.xform
@@ -65,12 +65,20 @@ def _project_details(manager, project_uuid):
                                 created=str(project.created),
                                 xform=re.sub(r"\n", " ", XFormTransformer(updated_xform).transform()),
                                 has_media_field=project.is_media_type_fields_present,
-                                last_updated=utcnow().isoformat())
+                                last_updated=utcnow().isoformat(),
+                                is_assigned=is_authorized_for_project(user, project))
         _update_response_with_relation(project, project_response)
         return project_response
     except DataObjectNotFound:
         #TODO raise not found exception or some mechanism to propagate this above
         return
+
+
+def is_authorized_for_project(request_user, project):
+    user_profile = request_user.get_profile()
+    if user_profile.reporter_id in project.data_senders:
+        return True
+    return False
 
 def _update_response_with_relation(project, project_response):
     if project.is_child_project:
@@ -211,18 +219,26 @@ def get_projects_status(request):
     manager =  get_database_manager(request.user)
     client_projects = json.loads(request.POST['projects'])
     current_date_time = utcnow().isoformat()
+    unassign_uuids = []
 
     for client_project in client_projects:
         try:
-            server_project = FormModel.get(manager, client_project['id'])
-            if(server_project._doc.void):
+            server_project = Project.get(manager, client_project['id'])
+            _add_to_unassigned(unassign_uuids, request.user, server_project)
+            if(server_project.is_void()):
                 response_projects.appened({'id': client_project['id'], 'status': 'server-deleted'})
             elif server_project.revision != client_project['rev'] :
                 response_projects.append({'id': server_project.id, 'status': 'outdated'})
         except Exception:
             response_projects.append({'id': client_project['id'], 'status': 'server-deleted'})
 
-    return response_json_cors({'outdated_projects': response_projects, 'last_updated': current_date_time})
+    return response_json_cors({'outdated_projects': response_projects, 'last_updated': current_date_time,
+                               'unassign_uuids': unassign_uuids})
+
+def _add_to_unassigned(unassigned_uuids, user, server_project):
+    if not is_authorized_for_project(user, server_project):
+        unassigned_uuids.append(server_project.id)
+
 
 @csrf_exempt
 @basicauth_allow_cors()
