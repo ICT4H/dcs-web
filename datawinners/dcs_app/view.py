@@ -219,21 +219,21 @@ def get_projects_status(request):
     manager =  get_database_manager(request.user)
     client_projects = json.loads(request.POST['projects'])
     current_date_time = utcnow().isoformat()
-    unassign_uuids = []
+    unassigned_uuids = []
 
     for client_project in client_projects:
         try:
-            server_project = Project.get(manager, client_project['id'])
-            _add_to_unassigned(unassign_uuids, request.user, server_project)
+            server_project = Project.get(manager, client_project['project_uuid'])
+            _add_to_unassigned(unassigned_uuids, request.user, server_project)
             if(server_project.is_void()):
-                response_projects.appened({'id': client_project['id'], 'status': 'server-deleted'})
-            elif server_project.revision != client_project['rev'] :
-                response_projects.append({'id': server_project.id, 'status': 'outdated'})
+                response_projects.appened({'project_uuid': client_project['id'], 'status': 'server-deleted'})
+            elif server_project.revision != client_project['version'] :
+                response_projects.append({'project_uuid': server_project.id, 'status': 'outdated'})
         except Exception:
-            response_projects.append({'id': client_project['id'], 'status': 'server-deleted'})
+            response_projects.append({'project_uuid': client_project['id'], 'status': 'server-deleted'})
 
     return response_json_cors({'outdated_projects': response_projects, 'last_updated': current_date_time,
-                               'unassign_uuids': unassign_uuids})
+                               'unassigned_uuids': unassigned_uuids})
 
 def _add_to_unassigned(unassigned_uuids, user, server_project):
     if not is_authorized_for_project(user, server_project):
