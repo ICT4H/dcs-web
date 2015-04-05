@@ -60,7 +60,9 @@ def _project_details(manager, project_uuid, user):
     try:
         project = Project.get(manager, project_uuid)
         xform = project.xform
-        updated_xform = ParentXform().make_all_fields_read_only(xform) if project.is_parent_project else xform
+        can_create_parent = project.is_parent_project and is_authorized_for_project(user, project)
+        can_create = can_create_parent or not project.is_parent_project
+        updated_xform = xform if can_create else ParentXform().make_all_fields_read_only(xform)
         project_response = dict(name=project.name, project_uuid=project.id, version=project._doc.rev,
                                 created=str(project.created),
                                 xform=re.sub(r"\n", " ", XFormTransformer(updated_xform).transform()),
