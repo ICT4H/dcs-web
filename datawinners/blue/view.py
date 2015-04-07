@@ -663,3 +663,20 @@ def public_survey(request, org_id, anonymous_link_id):
         return HttpResponseBadRequest()
 
     return render_to_response("project/public_web_questionnaire_message.html", context_instance=RequestContext(request))
+
+def set_mobile_displayable_fields(user, project_id, field_codes):
+    dbm = get_database_manager(user)
+    project = Project.get(dbm, project_id)
+    field_codes_with_label = _get_field_code_with_label(project, field_codes)
+
+    if len(field_codes) > 0 :
+        project.mobile_main_fields = project.mobile_main_fields + field_codes_with_label
+        project.save(process_post_update=False)
+    return field_codes_with_label
+
+def _get_field_code_with_label(project, field_codes):
+    field_with_code_and_label = []
+    for field in project.get_simple_fields():
+        if field.code in field_codes:
+            field_with_code_and_label.append({'name': field.code, 'label': field.label})
+    return field_with_code_and_label
