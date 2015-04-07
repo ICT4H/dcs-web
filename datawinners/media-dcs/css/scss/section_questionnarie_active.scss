@@ -1,0 +1,64 @@
+#question_form{
+    label{
+        display:block;
+        float:none;
+    }
+    input{
+        float:none;
+    }
+ .questionnaire_code{
+    label, input{
+        float:left;
+    }
+    input{
+        width:100px;
+    }
+ }
+ .alpha_list{
+    #choice_text{
+        width:300px !important;
+    }
+    .error_arrow{
+        float:none !important;
+        background-position:0px 3px !important;
+    }
+    margin-left:20px;
+ }
+
+
+ .new_question{
+    display:none;
+ }
+ #questions-panel{
+    border-right: 1px solid #ececec;
+    margin: 0px 20px 0 20px;
+    .question_list{
+        li{
+            margin-bottom:10px;
+        }
+    }
+ }
+ #range_min, #range_max{
+    width:70px;
+    margin-bottom:10px;
+ }
+ #question-detail-panel{
+    float:left;
+    width:525px;
+ }
+ #max_length{
+    margin-left:25px;
+    width:50px;
+    float:none;
+ }
+ #not_wizard{
+    .error_arrow{
+        float:none !important;
+        background-position: left 3px;
+    }
+ }
+
+}
+
+
+ 

@@ -1,0 +1,66 @@
+table{
+    margin:0;
+}
+
+.container_24{
+  padding-right: 1em;
+    margin: 0;
+    width: 100%;
+    .content{
+        width:96%;
+        padding:0;
+        table td, table th{
+        }
+        > div, > ul{
+            width:100%;
+        }
+        > ul{
+            margin:0px;
+            left:0px;
+        }
+        .data_block{
+            .data_table{
+                width:100%;
+                margin-bottom: 30px;
+                table{
+                    min-width:100%;
+                    border:1px solid #FFFFFF;
+                    td{
+                         min-width:170px;
+                    }
+                    &.styled_table {
+                      margin-bottom: 0;
+                    }
+                }
+            }
+            width:auto;
+        }
+    }
+}
+#page_title{
+    /*float:left;*/
+    margin: 0 0 0 15px !important;
+}
+#header_application{
+    width:auto;
+    #header_wizard{
+        width:100%;
+        #header_wizard{
+            width:100%;
+
+        }
+    }
+}
+ #header{
+    width:100% !important;
+    .login{
+        float:right;
+    }
+}
+#main_tab{
+    width:100%;
+    margin-left:5px;
+    .last{
+        padding-right:10px !important;
+    }
+}

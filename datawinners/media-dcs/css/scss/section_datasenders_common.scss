@@ -1,0 +1,93 @@
+.location_section {
+  li {
+    float: none;
+    margin-bottom: 10px;
+  }
+  label {
+    display: block;
+    float: none;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+
+.button_block {
+  input {
+    float: none;
+    margin-top: 10px;
+  }
+  a {
+    margin-top: 20px;
+  }
+}
+
+#message {
+  clear: both;
+}
+
+.horizontal_list {
+  ul {
+    list-style: none;
+  }
+  ul li {
+    display: inline-block;
+    padding-right: 5px;
+  }
+  ul li input {
+    margin-top: 9px;
+  }
+  li.device_label {
+    > label {
+      display: block;
+      float: left;
+      font-size: 14px;
+      font-weight: bold;
+      width: 170px;
+    }
+    ul li:last-child {
+      padding-right: 50px;
+    }
+  }
+}
+
+div.form_header {
+  margin-bottom: 5px;
+  li label {
+    width: auto;
+    padding-top: 10px;
+  }
+  li:last-child {
+    float: right;
+  }
+}
+
+li.instruction_text {
+  margin-top: -15px;
+  width: 350px;
+}
+
+#registration_form fieldset > ul {
+    width: 918px;
+    > li:last-child{
+        text-align: right;
+        margin-right: 377px;
+        width: 534px;
+    }
+    li {
+        .find_gps_en{
+            padding-left: 94px;
+        }
+        .find_gps_fr{
+            padding-left: 40px;
+        }
+    }
+}
+
+.button_block {
+  text-align: right;
+  margin-right: 377px;
+  width: 534px;
+}
+#cancel{
+   padding-right: 12px;
+}

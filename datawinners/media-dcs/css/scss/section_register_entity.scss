@@ -1,0 +1,57 @@
+.auto_gen_checkbox{
+    position:absolute;
+    label{
+        display:inline;
+        float:none;
+        font-weight:normal;
+        font-size:12px;
+    }
+}
+
+.form_sub_set{
+    legend{
+        font-size:14px;
+        font-weight:bold;
+    }
+    li{
+        padding-bottom:10px;
+        input{
+            width:200px !important;
+        }
+        label{
+            display:block;
+            width:100%;
+            font-weight:normal;
+            font-size:13px;
+        }
+    }
+}
+
+.add_entity_form{
+    #add_subject_type{
+        margin-left:167px;
+        input[type=text]{
+            width:200px;
+        }
+        .message-box{
+            float:left;
+            font-size:12px;
+        }
+    }
+}
+
+#type_message{
+    float: left;
+    clear: both;
+}
+
+#add_subject_type{
+    float: left;
+    clear: both;
+    width: 50% !important;
+    margin-left:50px;
+    margin-top:5px;
+    label.example{
+        clear:both;
+    }
+}

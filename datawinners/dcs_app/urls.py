@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls.defaults import patterns, url
 
 from datawinners.dcs_app.view import get_questions_paginated_or_by_ids, paginated_submissions_or_by_id_or_create, update_submission_or_get_by_id, authenticate_user, \
     check_submissions_status, \
@@ -6,8 +6,6 @@ from datawinners.dcs_app.view import get_questions_paginated_or_by_ids, paginate
 
 
 urlpatterns = patterns('',
-    (r'', include('datawinners.urls')), #including the datawinners url
-    (r'', include('datawinners.dcs_web.urls')),
 
     url(r'^client/auth/$', authenticate_user),
 

@@ -1,0 +1,124 @@
+$slider_handle:#176aba;
+$slider_range:#FFFFFF;
+
+/*The top most yellow wizard section styles*/
+#container_content {
+    .wizard_content{
+        .content_wrapper{
+            padding:0 0px 0 0;
+            margin:10px;
+            .step_number{
+                margin-bottom:20px;
+                margin-left:30px;
+             }
+        }
+    }
+}
+.wizard{
+    #step_wizard{
+        margin:15px 0 0 40px;
+        width:850px;
+        .ui-slider-handle {
+            background:transparent url(/media/images/wizard_slider_handle.png) no-repeat top left;
+            height:26px;
+            width:20px;
+            border:0px;
+            top:-8px;
+
+        }
+        .ui-slider-range {
+            background:$slider_range;
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+            border-radius:5px;
+        }
+        &.ui-corner-all{
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+            border-radius:5px;
+        }
+        &.ui-widget-content{
+            background:$slider_handle;
+        }
+    }
+    .create_a_project{
+        display:inline-block;
+        margin-left:35px;
+        color:#997600;
+        font-size:10px;
+        font-weight:bold;
+        text-transform:uppercase;
+        margin-top:10px;
+    }
+    h2{
+        margin:0px 0 20px 35px;
+    }
+    ul{
+        margin-left:30px;
+        li{
+            float:left;
+            font-weight:bold;
+            padding:10px 117px 0 0px;
+            margin-left:-25px;
+            &.questionnaire{
+                padding-right:111px;
+            }
+            &.subjects{
+                padding-right:124px;
+            }
+            &.datasenders{
+                padding-right:127px;
+            }
+            &.reminder{
+                padding-right:108px;
+            }
+            &.finish{
+                padding-right:0px;
+            }
+        }
+    }
+}
+.buttons{
+    width:100%;
+    float:left;
+    .buttons{
+        margin:15px 0 15px 0px;
+        .previous_step{
+            margin-top:8px;
+        }
+        #submit_button_right{
+            background:url('/media/images/arrow_wizard.png') no-repeat top right;
+            position:relative;
+            left:-8px;
+            top:0px;
+            height:49px;
+            padding:7px 6px 13px 22px;
+            display:inline;
+        }
+        #submit-button{
+            color:#6f451d;
+            font-family:"Arial";
+            font-weight:bold;
+            border:0px;
+            height:50px;
+            background:url('/media/images/arrow_wizard.png') no-repeat top left;
+            padding:7px 6px 13px 22px;
+        }
+        .cancel{
+            margin-right:10px;
+        }
+        .next_step{
+            float:right;
+            width:315px;
+            a{
+                margin-top:13px;
+            }
+            a, form{
+                float:right;
+            }
+        }
+    }
+}
+.wizard_cancel_link{
+margin-right: 10px;
+}

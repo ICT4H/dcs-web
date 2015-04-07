@@ -1,0 +1,17 @@
+.report_links{
+    a{
+        margin: 0 5px 0 5px;
+        &.disabled{
+            color:#CCCCCC;
+            cursor:text;
+        }
+    }
+}
+
+.gotitbutton{
+  margin-top: 10px;
+}
+
+.yes_button{
+  margin-left: 323px;
+}

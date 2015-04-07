@@ -1,0 +1,128 @@
+select {
+  min-width:75px;
+}
+select#before_deadline,select#after_deadline {
+    width: 50px;
+  }
+#new_reminder{
+    input[type=text]{
+        width:100px;
+    }
+}
+.reminder-success{
+    height: 20px;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+label.error{
+    clear:both;
+}
+
+.link_info{
+    position:relative;
+    padding-right:45px;
+    padding-top:5px;
+    left:680px;
+    top:-12px;
+}
+
+.warning-message-box{
+    overflow: hidden;
+    zoom: 1;
+    a{
+        float : right;
+        margin: 10px;
+    }
+    .trial_web_learn_more{
+        padding-top: 10px;
+    }
+}
+
+
+#reminder_form{
+    width:930px;
+}
+
+.half-width{
+    width: 50%;
+}
+
+fieldset{
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    width:95%;
+    margin-bottom:10px;
+    legend{
+        padding-top: 10px;
+        color:#C35C00;
+        font-weight:bold;
+        font-size:15px !important;
+    }
+    input[type="radio"]
+    {
+        margin-right: 10px;
+    }
+}
+
+.border_bottom_color{
+  padding-top: 5px;
+  border-bottom: 2px solid #cccccc !important;
+}
+
+.example_text{
+  font-weight: bold;
+  padding-left: 0 !important;
+}
+
+#reminders_section input[type="text"]
+{
+    width: 35px;
+    margin-right:10px;
+}
+#reminders_section input[type="checkbox"]{
+    margin-right:10px;
+}
+
+#reminders_section {
+  ul li {
+    label {
+      margin: auto 4px auto 28px;
+      width: 120px;
+    }
+  }
+}
+
+#frequency_values ul li
+{
+    display: inline;
+}
+
+.whom_to_send_help_text{
+    margin-left: 26px;
+    font-style: italic;
+    color: #666666
+}
+#deadline_example{
+  padding-left: 25px;
+}
+
+.reminder_font{
+  font-weight: bold;
+  margin-left: 100px;
+}
+
+.font_style{
+  font-size: 13px;
+  font-weight: normal;
+};
+
+.section_datasenders_to_send {
+  margin-top: 10px;
+}
+
+.reminder_section {
+  width:612px;
+  textarea {
+    width:606px;
+  }
+}

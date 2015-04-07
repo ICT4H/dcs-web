@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "brand": "dcs",
     "brand_file": "_dcs.scss",
-    "scss_src": "datawinners/media/css/scss/",
+    "scss_src": "datawinners/media-dcs/css/scss/",
 
     "devDependencies": {
         "grunt": "0.4.5",

@@ -1,0 +1,65 @@
+@import "_main";
+$font_family:"Arail";
+
+.tab_navigation{
+    ul{
+        background:url($nav-tab-bg-img) repeat-x left 10px scroll;
+        margin-left:15px;
+        float:left;
+        li{
+            float:left;
+            padding:7px 13px 8px;
+            position:relative;
+            margin-top:10px;
+            background: url($nav-tab-pipe-img) no-repeat top right;
+            a{
+                color:#FFFFFF;
+                text-decoration:none;
+                font-size:14px;
+                font-weight:bold;
+            }
+        }
+        li.active{
+            background:#FFFFFF;
+            margin-top:0px;
+            padding-top:15px;
+            top:1px;
+            border:1px solid #ccc;
+            border-bottom:1px solid #fff;
+            a{
+                color:#000000;
+            }
+        }
+    }
+}
+
+.secondary_tab{
+    position:relative;
+    top:-20px;
+    left:-35px;
+    margin-left:20px!important;
+    float:left;
+    height:40px;
+    width:910px;
+    background:#f0f0f0;
+    li{
+        float:left;
+        padding:3px 20px 14px;
+        position:relative;
+        margin-top:7px;
+        a{
+            color:#0070ac;
+            text-decoration:none;
+            font-size:14px;
+        }
+    }
+    li.active{
+        background: white;
+        margin-top:3px;
+        padding-top:3px;
+        top:1px;
+        a{
+            color:#000;
+        }
+    }
+}
