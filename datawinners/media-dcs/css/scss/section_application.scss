@@ -7,9 +7,17 @@
 }
 
 #container_header_application {
-  height: 74px;
   overflow: hidden;
   background: $bar-secondary;
+}
+
+.container_header_application1 {
+  overflow: hidden;
+  background: $bar-primary;
+}
+
+.primary_bg {
+  background: $bar-primary;
 }
 
 #container_content, #container_wizard {

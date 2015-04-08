@@ -25,7 +25,7 @@
   }
 }
 
-#container_header_application{
+#container_header_application, .container_header_application1{
     #container_header_wizard{
         background:none;
         height:30px;
@@ -81,7 +81,7 @@
 
                 &.active{
                     a{
-                        padding-bottom: 7px;
+                        padding-bottom: 9px;
                         border-bottom: 5px solid $primary-tab-active-bg; /* for non-css3 browsers */
                     }
 
