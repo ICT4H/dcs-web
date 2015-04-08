@@ -68,7 +68,8 @@ def _project_details(manager, project_uuid, user):
                                 xform=re.sub(r"\n", " ", XFormTransformer(updated_xform).transform()),
                                 has_media_field=project.is_media_type_fields_present,
                                 last_updated=utcnow().isoformat(),
-                                is_assigned=is_authorized_for_project(user, project))
+                                is_assigned=is_authorized_for_project(user, project),
+                                displayable_mobile_fields=project.mobile_main_fields)
         _update_response_with_relation(project, project_response)
         return project_response
     except DataObjectNotFound:
