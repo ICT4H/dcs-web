@@ -3,20 +3,17 @@ $font_family:"Arail";
 
 .tab_navigation{
     ul{
-        background:url($nav-tab-bg-img) repeat-x left 10px scroll;
-        margin-left:15px;
-        float:left;
+        background: $table-thead-bg;
         li{
             float:left;
             padding:7px 13px 8px;
             position:relative;
             margin-top:10px;
-            background: url($nav-tab-pipe-img) no-repeat top right;
+            background: $table-thead-bg;
             a{
                 color:#FFFFFF;
                 text-decoration:none;
                 font-size:14px;
-                font-weight:bold;
             }
         }
         li.active{
