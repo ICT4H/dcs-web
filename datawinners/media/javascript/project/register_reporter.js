@@ -16,8 +16,7 @@ var sms_device = new DW.Device("#id_devices_0");
 
 DW.Email = function (emailFieldId, emailHelpTextId, userCreationInfoLabelId, visibilityFactor) {
     this.setVisibility = function () {
-        if ($(visibilityFactor).is(":checked")) show();
-        else hide();
+        show();
     };
 
     var hide = function () {

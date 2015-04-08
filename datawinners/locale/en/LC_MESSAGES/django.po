@@ -3752,7 +3752,7 @@ msgid "location_example"
 msgstr "Enter either a location name or the GPS coordinates."
 
 msgid "location_name_example"
-msgstr "Answer must be a location name. Example: Nairobi"
+msgstr "Example: Bangalore"
 
 msgid "location_coordinate_example"
 msgstr "Answer must be GPS coordinates in the following format (latitude,longitude). Example: -18.1324,27.6547"
