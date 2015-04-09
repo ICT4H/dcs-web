@@ -60,7 +60,7 @@ class ReporterRegistrationForm(Form):
     DEVICE_CHOICES = (('sms', mark_safe('<img src="/media/images/mini_mobile.png" /> <span>SMS</span>')), ('web', mark_safe('<img src="/media/images/mini_computer.png" /> <span>Web</span>' + smartphone_icon())))
     devices = MultipleChoiceField(label=_('Device'), widget=CheckboxSelectMultiple(), choices=DEVICE_CHOICES,
         initial=['sms', 'web'], required=False,)
-    email = EmailField(required=False, widget=TextInput(attrs=dict({'class': 'required'},
+    email = EmailField(required=True, widget=TextInput(attrs=dict({'class': 'required'},
         maxlength=75)),
         label=_("Email address"),
         error_messages={
