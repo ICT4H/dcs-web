@@ -1,0 +1,24 @@
+{% load i18n %}
+    <div id="delete_ds_block" style="display:none;">
+        <div class="warning_message">
+            <p>{% trans "user delete error text" %}</p>
+            <div id="note_for_delete_users">
+                <br/>{% trans "Note, the following Users will not be deleted as they are CollectData users:" %}
+                <ul class="users_list bulleted"></ul>
+            </div>
+        </div>
+        <p>{% trans "Are you sure you want to delete?" %}</p><br/>
+        <div class="text_align_right">
+            <a href="#" class="cancel_link" >{% trans "Cancel" %}</a>
+            <a class="button" id="ok_button">{% trans "Yes, Delete" %}</a>
+        </div>
+    </div>
+
+    <div id="delete_all_ds_are_users_warning_dialog" style="display: none;">
+        <div class="warning_message">{% trans "You cannot delete the following Users as they are CollectData users:" %}
+            <ul class="users_list bulleted"></ul>
+        </div>
+        <div class="text_align_right">
+            <a class="button_blue no_button">{% trans "Ok" %}</a>
+        </div>
+    </div>

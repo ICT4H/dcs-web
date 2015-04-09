@@ -1,0 +1,8 @@
+{% load i18n %}
+
+<div id="page_hint" class="help_accordion margin_top_15 display_none" >
+    <div>{% trans 'View and manage all Data for this project.' %}</div>
+    <div>{% blocktrans with project_links.data_analysis_link as url %}hint for success Data page{{ url }}{% endblocktrans %}</div>
+    <div>{% trans "View and manage unsuccessful Data for this project." %}</div>
+    <div>{% trans 'View deleted Data for this project.' %}</div>
+</div>

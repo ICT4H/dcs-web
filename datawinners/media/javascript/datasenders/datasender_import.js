@@ -13,7 +13,7 @@ $(document).ready(function () {
     $("#popup-import").dialog({
         autoOpen: false,
         modal: true,
-        title: gettext("Import a Data Senders list"),
+        title: gettext("Import a Users list"),
         zIndex: 200,
         width: 940,
         close: function () {

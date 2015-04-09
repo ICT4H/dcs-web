@@ -1,0 +1,85 @@
+{% load i18n %}
+
+<div id="xls_learn_more_form" class="none">
+    <div class="learn_more_text">
+        {% trans "Use XLSForms to create a Form with advanced features (such as skip logic), then upload the XLSForm to CollectData account" %}
+    </div>
+    <hr>
+    <div class="learn_more_accordion" id="learn_more_section">
+
+        <div class="learn_more_header">
+            <div class="learn_more_header_text">{% trans "Step 1. Create an XLSForm" %}</div>
+        </div>
+        <div id="step_section">
+            {% trans "XLSForm is a tool that allows you to design a Form with advanced features:"%}
+            <br/><br/>
+            <ul>
+                <li>{% trans "Repeats (Repeated set of questions)" %} </li>
+                <li>{% trans "Skip logic" %} </li>
+                <li>{% trans "Grouping questions" %} </li>
+                <li>{% trans "Cascading selects" %} </li>
+                <li>{% trans "Answer Constraints" %} </li>
+                <li>{% trans "Calculations" %} </li>
+                <li>{% trans "Required and optional questions" %} </li>
+                <li>{% trans "Hints (Instruction texts)" %} </li>
+                <li>{% trans "Default answers" %} </li>
+            </ul>
+
+            <br/>
+            {% trans "Read more: " %} <a id="learn-xls-forms-pdf-link" class="dialog-link" target="_blank" href="/media/files/DataWinners - How To Create a Questionnaire with XLSForms.pdf">{% trans "How to create XLSForms in CollectData" %}</a>
+            <br/><br/>
+            <h4>{%  trans "Sample Forms" %}</h4>
+
+            {% trans "Download sample XLSForms to see how to create a Form with advanced features in Excel." %}
+            <ol id="sample_xls_section">
+                <li class="margin_top_10">{% trans "Simple form" %}: <a class="dialog-link"
+                                                                        href="/media/files/{% trans "health_survey.xls" %}">{% trans "health_survey.xls" %}</a>
+                    <br>
+                    <span style="font-style: italic">{% trans "Question types, Skip Logic, Repeated set of Questions, Required and Hints" %}</span>
+                </li>
+                <li class="margin_top_10"> {% trans "Advanced Form" %}: <a class="dialog-link"
+                                                                           href="/media/files/{% trans "household_details.xls" %}">{% trans "household_details.xls" %}</a>
+                    <br>
+                    <span style="font-style: italic">{% trans "Repeats, Skip Logic, Cascading selects, Grouping, Answer constraint, Calculations" %}</span>
+                </li>
+            </ol>
+            <br/>
+            <h4>{% trans "We Can Help You" %}</h4>
+            {% trans "We build XLSForms!  Contact" %} <a class="dialog-link" href="mailto:support@datawinners.com">support@datawinners.com</a>{% trans " to learn about our form building service including pricing."%}
+        </div>
+
+
+        <div class="learn_more_header">
+            <div class="learn_more_header_text">{% trans "Step 2. Upload an XLSForm to CollectData" %}</div>
+        </div>
+        <div id="step_section">
+            <img src="/media/images/xls_feature/upload_xls_step2_{{ active_language }}.jpg"/>
+        </div>
+        <div class="learn_more_header">
+            <div class="learn_more_header_text">{% trans "Step 3. Test your Form" %}</div>
+        </div>
+        <div id="step_section">
+            <p>{% trans "For advanced Form features to work on Android Devices you need to download" %} <a class="dialog-link" target="_blank" href="https://play.google.com/store/apps/details?id=org.hni.datawinners.android.collect&hl=en">{%trans "the latest version of the CollectData app (Google Playstore)."%} </a>{% trans "Uninstall the current version." %} {% trans "For details see our tutorial" %} <a class="dialog-link" target="_blank" href="/media/files/DataWinners_InstallDataWinnersOnYourSmartphone.{{ active_language }}.pdf">{% trans "Install CollectData on your Smartphone"%}</a></p>
+            <img src="/media/images/xls_feature/upload_xls_step3_{{ active_language }}.jpg"/>
+            </br></br>
+            <img src="/media/images/xls_feature/upload_xls_step3_image2_{{ active_language }}.png"/>
+        </div>
+        <div class="learn_more_header">
+            <div class="learn_more_header_text">{% trans "Step 4. Edit your Form" %}</div>
+        </div>
+
+        <div id="step_section">
+            <img src="/media/images/xls_feature/upload_xls_step4_{{ active_language }}.jpg"/>
+        </div>
+        <div class="learn_more_header">
+            <div class="learn_more_header_text">{% trans "Step 5. Export your Data" %}</div>
+        </div>
+        <div id="step_section">
+            <img src="/media/images/xls_feature/upload_xls_step5_{{ active_language }}.jpg"/>
+        </div>
+
+    </div>
+    <div class="gotitbutton">
+        <a class="button yes_button" id="close_accordion_link">{% trans "OK, Got it" %}</a>
+    </div>
+</div>

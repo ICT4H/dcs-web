@@ -1,7 +1,7 @@
-{% extends 'layout_application.html' %}
+{% extends 'layout_project.html' %}
 {% load i18n %}
-{% block page_title %}{% trans "Dashboard" %}{% endblock %}
-{% block section_title %}{% trans "Dashboard" %}{% endblock %}
+{% block page_title %}{% endblock %}
+{% block section_title %}{% endblock %}
 
 {% load dw_tabs %}
 {% block body %}
@@ -22,7 +22,7 @@
 {% block navigation %}
     <div class="grid_24">
         <div class="grid_11 margin_left_null margin_bottom_20 create_proj_button">
-            <a id="create_project_link" href="{% url create_project %}?prev=dash" class="button">{% trans "Create a New Questionnaire" %}</a>
+            <a id="create_project_link" href="{% url create_project %}?prev=dash" class="button">{% trans "Create a New Form" %}</a>
         </div>
     </div>
 {% endblock %}
@@ -36,7 +36,7 @@
     {% if questionnaireDoesNotExist %}
         <div class="warning-message-box clear-left">
             <p>
-                {% trans 'We made our Questionnaire Building process simpler and easier for you. '%} <a target="_blank" href="http://datawinners.wordpress.com/2014/05/15/data-collection-just-got-easier/">{% trans 'Read more »'%}</a>
+                {% trans 'We made our Form Building process simpler and easier for you. '%} <a target="_blank" href="http://datawinners.wordpress.com/2014/05/15/data-collection-just-got-easier/">{% trans 'Read more »'%}</a>
                 <br/>
                 {%trans 'With this update we changed the webpage address you are trying to access. Sorry for the inconvenience.' %}
             </p>
@@ -53,7 +53,7 @@
     </div>
 
     <div class="grid_17 margin_left_null dashboard_left">
-        <h4 class="grid_16 omega alpha">{% trans "Your Most Recent Questionnaires" %}</h4>
+        <h4 class="grid_16 omega alpha">{% trans "Your Most Recent Forms" %}</h4>
         <div id="projects">
         {% for project in projects %}
             <div class="project_header">
@@ -63,11 +63,11 @@
             </div>
         {% endfor %}
         </div>
-        <a class="grid_4  omega alpha view_all_projects" href="{% url alldata_index %}">{% trans "view all Questionnaires"%} »</a>
+        <a class="grid_4  omega alpha view_all_projects" href="{% url alldata_index %}">{% trans "view all Forms"%} »</a>
     </div>
     <div class="grid_5 alpha omega dashboard_right">
         <h4 class="margin_bottom_10">{% trans "Statistics" %}</h4>
-        <h6>{% trans "Submissions Received" %}</h6>
+        <h6>{% trans "Data Received" %}</h6>
         <table class="no-border">
             <tr><td width="55%">&nbsp;</td><td width="30%" class="italic grey font_size_10">{% trans "This Month" %}</td><td width="15%" class="italic grey font_size_10">{% trans "Total" %}</td></tr>
             <tr><td>{% trans "Smartphone" %}</td><td>{{ counters.sp_submission_current_month }}</td><td>{{ counters.total_sp_submission }}</td></tr>

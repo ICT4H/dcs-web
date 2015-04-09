@@ -1,7 +1,7 @@
 {% extends 'layout_registration.html' %}
 {% load i18n %}
 {% block page_title %} {% trans "Login" %} {% endblock %}
-{% block section_title %} {% trans "Sign In to Your Account on DataWinners" %} {% endblock %}
+{% block section_title %} {% trans "Sign In to Your Account on CollectData." %} {% endblock %}
 {% block page_js %}
     <script type="text/javascript" >
         $(document).ready(function(){
@@ -19,8 +19,8 @@
     {% if form.errors and not form.username.errors and not form.password.errors %}
         {% ifequal form.errors.items.0.1.0 "The trial period is expired" %}
         <div class="warning-message-box clear-both overflow_hidden">
-            <p>{% trans "Your DataWinners account has been deactivated. " %}</p>
-            <div class="message_plus">{% trans "To reactivate it, subscribe to a monthly subscription by contacting your Project Manager or DW Support at <a href='mailto:support@datawinners.com'>support@datawinners.com</a>." %}</div>
+            <p>{% trans "Your CollectData account has been deactivated. " %}</p>
+            <div class="message_plus">{% trans "To reactivate it, subscribe to a monthly subscription by contacting your Project Manager or CD Support at <a href='mailto:support@datawinners.com'>support@datawinners.com</a>." %}</div>
             <br/>
         </div>
         {% else %}

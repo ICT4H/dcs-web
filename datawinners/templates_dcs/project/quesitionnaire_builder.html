@@ -17,7 +17,7 @@
                 <fieldset>
                     <div class="questionnaire_form_header clearfix">
                         {% include 'project/questionnaire_info_indicator.html' %}
-                        <span style="float: left">{% trans "SMS Questionnaire Code" %}:
+                        <span style="float: left">{% trans "SMS Form Code" %}:
                             <input id='questionnaire-code' data-bind="value: questionnaireCode"/>
                             <img src="/media/images/help_icon.png" class="help_icon" style="margin-bottom: 10px;">
                             <div class="tooltip">
@@ -51,7 +51,7 @@
                     <div class="right_aligned_button">
                         <a href="{{ cancel_link }}" class="cancel_project" id="cancel_questionnaire">{% trans "Cancel" %} </a>
                         <input type="button" class="button_wizard_next" id="save_and_create"
-                               value="{% trans "Save & Create Questionnaire" %}"/>
+                               value="{% trans "Save & Create Form" %}"/>
                     </div>
                 </div>
                 <div class="clear-both"></div>

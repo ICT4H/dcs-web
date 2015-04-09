@@ -3,7 +3,7 @@ DW.SubmissionImportPopup = function(){
 
     self.init = function(options){
         self.import_dialog = $("#submission_import").dialog({
-                title: gettext("Import a Submission List"),
+                title: gettext("Import a Data List"),
                 modal: true,
                 autoOpen: false,
                 open: function(){
@@ -170,7 +170,7 @@ DW.SubmissionFileUploader = function(options){
             $("#success_message").show();
         } else {
             var errorCount = responseJSON.errored_submission_details.length;
-            $("#error_table_message").html(interpolate(gettext("%(errorCount)s Submission(s) Failed to Import"), {errorCount:errorCount}, true));
+            $("#error_table_message").html(interpolate(gettext("%(errorCount)s Data Failed to Import"), {errorCount:errorCount}, true));
 
             $("#error_message").html(responseJSON.message);
             $('#error_message').show();
@@ -181,7 +181,7 @@ DW.SubmissionFileUploader = function(options){
     function _update_success_table_message(responseJSON) {
         if(responseJSON.success_submissions.length > 0) {
             var successCount = responseJSON.success_submissions.length;
-            $("#success_table_message").html(interpolate(gettext("%(successCount)s Submission(s) Successfully Imported"),{successCount:successCount}, true));
+            $("#success_table_message").html(interpolate(gettext("%(successCount)s Data Successfully Imported"),{successCount:successCount}, true));
         }
     };
 

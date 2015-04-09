@@ -1,0 +1,69 @@
+{% load i18n %}
+{% load user_tags %}
+{% load dw_tabs %}
+
+
+<div id="submission_import">
+    <div class="import_subject_form">
+        <div id="error_message" class="import_message error_message message-box"></div>
+        <div id="success_message" class="import_message success_message success-box"></div>
+        {% include "subscribe_now.html" %}
+        {% trans "Upload an Excel file (.xls) with Your Data list." %}
+        <a id="show_help">{% trans "How do I do this?" %}</a>
+        <div id="import_help_section">
+            <div class="help-title">{% trans "How to Import Data" %}</div>
+            <ol class="help-steps">
+                <li>{% trans "Download the template" %} <a id="secondary-template-download-link">data_template</a></li>
+                <li>{% trans "Fill out the template with your list of Data." %}</li>
+                <li>{% trans "Save the template on your computer." %}</li>
+                <li>{% trans "Click on the Upload a file button and select the saved template." %}</li>
+            </ol>
+            <div class="hide-help">
+                <a id="hide_help">{% trans "Hide Details" %}</a>
+            </div>
+        </div>
+        <div>
+        {% if is_quota_reached %}
+            <div class="file-uploader grid ">
+                <noscript>
+                    <p>{% trans "Please enable JavaScript to use file uploader." %}</p>
+                </noscript>
+                <div id="file_uploader" style="display:none"></div>
+                <span disabled="disabled" class="disabled file_upload_disabled"  back>{% trans "Upload a file" %}</span>
+            </div>
+        {% else %}
+            <div class="file-uploader grid">
+            <noscript>
+                <p>{% trans "Please enable JavaScript to use file uploader." %}</p>
+            </noscript>
+            <div id="file_uploader" class="float_left grid_5"></div>
+        </div>
+        {% endif %}
+
+        <div id="template-download-section" class="error download-section {% if is_quota_reached  %} template-download-section-adjustment {% endif %} " class="margin_top_15">
+            <span style="padding-left:2em">
+                {% trans "Download the template:" %} <a id="template-download-link">submission_template</a>
+           </span>
+        </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <br/>
+
+    <div id='error_import_section' class="import_section">
+        <div id="error_table_message" class="import_message"></div>
+        <div class="import_table">
+            <table id="error_table" class="styled_table"></table>
+        </div>
+    </div>
+    <div id="success_import_section" class="import_section">
+        <div id="success_table_message" class="import_message"></div>
+        <div class="import_table">
+            <table id="success_table" class="styled_table"></table>
+        </div>
+    </div>
+     <div style="float: left;">
+            {% trans "Note: You cannot add new columns in your Excel file to create new questions. " %}
+            {% trans "Edit the Form to make these changes." %}
+     </div>
+</div>

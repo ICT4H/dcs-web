@@ -1,0 +1,63 @@
+{% extends 'new_layout_wizard.html' %}
+{% load i18n %}
+{% block page_title %} {% trans "Create Form" %}{% endblock %}
+{% block section_title %}
+    <h2 class="project_title" xmlns="http://www.w3.org/1999/html">{% trans "Create a New Form" %}</h2>
+{% endblock %}
+
+{% load dw_tabs %}
+
+{% block body %}
+    {% activetab "main_nav" "questionnaires" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block page_js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        var sms_preview_link = "{{ preview_links.sms_preview }}";
+        var questionnaire_code = '{{ questionnaire_code}}';
+        var web_preview_link = "{{ preview_links.web_preview }}";
+        var smart_phone_preview_link = "{{ preview_links.smart_phone_preview }}";
+        var post_url = "{{ post_url }}";
+        var project_templates_url = "{% url project_templates %}";
+        var existing_questionnaires_url = "{% url existing_questionnaires %}";
+        var uniqueIdTypes = {{ unique_id_types|safe }};
+        var active_language = "{{ active_language }}";
+    </script>
+
+    <script type="text/javascript" src="/media/javascript/dw-ko-validation-extensions.js"></script>
+    <script type="text/javascript" src="/media/javascript/entity/questionnaire_helper.js"></script>
+
+    <script type="text/javascript" src="/media/javascript/entity/questionnaire_view_model.js"></script>
+    <script type="text/javascript" src="/media/javascript/entity/project_questionnaire_view_model.js"></script>
+    <script type="text/javascript" src="/media/javascript/entity/questionnaire_fetcher.js"></script>
+    <script type="text/javascript" src="/media/javascript/entity/questionnaire_creation_options_view_model.js"></script>
+    <script type="text/javascript" src="/media/javascript/csrf_token_handler.js"></script>
+    <script type="text/javascript" src="/media/javascript/common/form_edited_warning_dialog.js"></script>
+    <script type="text/javascript" src="/media/javascript/accordion_dialog.js"></script>
+    <script type="text/javascript" src="/media/javascript/dw_dialog.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/upload_questionnaire.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/create_project.js"></script>
+    <script type="text/javascript" src="/media/javascript/entity/create_questionnaire.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/new_questionnaire_charcount.js"></script>
+    <script type="text/javascript" src="/media/javascript/jquery.sprintf.js"></script>
+    <script type="text/javascript" src="/media/javascript/warning_dialog.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/questionnaire_instruction_and_preview.js"></script>
+    <script type="text/javascript"
+            src="/media/javascript/project/questionnaire_instruction_and_preview_wizard.js"></script>
+    <script type="text/javascript" src="/media/javascript/ko-binding-extensions.js"></script>
+    <script type="text/javascript" src="/media/javascript/file_uploader/fileuploader.js"></script>
+{% endblock %}
+
+{% block page_scss %}
+    <link href="/media/css/scss/section_questionnaire.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_new_create_project.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_questionnaire_preview.css" rel="stylesheet"/>
+    <link href="/media/css/scss/smart_phone_instruction.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    {% include 'project/questionnaire_creation_options.html' %}
+    {% include 'project/quesitionnaire_builder.html' %}
+{% endblock %}

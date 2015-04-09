@@ -1,0 +1,152 @@
+{% load i18n %}
+<div data-bind="with: selectedQuestion">
+    <ul>
+        <li class="question">
+            <label>{% trans "Question" %}</label>
+            <input id="question_title" name="question_title" type="text" class="required question_title"
+                   data-bind="hasFocus:$parent.enableQuestionTitleFocus, valueUpdate:'keyup', value: title, uniqueName: true"/>
+
+            <div class="validationMessage" data-bind="ifnot: title.valid">
+                <span class="validationText" data-bind="text: title.error"></span>
+            </div>
+        </li>
+        <li>
+
+            <div id="question_code" class="none">
+                <label>{% trans "Code" %}<img src="/media/images/help_icon.png" class="help_icon"
+                                              style="margin-top:-6px;"></label>
+
+                <div class="tooltip"><p>
+                    <strong>{% trans "What is this?" %}</strong><br/>
+                    {% trans "q_tooltip_question_detail_code" %}
+                    <strong>{% trans "What do I need to do?" %}</strong><br/>
+                    {% trans "r_tooltip_question_detail_code" %}
+                </p></div>
+                <input id="code" name="code" type="text" class="required"
+                       data-bind="value: code, valueUpdate: 'keyup'"/>
+            </div>
+        </li>
+        <li class="question_type"
+            data-bind="hidden: isEntityQuestion">
+            <label>{% trans "Answer Type" %}<img src="/media/images/help_icon.png" class="help_icon"
+                                                 data-bind="initializeTooltip:true"
+                                                 style="margin-top:-6px;"></label>
+
+            <div class="tooltip"><p>
+                <strong>{% trans "What is this?" %}</strong><br/>
+                {% trans "q_tooltip_question_detail_type" %}
+                <br/><br/>
+                <strong>{% trans "What do I need to do?" %}</strong><br/>
+                {% trans "r_tooltip_question_detail_type" %}
+            </p></div>
+            <p class="margin_bottom_10">{% trans "Select what kind of answer you want from your Data Senders." %}</p>
+
+            <div class="dropdown">
+                <select data-bind="options: $root.answerTypes, value: answerType,
+                                  optionsText: 'name', optionsValue: 'value', enable: newly_added_question,
+                                  optionsAfterRender: $root.setOptionDisable"
+                        autofocus></select>
+
+                <div class="validationMessage" data-bind="ifnot: answerType.valid">
+                    <span class="validationText" data-bind="text: answerType.error"></span>
+                </div>
+            </div>
+        </li>
+
+        <li data-bind="visible: showDateFormats">
+            <div class="margin_top_20">
+                <p>
+                    <label>{% trans "Select Date Format" %}</label>
+                </p>
+
+                <p>
+                    <input type="radio" name="date_format" value="mm.yyyy"
+                           data-bind="checked:date_format, valueUpdate: 'keyup', enable: newly_added_question"/>
+                    {% trans "month.year" %} (06.2011)<br/>
+                    <input type="radio" name="date_format" value="dd.mm.yyyy"
+                           data-bind="checked:date_format, valueUpdate: 'keyup', enable: newly_added_question"/>
+                    {% trans "day.month.year" %} (28.06.2011)<br/>
+                    <input type="radio" name="date_format" value="mm.dd.yyyy"
+                           data-bind="checked:date_format, valueUpdate: 'keyup', enable: newly_added_question"/>
+                    {% trans "month.day.year" %} (06.28.2011)<br/>
+                </p>
+            </div>
+        </li>
+        <li data-bind="visible: showAddChoice()">
+            <div class="margin_top_20">
+                <ol class="alpha_list que_list" id="options_list"
+                    data-bind="foreach : choices">
+                    {% include 'project/choice_template.html' %}
+
+                </ol>
+                <a href="javascript:void(0);" class="add_link"
+                   data-bind="click:addOptionToQuestion, visible: newly_added_question">
+                    {% trans "Add Answer Choice" %}</a>
+            </div>
+            <div>
+                <input type="radio" name="answers_possible" value="select1"
+                       data-bind="checked:type, valueUpdate: 'keyup', enable: newly_added_question"/>
+                {% trans "only one answer" %}<br/>
+                <input type="radio" name="answers_possible" value="select"
+                       data-bind="checked:type, valueUpdate: 'keyup', enable: newly_added_question"/>
+                {% trans "multiple answers are permitted" %}<br/>
+            </div>
+        </li>
+        <li data-bind="visible: showAddRange">
+            <div class="margin_top_20">
+                <div class="question_option">
+                    {% trans "Min:" %}
+                    <input name="range_min" type="text" id="range_min"
+                           data-bind="value:range_min, enable: newly_added_question" maxlength="15"/>
+
+                    <div class="validationMessage" data-bind="ifnot: range_min.valid">
+                        <span class="validationText" data-bind="text: range_min.error"></span>
+                    </div>
+                </div>
+
+                <div class="question_option">
+                    {% trans "Max:" %}
+                    <input name="range_max" type="text" id="range_max"
+                           data-bind="value:range_max, enable: newly_added_question" maxlength="15"/>
+
+                    <div class="validationMessage" data-bind="ifnot: range_max.valid">
+                        <span class="validationText" data-bind="text: range_max.error"></span>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li data-bind="visible: showAddTextLength">
+            <div class="margin_top_20">
+
+                <input type="radio" name="text_length" value="length_unlimited" checked="true"
+                       data-bind="checked:length_limiter, enable: newly_added_question"/>
+                {% trans "No, answer has no character limit" %}<br/>
+
+                <div class="clear"></div>
+                <input type="radio" name="text_length" value="length_limited"
+                       data-bind="checked:length_limiter, valueUpdate: 'keyup', enable: newly_added_question"/>
+                {% trans "Yes, maximum number of characters should be" %}
+                <div>
+                    <input name="max_length" type="text" id="max_length"
+                           data-bind="value:max_length, visible: showLengthLimiter, valueUpdate: 'keyup', enable: newly_added_question"/>
+                </div>
+                <div class="validationMessage" data-bind="ifnot: max_length.valid">
+                    <span class="validationText" data-bind="text: max_length.error"></span>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="questionnaire-instruction">
+                <label>{% trans "Instructions for Data Senders" %}<img src="/media/images/help_icon.png" class="help_icon"
+                                                      data-bind="initializeTooltip:true"
+                                                      style="margin-top:-6px;"></label>
+
+                <div class="tooltip"><p>
+                    {% trans "tooltip_question_detail_instruction" %}
+                </p></div>
+                <span id="question_instruction"
+                      data-bind="text: instruction"></span>
+            </div>
+        </li>
+    </ul>
+</div>

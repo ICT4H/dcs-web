@@ -1,6 +1,6 @@
 {% extends 'project/tab_navigation.html' %}
 {% load i18n %}
-{% block page_title %} {% trans "Questionnaires - Data Senders" %} {% endblock %}
+{% block page_title %} {% trans "Forms - Users" %} {% endblock %}
 
 {% load dw_tabs %}
 {% block navigation %}
@@ -54,7 +54,7 @@
         {% if in_trial_mode %}
             <div class="float_left full_width">
                 <div class="warning-message-box clear-both overflow_hidden padding_left_right_10 padding_top_10">
-                    {% trans "In the Basic account only registered Data Senders can send you data. However, when you upgrade to a Pro SMS  account you have the option to let anyone send in data." %}
+                    {% trans "In the Basic account only assigned users can send you data. However, when you upgrade to a Pro SMS  account you have the option to let anyone send in data." %}
                     <a class="button margin_10 float_right" target="blank" href="{% url datawinners.accountmanagement.views.upgrade %}">{% trans "Subscribe Now" %}</a>
                     <a class="float_right margin_10 padding_top_10" href="/{% trans "en" %}/pricing/" target="blank">{% trans "Learn More" %}</a>
                 </div>
@@ -66,9 +66,9 @@
         <strong>{% trans "People Authorized to Submit Data Using SMS" %}</strong><img src="/media/images/help_icon.png" class="help_icon submission_date_help_icon margin_bottom_5">
             <div class="tooltip">
                 <ol class="margin_left_20">
-                <span>{% trans "You decide who has permission to submit data using SMS for this Questionnaire:" %} </br> </span>
+                <span>{% trans "You decide who has permission to submit data using SMS for this Form:" %} </br> </span>
                     <li class="margin_left_30">{% trans "Everyone - Anyone with a simple phone can submit data." %} </br> </li>
-                    <li class="margin_left_30">{% trans "Only Registered People  – Data Senders must be registered first before submitting data."%}</li>
+                    <li class="margin_left_30">{% trans "Only Registered People  – Users must be registered first before submitting data."%}</li>
                 </ol>
             </div>
             </br>
@@ -77,7 +77,7 @@
         </div>
         {% endif %}
         <div align="right">
-            <a class="register_data_sender" onclick="register_datasender()">{% trans "Register a Data Sender" %}</a> &nbsp;|&nbsp;
+            <a class="register_data_sender" onclick="register_datasender()">{% trans "Register a User" %}</a> &nbsp;|&nbsp;
             <a href="javascript:void(0);" id="import-datasenders">{% trans "Import a List" %}</a>
         </div>
         <div class="clear-both"></div>
@@ -102,11 +102,11 @@
     <div id="datasender-popup" style="display:none;"></div>
     {% if is_open_survey_allowed %}
     <div id="change_ds_setting">
-        <p class="warning_message margin_bottom_10">{% trans "Who has permission to submit data using SMS for this Questionnaire:" %}</p>
+        <p class="warning_message margin_bottom_10">{% trans "Who has permission to submit data using SMS for this Form:" %}</p>
         <input type="radio" name="ds_setting" value="open" data-bind="checked:is_open_survey"><span class="margin_left_10">{% trans "Everyone" %}</span></br>
         <span class="italic font_size_12 margin_left_30">{% trans "Anyone with a simple phone can submit data." %}</span></br>
         <input type="radio" name="ds_setting" value="restricted" data-bind="checked:is_open_survey" class="margin_top_15"><span class="margin_left_10">{% trans "Only Registered People" %}</span></br>
-            <span class="italic font_size_12 margin_left_30">{% trans "Data Senders must be registered first before submitting data." %}</span></br>
+            <span class="italic font_size_12 margin_left_30">{% trans "User must be registered first before submitting data." %}</span></br>
             <span class="italic font_size_12 margin_left_30 margin_bottom_5">{% trans "Example: Registered field staff, community based workers, supervisors" %}</span></br>
         <a href="javascript:void(0);" class="button margin_top_13 float_right" id="save_ds_setting" style="float: right">{% trans "Save" %}</a>
         <a href="javascript:void(0);" id="cancel_ds_setting" class="cancel_link float_right">{% trans "Cancel" %}</a></br>

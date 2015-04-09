@@ -30,10 +30,10 @@
                                             <td width="10"></td>
                                             <td style="text-align: justify; color: #333333; ">
                                                 <p>Hello {{ user.first_name }},</p>
-                                                <p>You are now registered as a Data Sender.<br />
+                                                <p>You are now registered as a User.<br />
                                                     <a href="{{ protocol }}://{{ domain }}{% url activate_datasender_account uidb36=uid, token=token %}" style="color: #4379A2;font-weight: normal;text-decoration: none;">
                                                         <span style="color: #4379A2;font-weight: normal;text-decoration: none;">
-                                                        Activate your Garner account
+                                                        Activate your CollectData account
                                                         </span>
                                                     </a>
                                                      within the next 7 days to send in data using {% ifnotequal account_type 'Pro' %}Web, Android Smartphone and Tablet, and SMS.{% else %}Web, Android Smartphone and Tablet.{% endifnotequal %}</p>
@@ -50,11 +50,11 @@
                                                             <td>
                                                             <ol>
                                                                 {% ifnotequal account_type 'Pro' %}
-                                                                <li><strong>SMS:</strong> Use any simple mobile phone to send data using a single SMS. Ask your project manager for the SMS Questionnaire.</li>
+                                                                <li><strong>SMS:</strong> Use any simple mobile phone to send data using a single SMS. Ask your project manager for the SMS Form.</li>
                                                                 {% endifnotequal %}
 														        <li><strong>Web: </strong>Use any computer connected to the Internet to send in data.
-                                                                    Log in to your Garner account to fill out the Questionnaire online.</li>
-                                                                <li><strong>Android App: </strong>Download Questionnaires directly onto your Android Smartphone and Tablet to send data.</li>
+                                                                    Log in to your CollectData account to fill out the Form online.</li>
+                                                                <li><strong>Android App: </strong>Download Forms directly onto your Android Smartphone and Tablet to send data.</li>
                                                             </ol>
                                                             </td>
                                                         </tr>
@@ -63,7 +63,7 @@
                                                 </p>
                                                 <br />
                                                 <p>Have fun,<br /><br/>
-                                                Your Garner Team<br />
+                                                Your CollectData Team<br />
                                                 <a href="{{ protocol }}://{{ domain }}" style="color: #4379A2;font-weight: normal;text-decoration: none;">
                                                     <span style="color: #4379A2;font-weight: normal;text-decoration: none;">
                                                     {{ protocol }}://{{ domain }}

@@ -13,9 +13,9 @@ msgstr ""
 
 msgid "about_DW"
 msgstr ""
-"<h5>About Garner</h5><p>Garner is an online mobile data"
+"<h5>About CollectData</h5><p>CollectData is an online mobile data"
 "\tcollection service designed and\tbuilt for development professionals. </"
-"p><p>With Garner, you collect and analyze the data you need using the "
+"p><p>With CollectData, you collect and analyze the data you need using the "
 "equipment you already have – a computer, the Internet and mobile "
 "phones. </p>"
  
@@ -28,28 +28,49 @@ msgstr ""
 
 
 msgid "Sign In to Your Account on DataWinners"
-msgstr "Sign In to Your Account on Garner"
+msgstr "Sign In to Your Account on CollectData"
 
 msgid "new_ggg"
-msgstr "Sign In to Your Account on Garner"
+msgstr "Sign In to Your Account on CollectData"
 
 msgid "agree-terms"
-msgstr "I agree to the Garner <a target=\"_blank\" href=\"/en/terms-and-conditions/\"  id=\"link-terms-and-conditions\">Terms and Conditions</a>"
+msgstr "I agree to the CollectData <a target=\"_blank\" href=\"/en/terms-and-conditions/\"  id=\"link-terms-and-conditions\">Terms and Conditions</a>"
 
 msgid "To sign up for a DataWinners account, you need to agree to our Terms and Conditions"
 msgstr "To sign up for a Garner account, you need to agree to our <a class='terms_and_condition' href=\"/en/terms-and-conditions/\" target=\"_blank\">Terms and Conditions</a>"
 
 msgid "Activate Your DataWinners Account"
-msgstr "Activate Your Garner Account"
+msgstr "Activate Your CollectData Account"
 
 msgid "DataWinners allows you to send your data 3 different ways. Choose the channel most convenient for you."
-msgstr "Garner allows you to send your data 3 different ways. Choose the channel most convenient for you."
+msgstr "CollectData allows you to send your data 3 different ways. Choose the channel most convenient for you."
 
 msgid "If you need help contact your project manager or send us an Email at <a href='mailto:support@datawinners.com'>support@datawinners.com</a>. We're here to help!"
 msgstr "If you need help contact your project manager or send us an Email at <a href='mailto:garner@thoughtworks.com'>garner@thoughtworks.com</a>. We're here to help!"
 
 msgid "View and manage the users of your DataWinners account."
-msgstr "View and manage the users of your Garner account."
+msgstr "View and manage the users of your CollectData account."
 
 msgid "To get started with DataWinners"
-msgstr "To get started with Garner"
+msgstr "To get started with CollectData"
+
+msgid "Import a Users list"
+msgstr ""
+
+msgid "Register User"
+msgstr ""
+
+msgid "order_to_create_project"
+msgstr "create a new Form"
+
+msgid "create a new Form"
+msgstr ""
+
+msgid "q_tooltip_advanced_questionnaire_option"
+msgstr "Use this option if you want to create advanced features in your Form such as skip logic or repeated sets of questions.<br/>Click on Upload an XLSForm to find out more!<br></br>"
+
+msgid "r_tooltip_advanced_questionnaire_option"
+msgstr "This is our first release of the Upload XLSForm feature.  Please help us to improve it by sending any feedback to support. </a>"
+
+msgid "no submission sub hint%(url)s"
+msgstr "Deleted Data and Data with errors will not be displayed as they should not be part of your analysis data.<br/> You can view and manage all Data on the <a href=\"%(url)s\">Data Log</a> page."

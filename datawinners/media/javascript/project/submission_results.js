@@ -49,17 +49,17 @@ DW.SubmissionLogTable = function (options) {
         dataType: "json"
     });
 
-    var no_data_help = {"all": "<span id=\"help_text_chart\">" + gettext("Once your Data Senders have sent in Submissions, they will appear here.") + "</span>" + $(".help_no_submissions").html(),
-        "analysis": "<span>" + gettext("Once your Data Senders have sent in Submissions, they will appear here.") + "</span>" + $(".help_no_submissions").html(),
-        "success": "<span>" + gettext("Once your Data Senders have sent in Submissions successfully, they will appear here.") + "</span>" + $(".help_no_submissions").html(),
-        "error": gettext("No unsuccessful Submissions!"),
-        "deleted": gettext("No deleted Submissions.")
+    var no_data_help = {"all": "<span id=\"help_text_chart\">" + gettext("Once your Users have sent in Data, they will appear here.") + "</span>" + $(".help_no_submissions").html(),
+        "analysis": "<span>" + gettext("Once your Users have sent in Data, they will appear here.") + "</span>" + $(".help_no_submissions").html(),
+        "success": "<span>" + gettext("Once your Users have sent in Data successfully, they will appear here.") + "</span>" + $(".help_no_submissions").html(),
+        "error": gettext("No unsuccessful Data!"),
+        "deleted": gettext("No deleted Data.")
     };
 
     function _init_submission_log_table(cols) {
         $(".submission_table").dwTable({
                 aoColumns: cols,
-                "concept": "Submission",
+                "concept": "Data",
                 "sDom": "iprtipl",
                 "sAjaxSource": options.table_source_url,
                 "sAjaxDataIdColIndex": 1,
@@ -137,7 +137,7 @@ DW.SubmissionLogExport = function () {
                     callback();
                     _check_limit_and_export();
                 },
-                title: gettext("Submission Exceeds Number of Supported Columns."),
+                title: gettext("Data Exceeds Number of Supported Columns."),
                 link_selector: ".   export_link",
                 dialogDiv: "#export_submission_multiple_sheet_dialog",
                 cancelLinkSelector: "#cancel_dialog",
@@ -149,7 +149,7 @@ DW.SubmissionLogExport = function () {
        var limit_info_dialog_options = {
                 successCallBack: function (callback) {
                 },
-                title: gettext("Number of Submissions Exceeds Export Limit"),
+                title: gettext("Number of Data Exceeds Export Limit"),
                 link_selector: ".export_link",
                 dialogDiv: "#export_submission_limit_dialog",
                 cancelLinkSelector: "#cancel_dialog",

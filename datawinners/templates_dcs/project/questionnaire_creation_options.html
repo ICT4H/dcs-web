@@ -1,0 +1,40 @@
+{% load i18n %}
+
+<div id="project_profile" class="clear_both" data-bind="visible: showQuestionnaireCreationOptions">
+    <h5>1. {% trans "Choose How To Start" %}</h5>
+
+    <div id="questionnaire_types" data-bind="accordion: {header: '.questionnaire_type_header', active: selectedCreationOption}">
+        <div class="questionnaire_type_header">
+            <span class="header">{% trans "Create a New Form" %}</span>
+        </div>
+        <h6 class="create_questionnaire_help">{% trans "Start with a blank Form and add your list of questions" %}</h6>
+
+
+        <div class="advanced_questionnaire_section_header">
+            <span>{% trans "Advanced Option (Beta Version)" %}</span>
+            <img class="help_icon submission_date_help_icon" src="/media/images/help_icon.png">
+            <div class="tooltip">
+                <p>
+                    <strong>{% trans "What is this?" %}</strong><br/>
+                    {% trans "q_tooltip_advanced_questionnaire_option" %}
+                    <strong>{% trans "Beta Version" %}</strong><br/>
+                    {% trans "r_tooltip_advanced_questionnaire_option" %}
+                </p>
+            </div>
+        </div>
+        <div class="questionnaire_type_header">
+            <span class="header">{% trans "Upload an XLSForm" %}</span>
+        </div>
+        <div>
+            <h6 class="create_questionnaire_help">{% trans "Choose this option to create a Form with advanced features by uploading an XLSForm (Excel file)" %}</h6>
+        </div>
+    </div>
+    <div class="right_aligned_button create_project">
+        <a href="{{ cancel_link }}" class="cancel_project">{% trans "Cancel" %} </a>
+        <span data-bind="visible: isContinueVisible">
+            <input type="button" class="button_wizard_next_small" id="continue_project" value="{% trans "Continue" %}"
+               data-bind="click: setQuestionnaireCreationType"/>
+        </span>
+    </div>
+
+</div>

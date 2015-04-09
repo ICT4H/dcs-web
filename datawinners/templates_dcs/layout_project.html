@@ -1,0 +1,76 @@
+{% extends 'layout_master.html' %}
+{% load i18n %}
+{% load field_tags %}
+{% load dw_tabs %}
+
+{% block layout_scss %}
+    {% include 'application_scss.html' %}
+{% endblock %}
+
+{% block page_css %}
+    {{ block.super }}
+    <link href="/media/css/plugins/jqueryUI/jquery-ui-1.8.13.custom.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block page_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="/media/javascript/jqueryUI/jquery-ui-1.8.13.custom.min.js"></script>
+    <script type="text/javascript" src="/media/javascript/underscore-min-1.4.3.js"></script>
+    <script type="text/javascript" src="/media/javascript/underscore.string.min.js"></script>
+    <script type="text/javascript"src="/media/javascript/ie8_warning.js"></script>
+{% endblock %}
+
+{% block body %}
+    {% block header %}
+        <div id="container_header_application">
+            <div class="container_24" id="header_application">
+                {% include 'header_wizard.html' %}
+            </div>
+        </div>
+        <div class="container_header_application1">
+            <div class="container_24" id="header_application">
+                {% include 'main_navigation.html' %}
+            </div>
+        </div>
+
+    {% endblock %}
+
+    {% block main_content %}
+        <div id="container_content">
+
+            {% block main_message %}
+            {% endblock %}
+            <div class="container_24">
+
+                {% block navigation %} {% endblock %}
+                <div class="grid_23 content">
+                    {% block content %}
+                        {% block secondary_navigation %} {% endblock %}
+                        {% block messages %}{% endblock %}
+
+                    {% endblock %}
+
+                </div>
+
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block device_navigation %}
+    <div class="device-navigation">
+        <span>{% trans "Send in your data using:" %}</span>
+
+        <div class="{% ifactivetab 'device_tab_nav' 'web' %}active{% else %}inactive{% endifactivetab %} web-nav">
+            <a class="web" href="{{ project_links.test_questionnaire_link }}">
+                {% trans "Web" %}
+            </a>
+        </div>
+        <div class="{% ifactivetab 'device_tab_nav' 'smartphone' %}active{% else %}inactive{% endifactivetab %} smartphone-nav">
+            <a class="smartphone"
+               href="{{ smart_phone_instruction_link }}">
+                {% trans "Smartphone" %}
+            </a>
+        </div>
+    </div>
+{% endblock %}

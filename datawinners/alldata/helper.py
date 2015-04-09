@@ -20,8 +20,8 @@ def get_visibility_settings_for(user):
 
 def get_page_heading(user):
     if user.get_profile().reporter:
-        return "Data Submission"
-    return "Questionnaires"
+        return "Data"
+    return "Forms"
 
 
 def link(report_name, language):
