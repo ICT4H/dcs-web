@@ -25,5 +25,5 @@ class Command(BaseCommand):
             print "Syncing Views....."
             SyncOnlyChangedViews().sync_view(recreated_manager)
         print "Loading data....."
-        # load_data()
+        load_data()
         print "Done."
