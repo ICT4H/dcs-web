@@ -31,7 +31,7 @@
                     {"label":"Edit", handler:action_handler.edit, "allow_selection": "single"},
                     {"label": "Delete", "handler":action_handler["delete"], "allow_selection": "multiple"}
                 ],
-                "aoColumnDefs":[{"bSortable": false, "aTargets":[col("devices"),col("projects")]}]
+                "aoColumnDefs":[{"bSortable": false, "aTargets":[col("projects")]}]
           });
      });
     </script>
@@ -46,10 +46,6 @@
             <th>{% trans "GPS Coordinates" %}</th>
             <th>{% trans "Mobile Number" %}</th>
             <th>{% trans "Email address" %}</th>
-            <th class="devices">
-                <span>{% trans "Devices" %}</span>
-                {% include "alldata/device_icons.html" %}
-            </th>
             <th class="projects">{% trans "Forms" %}</th>
         </thead>
     </table>

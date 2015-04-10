@@ -118,6 +118,9 @@ class FilePlayer(Player):
             raise MangroveException("Location Name cannot exceed 500 characters.")
 
         email = case_insensitive_lookup(values, "email")
+        if not email:
+            raise InvalidEmailException(message="Invalid email address.")
+
         if email:
             if not email_re.match(email):
                 raise InvalidEmailException(message="Invalid email address.")
