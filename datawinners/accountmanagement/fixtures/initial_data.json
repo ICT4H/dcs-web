@@ -9,6 +9,14 @@
     },
     {
         "model": "sites.site",
+        "pk": 12,
+        "fields": {
+            "domain": "172.18.29.5",
+            "name": "collectdata.in"
+        }
+    },
+    {
+        "model": "sites.site",
         "pk": 2,
         "fields": {
             "domain": "184.72.223.168",
