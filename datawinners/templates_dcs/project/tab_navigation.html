@@ -65,7 +65,7 @@
 {% endblock %}
 
 {% block navigation %}
-<div class="grid_24 tab_navigation">
+<div class="tab_navigation">
     <ul>
         <li class="{% ifactivetab 'tab_nav' 'overview' %}active{% else %}inactive{% endifactivetab %}">
             <a id="overview_tab" href="{{ project_links.overview_link }}" class="{{ disable_link_class }}">{% trans "Overview" %}</a>
