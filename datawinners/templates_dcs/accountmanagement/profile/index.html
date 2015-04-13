@@ -8,11 +8,7 @@
 {% load dw_tabs %}
 {% block navigation %}
 <div class="grid_24 tab_navigation">
-    <ul>
-        <li class="{% ifactivetab 'tab_nav' 'profile' %}active{% else %}inactive{% endifactivetab %}">
-            <a href="{% url datawinners.accountmanagement.views.edit_user %}">{% trans "Contact Info" %}</a>
-        </li>
-    </ul>
+
 </div>
 {% endblock %}
 
