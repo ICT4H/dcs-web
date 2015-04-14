@@ -78,7 +78,8 @@ def get_project_info(manager, project):
 
 
 def get_project_list(request):
-    questionnaires = get_all_project_for_user(request.user)
+    manager = get_database_manager(request.user)
+    questionnaires = manager.load_all_rows_in_view('all_projects', descending=True)
     manager = get_database_manager(request.user)
     return [get_project_info(manager, questionnaire) for questionnaire in questionnaires]
 
