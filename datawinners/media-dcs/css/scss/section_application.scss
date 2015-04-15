@@ -108,7 +108,7 @@ table.styled_table {
     height: 40px;
     background-color: $table-thead-bg;
     th {
-      color: #FFFFFF;
+      color: $table-thead-font-color;
       font-size: 15px;
       text-align: center;
       vertical-align: middle;

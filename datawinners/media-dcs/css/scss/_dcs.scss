@@ -1,10 +1,11 @@
-$bar-secondary: rgb(128, 201, 210);
-$bar-primary: #1A73BA;
+$bar-secondary: rgb(38, 189, 207);
+$bar-primary: rgb(38, 189, 207);
 $app-bg: #f1f1f1;
-$header-tab-color: #FFFFFF;
-$primary-tab-active-bg: rgb(128, 201, 210);
+$header-tab-color: #ffffff;
+$primary-tab-active-bg: #666666;
 $header_tab_radius: 10px;
-$table-thead-bg: #666;
+$table-thead-bg: #f1f1f1;
+$table-thead-font-color:#666;
 
 $intro-bg : #82c552;
 $intro-bg-img: '/media/images/dw_intro_bg.gif';
@@ -14,6 +15,7 @@ $public-header-login-bg: #aab;
 $header-logo: '/media/images/dcs_logo.png';
 $app-bg-img: "/media/images/application_bg_dcs.png";
 
+$font-color:#666;
 
 body{
     background: $app-bg;
