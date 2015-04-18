@@ -5,6 +5,7 @@
     text-align:left;
     color:#FFFFFF;
     font-size:24px;
+    height: 50px;
     .logo_data{
         font-weight:bold;
     }
@@ -34,6 +35,7 @@
             margin-top:5px;
             color: $header-tab-color;
             font-size:12px;
+            width: 100%;
             span{
                 display:inline;
                 padding:1px 15px 0px;
@@ -57,7 +59,9 @@
         .logo{
             padding-top:10px;
             margin-right:6px;
+
             img{
+                height: 45px;
                 float:left;
             }
         }
@@ -80,7 +84,8 @@
 
                 &.active{
                     a{
-                        padding-bottom: 9px;
+                        padding-bottom: 6px;
+                        font-weight: bold;
                         border-bottom: 5px solid $primary-tab-active-bg; /* for non-css3 browsers */
                     }
 

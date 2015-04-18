@@ -119,7 +119,7 @@ def rename_project(request, project_id):
             return HttpResponse(json.dumps({"status": "success"}), content_type='application/json')
         except DataObjectAlreadyExists as e:
             return HttpResponse(
-                json.dumps({"status": "error", "message": ugettext("Questionnaire with same name already exists.")}),
+                json.dumps({"status": "error", "message": ugettext("Form with same name already exists.")}),
                 content_type='application/json')
     return HttpResponse(json.dumps({"status": "success"}), content_type='application/json')
 

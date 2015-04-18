@@ -172,7 +172,7 @@ class ProjectUpload(View):
                 {
                     'success': False,
                     'duplicate_project_name': True,
-                    'error_msg': [_("Questionnaire with same name already exists.Upload was cancelled.")]}
+                    'error_msg': [_("Form with same name already exists.Upload was cancelled.")]}
             ), content_type='application/json')
 
         return HttpResponse(

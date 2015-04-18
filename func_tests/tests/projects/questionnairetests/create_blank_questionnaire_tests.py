@@ -83,9 +83,9 @@ class TestCreateBlankQuestionnaire(HeadlessRunnerTest):
         create_questionnaire_page.change_question_type(WATERPOINT_QUESTIONNAIRE_DATA[QUESTIONS][0])
         create_questionnaire_page.submit_errored_questionnaire()
         self.assertEqual(create_questionnaire_page.get_duplicate_questionnaire_code_error_message(),
-                         "Questionnaire with same code already exists.")
+                         "Form with same code already exists.")
         self.assertEqual(create_questionnaire_page.get_duplicate_questionnaire_title_error_message(),
-                         "Questionnaire with same name already exists.")
+                         "Form with same name already exists.")
 
     @attr('functional_test')
     def test_should_show_warning_popup_when_exiting_a_modified_questionnaire(self):

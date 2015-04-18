@@ -1,3 +1,6 @@
+@import "_main";
+@import "form";
+
 .padding_right_null {
   padding-right: 0 !important;
 }
@@ -253,7 +256,8 @@ table.no_border {
 
 /* Titles */
 .highlighted_title {
-  color: #C35C00;
+  color: $bar-primary;
+  font-size: 22px;
 }
 
 /* Help Icon */

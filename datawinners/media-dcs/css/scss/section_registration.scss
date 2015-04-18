@@ -50,14 +50,17 @@
 
 #registration_form{
     .black_italic{
-        display: inline-block;
+       display: inline-block;
+       font-size: 11px;
     }
     .black_italic.optional{
         display: block;
+        font-size: 11px;
     }
     ul{
         li#mobile-phone-number-fr p{
-            margin-top: -12px;
+           margin-top: -12px;
+           font-size: 11px;
         }
     }
 }
@@ -87,14 +90,17 @@ form{
         label{
             font-size:14px;
             display:block;
-            font-weight:bold;
+            font-weight:normal;
             width:170px;
             float:left;
         }
         input[type=text], input[type=password]{
-            width:$text_box_width;
-            height:20px;
-            border-color:$border_color;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            width: 250px;
+            padding-left: 5px;
         }
     }
 }
@@ -172,7 +178,6 @@ form.registration_form{
             label{
                 width: 160px;
                 margin-right: 10px;
-                text-align: right;
             }
             ul{
                 li{
@@ -184,10 +189,6 @@ form.registration_form{
                 }
             }
         }
-    }
-    #id_organization_country{
-        width: 206px;
-        float: left;
     }
     ul.payment_details{
         width: 675px;

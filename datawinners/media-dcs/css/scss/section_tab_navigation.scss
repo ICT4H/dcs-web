@@ -8,7 +8,6 @@ $font_family:"Arail";
             float:left;
             padding:7px 13px 8px;
             position:relative;
-            margin-top:10px;
             a{
                 color:$table-thead-font-color;
                 text-decoration:none;
@@ -24,6 +23,7 @@ $font_family:"Arail";
             border-radius: 6px 6px 0px 0px ;
             a{
                 color:$table-thead-font-color;
+                font-weight: bold;
             }
         }
     }

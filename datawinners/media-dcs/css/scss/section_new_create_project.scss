@@ -1,6 +1,6 @@
 @import "util.scss";
 @import "validation";
-
+@import "_main";
 /*new UI*/
 .wizard {
   margin: 25px !important;
@@ -436,6 +436,7 @@ fieldset {
 .create_questionnaire_help {
   color: #888888;
   font-style: italic;
+  font-size: $note-font-size;
 }
 
 .analysis_image{

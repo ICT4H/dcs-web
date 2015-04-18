@@ -2,9 +2,6 @@
 {% load dw_tabs %}
 {% block main_navigation %}
     <div id="main_tab">
-        <div class="grid_3 alpha logo" style="padding-top: 5px">
-                <a href="{% url dashboard %}"><img src="/media/images/dcs_logo.png"/></a>
-        </div>
         <ul class="{{ hide_link_class }}">
             <li class ="{% ifactivetab 'main_nav' 'questionnaires' %}active{% else %}inactive{% endifactivetab %}">
                 <a id="global_dashboard_link" href="{% url dashboard %}" class="{{ disable_link_class }}">{% trans "Forms" %}</a>

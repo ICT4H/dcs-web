@@ -1,3 +1,4 @@
+@import "_main";
 $text_box_width: 350px;
 $select_box_width:150px;
 $border_color: #646464 #EBEBEB #EBEBEB #646464;
@@ -17,6 +18,10 @@ form{
             width:$text_box_width;
             height:25px;
             border-color:$border_color;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            line-height: 1.42857143;
+            padding-left: 5px;
         }
         a{
             color:$link_color;
@@ -266,16 +271,16 @@ select{
   background:#FFFFFF;
   background: url('/media/images/arrow_dd.png') no-repeat scroll right -3px;
   font-family: 'Helvetica', Arial, 'Liberation Sans', FreeSans, sans-serif;
-  font-size: 11px !important;
+  font-size: 14px !important;
   margin-left: 0px;
   padding: 2px;
   option {
       margin: 3px;
     }
-  height:25px;
   -webkit-border-radius: 0px;
-  border: 2px solid;
-  border-color: #646464 #EBEBEB #EBEBEB #646464;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  line-height: 1.42857143;
 }
 
 input [type=text]{
@@ -293,10 +298,8 @@ input [type=text]{
     border: 1px solid #d4972d !important;
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
-    background: #FFD857; /* for non-css3 browsers */
-    background: -webkit-gradient(linear, left top, left bottom, from(#FEEA89), to(#FFD857)); /* for webkit browsers */
-    background: -moz-linear-gradient(top, #FEEA89, #FFD857); /* for firefox 3.6+ */
-    color: #6f451d !important;
+    background: $button-color; /* for non-css3 browsers */
+    color: $button-text-color !important;
     font-family: "Arial";
     font-weight: bold;
     text-decoration: none !important;
@@ -307,15 +310,7 @@ input [type=text]{
     font-size: 15px;
     height: auto;
     &:hover {
-      -webkit-box-shadow: 0px 0px 2px 2px rgba(33, 33, 33, 0.3);
-      box-shadow: 0px 0px 2px 2px rgba(33, 33, 33, 0.3);
-      opacity: 1;
-    }
-
-    &:active {
-      -webkit-box-shadow: 0px 0px 0px 0px rgba(33, 33, 33, 0.3);
-      box-shadow: 0px 0px 0px 0px rgba(33, 33, 33, 0.3);
-      opacity: 0.9;
+      border: 1px solid $button-border-color-hover;
     }
 }
 
@@ -527,7 +522,7 @@ input [type=text]{
         background:#FFFFFF;
         .ui-widget-header{
             border:none !important;
-            background-color: #666;;
+            background-color: $primary-tab-active-bg;;
             background-image: none;
             .ui-dialog-title{
                 font-size:18px;

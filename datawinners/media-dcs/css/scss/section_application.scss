@@ -48,15 +48,17 @@
     }
   }
   #page_title {
-    min-height: 40px;
-    padding: 15px 0 0px 0;
+    min-height: 35px;
+    padding:0px 0 0px 0;
     width: 950px;
     border-radius: 1px solid red;
     margin: 0 auto;
-    font-size: 22px;
+    font-size: 24px;
+    font-weight: bold;
     span.project_title {
       font-size: 22px;
       width: 500px;
+      color: $page-title-color;
       .editFieldWrapper {
         .editFieldSaveControllers {
           display: inline;
@@ -70,6 +72,11 @@
         }
         input.editField {
           display: inline;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          width: 257px;
+          line-height: 1.42857143;
+          padding-left: 5px;
         }
       }
       .editFieldCancel {
@@ -77,7 +84,7 @@
       }
     }
     .project_detail {
-      padding-bottom: 10px;
+      padding-bottom: 0px;
       font-size: 12px;
       .project_status {
         margin-right: 5px;
@@ -140,11 +147,7 @@ table.error_table {
 .project_title_div{
   width: 100%;
   .project_rename {
-      display: none;
       font-size: 12px;
-  }
-  &:hover .project_rename{
-      display: inline;
   }
 }
 

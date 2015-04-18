@@ -431,6 +431,11 @@ float: none;
   input {
     height: 20px;
     margin-bottom: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 257px;
+    line-height: 1.42857143;
+    padding-left: 5px;
   }
 }
 

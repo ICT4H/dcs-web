@@ -50,10 +50,10 @@ def _validate_questionnaire_name_and_code(questionnaire):
     error_message = {}
     if not questionnaire.is_form_code_unique():
         code_has_errors = True
-        error_message["code"] = _("Questionnaire with same code already exists.")
+        error_message["code"] = _("Form with same code already exists.")
     if not questionnaire.is_project_name_unique():
         name_has_errors = True
-        error_message["name"] = _("Questionnaire with same name already exists.")
+        error_message["name"] = _("Form with same name already exists.")
     return code_has_errors, error_message, name_has_errors
 
 

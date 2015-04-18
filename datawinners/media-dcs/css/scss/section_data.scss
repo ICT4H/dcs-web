@@ -1,3 +1,4 @@
+@import "_main";
 table {
   margin: 0;
 }
@@ -167,12 +168,15 @@ table {
   width: 80%;
   margin: 0 10px 0 5px;
   padding-left: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  line-height: 1.42857143;
 }
 
 .ui-daterangepickercontain .ui-daterangepicker {
   font-size: 12px;
   .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, .ui-state-hover {
-    border: 1px solid #666666;
+    border: 1px solid $primary-tab-active-bg;
     background: #ccc;
   }
   .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited, .ui-state-hover a {
@@ -180,11 +184,7 @@ table {
   }
   .ui-widget-header {
     background-color: #525252;
-    background: -webkit-gradient(linear, left top, left bottom, from(#525252), to(#3d3d3d));
-    //for webkit browsers
-    background: -moz-linear-gradient(top, #525252, #262626);
-    //for firefox 3.6+
-    border: 1px solid #666666
+    border: 1px solid $primary-tab-active-bg
   }
 }
 

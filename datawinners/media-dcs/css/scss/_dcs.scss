@@ -1,8 +1,8 @@
-$bar-secondary: rgb(38, 189, 207);
-$bar-primary: rgb(38, 189, 207);
+$bar-secondary: #ffffff;
+$bar-primary: #ffffff;
 $app-bg: #f1f1f1;
-$header-tab-color: #ffffff;
-$primary-tab-active-bg: #666666;
+$header-tab-color: #666;
+$primary-tab-active-bg: orange;
 $header_tab_radius: 10px;
 $table-thead-bg: #f1f1f1;
 $table-thead-font-color:#666;
@@ -12,12 +12,28 @@ $intro-bg-img: '/media/images/dw_intro_bg.gif';
 $header-bg: #aab;
 $public-header-login-bg: #aab;
 
-$header-logo: '/media/images/dcs_logo.png';
+$header-logo: '/media/images/collect-logo.png';
 $app-bg-img: "/media/images/application_bg_dcs.png";
 
+$page-title-font-size:24px;
+$section-header-font-size: 20px;
+$attribute-font-size:14px;
+$note-font-size:11px;
+$page-title-color: #fff;
 $font-color:#666;
-
+$button-color: orange;
+$button-text-color:white;
+$button-border-color-hover:orange;
+$page-title-band: orange;
 body{
     background: $app-bg;
 }
 
+.page_title_band {
+ background: $page-title-band;
+}
+
+.logo {
+ position: absolute;
+  top: 5px;
+}
