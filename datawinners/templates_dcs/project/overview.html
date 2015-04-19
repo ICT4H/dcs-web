@@ -1,0 +1,91 @@
+{% extends 'project/tab_navigation.html' %}
+{% load i18n %}
+{% block page_title %} {% trans "Forms - Overview"%} {% endblock %}
+
+{% load dw_tabs %}
+{% block navigation %}
+{% activetab "tab_nav" "overview" %}
+{{ block.super }}
+{% endblock %}
+
+{% block body %}
+{% activetab "main_nav" "questionnaires" %}
+{{ block.super }}
+{% endblock %}
+
+{% block page_scss %}
+    {{ block.super }}
+    <link href="/media/css/scss/section_new_overview.css" rel="stylesheet" />
+    <link href="/media/css/scss/section_new_create_project.css" rel="stylesheet" />
+    <link href="/media/css/scss/section_questionnaire_preview.css" rel="stylesheet" />
+    <link href="/media/css/scss/section_application.css" rel="stylesheet"/>
+    {% if GOOGLE_MAPS_ENABLED %}
+        <link rel="stylesheet" href="/media/javascript/OpenLayers-2.13.1/theme/default/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/media/css/scss/section_map.css" media="screen">
+    {% endif %}
+{% endblock %}
+
+{% block page_js %}
+  {{ block.super }}
+  {% if GOOGLE_MAPS_ENABLED %}
+    <script type="text/javascript" src="/media/javascript/OpenLayers-2.13.1/OpenLayers.js"></script>
+    <script>
+        OpenLayers.ImgPath = '/media/javascript/OpenLayers-2.13.1/img/';
+    </script>
+    <script type="text/javascript" src="/media/javascript/mapping.js"></script>
+    <script type="text/javascript">
+        var entity_types = {{ project.entity_type|safe }};
+        $(document).ready(function() {
+            $( "#how_to" ).accordion({ collapsible: true, active: 0 });
+            init_map();
+        });
+    </script>
+  {% endif %}
+    <script type="text/javascript">
+        var isSmartPhoneUpgradeInfoFlagPresent = '{{ show_sp_upgrade_info }}';
+    </script>
+    <script type="text/javascript" src="/media/javascript/project/overview_index.js"></script>
+
+{% endblock %}
+
+
+{% block content %}
+    <span id="project_id" style="display: none;">{{ project.id }}</span>
+    <div class="span-18 box">
+        <!--Success Message div-->
+        {% include 'project/success_message.html' %}
+        <div class="my_sub">
+            <p><b>
+                <div>
+                    <label>
+                        {{ unique_id_header_text }} {% trans "Users"%} <img src="/media/images/help_icon.png" class="help_icon">
+                    </label>
+                    <div class="tooltip">
+                        <p>
+                            {% trans 'If you have assigned your Users and/or Identification Numbers with GPS Coordinates, they will be displayed on the map below.' %}
+                        </p>
+                    </div>
+                </div>
+            </b></p>
+        </div>
+
+        <!--Map div-->
+        {% if GOOGLE_MAPS_ENABLED %}
+            {% include 'maps/entity_map.html'  %}
+        {% endif %}
+        <!--Questionnaire & DS div-->
+        <div class="clear_both_width_100" id="questionnaire_and_DS">
+            {% include 'project/questionnaire_and_DS.html'%}
+        </div>
+
+    </div>
+
+    <div id="smartphone_upgrade_section" class="none">
+        {% trans "For advanced Form features to work on Android Devices tell your Users to download "%}
+        <a href="https://play.google.com/store/apps/details?id=org.hni.datawinners.android.collect&hl=en" target="_blank" class="dialog-link">{%trans "the latest version of the CollectData app."%}</a>
+        <div class="gotitbutton">
+            <a class="button yes_button" id="close_accordion_link">{% trans "OK, Got It" %}</a>
+        </div>
+    </div>
+
+{% endblock %}

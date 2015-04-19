@@ -1,0 +1,58 @@
+{% load i18n %}
+<h4>{% trans "Status: Complete" %}</h4>
+<div id="questionnaire" class="left_half">
+    <div class="quarter">
+        <div>
+            <div class="text-content">{% trans "FORM" %}</div><div class="text-content-right-arrow"></div>
+            <div class="clear-both">
+                {% if not project.xform %}
+                    <a href="{{ project_links.questionnaire_link }}">{% trans "View" %} </a> |
+                {% else%}
+                    <a href="{{ project_links.questionnaire_link }}">{% trans "Edit" %} </a> |
+                {% endif %}
+                <a href="{{ project_links.test_questionnaire_link }}">{% trans "Input Data" %}</a>
+            </div>
+        </div>
+    </div>
+    <div class="quarter">
+    <ul>
+        <li><span style="font-weight: bold;">{{ number_of_questions }}</span> {% trans "Questions" %}</li>
+        <div class="line"></div>
+        {% if not project.xform %}
+            <li><img src="/media/images/mini_mobile.png" /><a href="#" class="sms_questionnaire sms-preview"> {% trans "SMS Form" %}</a></li>
+            {% include 'sms_preview_template.html' %}
+            <div class="line"></div>
+        {% endif %}
+        {% if 'web' in project.devices %}
+            <li><img src="/media/images/mini_computer.png"/><a href="{{ links.web_questionnaire_list }}" class="web_questionnaire"> {% trans "Web Form" %}</a></li>
+        {% endif %}
+        <div class="line"></div>
+        {% if 'smartPhone' in project.devices %}
+            <li><img src="/media/images/smart_phone.png"/> {% trans "SmartPhone" %}</li>
+        {% endif %}
+    </ul>
+    </div>
+</div>
+<div id="datasender-section" class="right_half">
+    <div class="quarter">
+        <div>
+            <div class="text-content">{% trans "USERS" %}</div><div class="text-content-right-arrow"></div>
+            <div class="clear-both">
+                <a href="{{ links.registered_data_senders }}">{% trans "View" %}</a> |
+                <a href="{{project_links.register_datasenders_link}}">{% trans "Add Users" %}</a>
+            </div>
+        </div>
+    </div>
+    <div class="quarter">
+    <ul>
+        <li><b>{{ number_data_sender }}</b> {% trans "assigned Users" %}</li>
+{#        {% if number_unregistered_data_sender %}#}
+{#        <li><b>{{ number_unregistered_data_sender }}</b> {% trans "unregistered Data Senders" %}</li>#}
+{#        {% endif %}#}
+{#        <div class="line"></div>#}
+{#        <li><b>{{ number_records }}</b> {% trans "records submitted" %}</li>#}
+        <div class="line"></div>
+        <li><b>{{ number_reminders }}</b> {% trans "Reminders set for assigned Users" %}</li>
+    </ul>
+    </div>
+</div>

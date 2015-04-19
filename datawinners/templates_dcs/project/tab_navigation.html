@@ -40,7 +40,7 @@
     <div class="project_detail_header" id="img_need_help">
         <div class="project_title_div">
             <span class="editableSingle project_title" pid="{{ project.id }}">{{ project.name }}</span>
-            <a class="project_rename" style="border-left: 0px none;">{% trans "Edit Name" %}</a>
+            <a class="project_rename"><img src="/media/images/edit-16.png" class="title_action"></a>
             <span class="project_detail">
                 {% if not project.xform %}
                     {% include 'project/sms_tester_form.html' %}
@@ -48,7 +48,7 @@
                 {% endif %}
             {% if user|in_group:"NGO Admins,Project Managers" %}
                 <a href="{{ project_links.delete_project_link }}"
-                   class="delete_project">{% trans "Delete this Form" %}</a>
+                   class="delete_project "><img src="/media/images/delete-16.png" class="title_action"></a>
             {% endif %}
             </span>
         </div>

@@ -1,3 +1,4 @@
+@import "_main";
 .view_style_block {
   float: right;
   label, ul {
@@ -6,8 +7,8 @@
     margin-left: 10px;
   }
   ul {
-    background: #e6f2fc;
-    border: 1px solid #e6f2fc;
+    background: $table-thead-bg;
+    border: 1px solid $table-thead-bg;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     margin-top: -3px;
@@ -20,8 +21,8 @@
       }
     }
     li.active {
-      background-color: #94d1ff;
-      border: 1px solid #94d1ff;
+      background-color: $primary-tab-active-bg;
+      border: 1px solid $primary-tab-active-bg;
       -moz-border-radius: 10px 0 0px 10px;
       -webkit-border-radius: 10px 0 0px 10px;
       a {

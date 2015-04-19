@@ -1,0 +1,73 @@
+{% extends 'project/tab_navigation.html' %}
+{% load i18n %}
+{% block page_title %}{% trans "Submit Data" %}  {% endblock %}
+
+{% load user_tags %}
+{% load field_tags %}
+{% load dw_tabs %}
+{% block navigation %}
+    {% activetab "tab_nav" "data" %}
+    {{ block.super }}
+{% endblock %}
+{% block body %}
+    {% activetab "main_nav" "questionnaires" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block page_scss %}
+    {{ block.super }}
+    <link href="/media/css/scss/section_project_overview.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_web_questionnaire.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/media/css/scss/section_public.css"/>
+    <link href="/media/css/scss/section_questionnaire_preview.css" rel="stylesheet"/>
+
+{% endblock %}
+
+{% block ie7_js %}
+    {{ block.super }}
+    <script src="/media/javascript/project/ie7_web_questionnaire.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block page_js %}
+        {{ block.super }}
+    <script type="text/javascript">
+         DW.reporter_id = '{{ reporter_id }}';
+         DW.is_linked = {{ is_linked|lower }};
+         DW.reporter_name = '{{ reporter_name }}';
+    </script>
+    {% if is_edit %}
+        <script type="text/javascript" src="/media/javascript/data_modified_warning.js"></script>
+        <script type="text/javascript" src="/media/javascript/project/edit_submission.js"></script>
+    {% else %}
+        <script type="text/javascript" src="/media/javascript/project/web_submission.js"></script>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% block secondary_navigation_data %}
+        {% activetab "secondary_tab_nav" "web_questionnaire" %}
+        {{ block.super }}
+    {% endblock %}
+    <div class="questionnaire-header">
+        {% if is_quota_reached %}
+        <div class="warning-message-box clear-both overflow_hidden">
+            {% if user|in_group:'NGO Admins,' %}
+                <p class="padding_bottom_null">{% trans "You have reached your limit of 1000 free Submissions. Subscribe to a monthly subscription to continue submitting data for your questionnaires." %}</p>
+                <a class="float_left margin_10 padding_top_10" href="/{% trans "en" %}/pricing/" target="blank">{% trans "Learn More" %}</a>
+                <a class="button margin_10 float_left" target="blank"
+               href="{% url default_upgrade %}">{% trans "Subscribe Now" %}</a>
+            {% else %}
+                <p>{% trans "You have reached your limit of 1000 free Submissions. Subscribe to a monthly subscription by contacting your Project Manager or DW Support at <a href='mailto:support@datawinners.com'>support@datawinners.com</a>." %}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    <div>
+        {% if is_edit %}
+            {% include 'project/edit_submission.html' %}
+        {% else %}
+            {% include 'project/web_questionnaire_questions.html' %}
+        {% endif %}
+    </div>
+{% endblock %}

@@ -363,7 +363,7 @@ input [type=text]{
     height: 30px;
     border: none !important;
     background: url("/media/images/button_wizard_next.png") no-repeat top left;
-    color: #6F451D !important;
+    color: #ffffff !important;
     font-family: "Arial";
     font-size: 11px !important;
     font-weight: bold;
@@ -389,7 +389,7 @@ input [type=text]{
     height: 29px;
     border: none !important;
     background: url("/media/images/button_wizard_next_small.png") no-repeat top left;
-    color: #6f451d !important;
+    color: $button-text-color !important;
     font-family: "Arial";
     font-size: 11px !important;
     font-weight: bold;
