@@ -34,8 +34,8 @@
       }
     }
     li.active-right {
-      background-color: #94d1ff;
-      border: 1px solid #94d1ff;
+      background-color: $primary-tab-active-bg;
+      border: 1px solid $primary-tab-active-bg;
       -moz-border-radius: 0px 10px 10px 0px;
       -webkit-border-radius: 0px 10px 10px 0px;
       a {

@@ -1,0 +1,123 @@
+{% extends 'project/tab_navigation.html' %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Form" %} {% endblock %}
+
+{% load dw_tabs %}
+
+{% block navigation %}
+    {% activetab "tab_nav" "questionnaire" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block body %}
+    {% activetab "main_nav" "questionnaires" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block page_scss %}
+    {{ block.super }}
+    <link href="/media/css/scss/section_questionnaire_preview.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_questionnaire.css" rel="stylesheet"/>
+    <link href="/media/css/scss/section_new_create_project.css" rel="stylesheet"/>
+    <link href="/media/css/scss/smart_phone_instruction.css" rel="stylesheet" />
+{% endblock %}
+
+{% block page_js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        var question_list = $.parseJSON({{existing_questions|safe}});
+        var subject_registration_form_preview_link = "{{ project_links.subject_registration_preview_link }}";
+        var sender_registration_form_preview_link = "{{ project_links.sender_registration_preview_link }}";
+        var sms_preview_link = "{{ preview_links.sms_preview }}";
+        var web_preview_link = "{{ preview_links.web_preview }}";
+        var smart_phone_preview_link = "{{ preview_links.smart_phone_preview }}";
+        var existing_questionnaire_code = "{{ questionnaire_code }}";
+        var project_language = "{{ project.language }}";
+        var project_name = "{{ project.name }}";
+        var project_has_submissions = "{{ project_has_submissions }}";
+        var post_url = "{{ post_url }}"
+        var uniqueIdTypes = {{ unique_id_types|safe }}
+        var is_success = "{{ is_success }}"
+        var active_language = "{{ active_language }}"
+    </script>
+    <script type="text/javascript" src="/media/javascript/dw-ko-validation-extensions.js"></script>
+    <script type="text/javascript" src="/media/javascript/entity/questionnaire_view_model.js"></script>
+    <script type="text/javascript" src="/media/javascript/entity/project_questionnaire_view_model.js"></script>
+    <script type="text/javascript" src="/media/javascript/jquery.sprintf.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/new_questionnaire_charcount.js"></script>
+    <script type="text/javascript" src="/media/javascript/warning_dialog.js"></script>
+    <script type="text/javascript" src="/media/javascript/entity/questionnaire_helper.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/questionnaire_wizard_submit.js"></script>
+    <script type="text/javascript" src="/media/javascript/common/form_edited_warning_dialog.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/questionnaire_wizard.js"></script>
+    <script type="text/javascript" src="/media/javascript/csrf_token_handler.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/questionnaire_instruction_and_preview.js"></script>
+    <script type="text/javascript"
+            src="/media/javascript/project/questionnaire_instruction_and_preview_wizard.js"></script>
+
+    <script type="text/javascript" src="/media/javascript/ko-binding-extensions.js"></script>
+    <script type="text/javascript" src="/media/javascript/project/web_submission.js"></script>
+{% endblock %}
+
+
+{% block step_number %}
+    <h3>{% trans "Step 3:" %} {% trans "Form" %}</h3>
+    <p>{% trans "Review the question by clicking on each" %}</p>
+{% endblock %}
+{% block content %}
+    <div>
+        <div class="grid_8 alpha">
+            <h2>{% trans "Form" %}</h2>
+        </div>
+        <div class="clear-both"></div>
+    </div>
+    <div class="help_accordion">
+        {% trans "View and edit your Form." %}
+    </div>
+    <form id="question_form" class="clear_both">
+        {% csrf_token %}
+        <input id='project-id' type='hidden' value="{{ project.id }}"/>
+        <fieldset>
+            <div class="questionnaire_form_header clearfix">
+                {% include 'project/questionnaire_info_indicator.html' %}
+                  <span style="float: left">{% trans "SMS Form Code" %}:
+                    <input id='questionnaire-code' data-bind="value: questionnaireCode"/>
+                    <img src="/media/images/help_icon.png" class="help_icon" style="margin-bottom: 10px;">
+                <div class="tooltip">
+                    <p>{% trans "tooltip_question_code" %}</p>
+                </div>
+                <div class="validationMessage" data-bind="ifnot: questionnaireCode.valid">
+                    <span id="questionnaire_code_validation_message" class="validationText" data-bind="text: questionnaireCode.error, scrollToElement: questionnaireCode.error"></span>
+                </div>
+                </span>
+                {% include 'project/preview_navigation.html' %}
+            </div>
+
+            <div class="questionnare_content grid_23 alpha omega">
+                <div id="message-label" class="none">
+                </div>
+
+                <div>
+                    {% include 'project/question_list.html' %}
+
+                    <div id="question-detail-panel">
+                        <div id="not_wizard">
+                            {% include 'project/question_detail_panel.html' %}
+                            {% include 'project/sms_preview.html' %}
+                        </div>
+                        <div data-bind="hidden: selectedQuestion" class="select_question_message" style="">{% trans "Add or edit a question"%}</div>
+                    </div>
+
+                </div>
+                <div class="margin_top_10 save-button" >
+                            <input id="submit-button" type="submit" class="button" value="{% trans 'Save' %}" />
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <div class="questionnaire_preview">
+        {% trans "Generating the questionnaire preview." %}
+    </div>
+        {% include "warning_edit_questionnaire.html" %}
+{% endblock %}

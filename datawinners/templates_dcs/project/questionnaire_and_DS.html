@@ -18,11 +18,6 @@
     <ul>
         <li><span style="font-weight: bold;">{{ number_of_questions }}</span> {% trans "Questions" %}</li>
         <div class="line"></div>
-        {% if not project.xform %}
-            <li><img src="/media/images/mini_mobile.png" /><a href="#" class="sms_questionnaire sms-preview"> {% trans "SMS Form" %}</a></li>
-            {% include 'sms_preview_template.html' %}
-            <div class="line"></div>
-        {% endif %}
         {% if 'web' in project.devices %}
             <li><img src="/media/images/mini_computer.png"/><a href="{{ links.web_questionnaire_list }}" class="web_questionnaire"> {% trans "Web Form" %}</a></li>
         {% endif %}

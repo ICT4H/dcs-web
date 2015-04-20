@@ -14,7 +14,7 @@
       </a>
     </li>
     <li class="{% ifactivetab 'tab_nav' 'users' %}active{% else %}inactive{% endifactivetab %}">
-      <a href="{% url datawinners.accountmanagement.views.users %}" class="user_tab">{% trans "Admins" %}</a>
+      <a href="{% url datawinners.accountmanagement.views.users %}" class="user_tab">{% trans "All Admins" %}</a>
     </li>
     <li class="{% ifactivetab 'tab_nav' 'activity_log' %}active{% else %}inactive{% endifactivetab %}">
       <a href="{% url datawinners.activitylog.views.show_log %}" class="user_tab">{% trans "Activity Log" %}</a>
