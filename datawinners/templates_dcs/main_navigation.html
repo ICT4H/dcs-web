@@ -1,7 +1,11 @@
 {% load i18n %}
 {% load dw_tabs %}
 {% block main_navigation %}
-    <div id="main_tab">
+    {% if hide_link_class == "none" %}
+        <div id="main_tab" style="padding-top: 41px;">
+    {% else %}
+        <div id="main_tab">
+    {% endif %}
         <ul class="{{ hide_link_class }}">
             <li class ="{% ifactivetab 'main_nav' 'questionnaires' %}active{% else %}inactive{% endifactivetab %}">
                 <a id="global_dashboard_link" href="{% url dashboard %}" class="{{ disable_link_class }}">{% trans "Forms" %}</a>
