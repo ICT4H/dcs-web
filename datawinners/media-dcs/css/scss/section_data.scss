@@ -149,7 +149,7 @@ table {
   table {
     thead {
       th {
-        color: #FFF;
+        color: $table-thead-font-color;
       }
       .sorting {
         background: url(/media/images/sort_arrow.png) no-repeat right 0px;
@@ -214,20 +214,13 @@ table {
     color: #0070ac;
     background: none;
     border-radius: 0;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 1px solid #CCCCCC;
     &:hover {
       background: none;
     }
   }
   span.paginate_active {
-    background: #FFD857;
-    color: #6F451D;
-    border: 1px solid #D4972D;
-    border-radius: 0;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
+    background: $button-color;
+    color: $button-text-color;
   }
   span.paginate_button_disabled {
     color: #CCCCCC;

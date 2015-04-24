@@ -2,11 +2,11 @@ $bar-secondary: #ffffff;
 $bar-primary: #ffffff;
 $app-bg: #f1f1f1;
 $header-tab-color: #666;
-$primary-tab-active-bg: orange;
+$primary-tab-active-bg: rgb(240,186,149);
 $header_tab_radius: 10px;
 $table-thead-bg: #f1f1f1;
 $table-thead-font-color:#666;
-
+$page-title-primary:#666;
 $intro-bg : #82c552;
 $intro-bg-img: '/media/images/dw_intro_bg.gif';
 $header-bg: #aab;
@@ -15,16 +15,17 @@ $public-header-login-bg: #aab;
 $header-logo: '/media/images/collect-logo.png';
 $app-bg-img: "/media/images/application_bg_dcs.png";
 
+$app-font: 'Open Sans', Arial, sans-serif;
 $page-title-font-size:24px;
 $section-header-font-size: 20px;
 $attribute-font-size:14px;
 $note-font-size:11px;
 $page-title-color: #fff;
 $font-color:#666;
-$button-color: orange;
+$button-color: rgb(247,143,49);
 $button-text-color:white;
-$button-border-color-hover:orange;
-$page-title-band: orange;
+$button-border-color-hover:rgb(240,186,149);
+$page-title-band: rgb(240,186,149);
 body{
     background: $app-bg;
 }

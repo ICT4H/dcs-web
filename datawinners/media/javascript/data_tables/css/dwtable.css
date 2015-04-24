@@ -132,7 +132,7 @@ ul.dropdown-menu>li.disabled label{
 .dataTables_wrapper table thead th.checkbox_col{padding: 0;}
 .table_action_button .btn {
   display: inline-block;  /* IE is so silly */
-  background: orange;
+  background: rgb(240,186,149);
   color: #ffffff;
   background-repeat: repeat-x;
   border-color: #e6e6e6 #e6e6e6 #B0CFD7;
@@ -147,8 +147,8 @@ ul.dropdown-menu>li.disabled label{
 .btn.disabled,
 .btn[disabled] {
   color: white;
-  background-color: orange;
-  *background-color: orange;
+  background-color: rgb(240,186,149);
+  *background-color: rgb(240,186,149);
 }
 
 .dataTables_wrapper table tbody td.table_message{

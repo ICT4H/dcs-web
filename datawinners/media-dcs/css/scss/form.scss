@@ -412,25 +412,15 @@ input [type=text]{
 
 .button_blue{
     margin:5px;
-    border: 1px solid #5087b4 !important;
-    color:#5087b4;
+    color:$button-text-color;
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
-    background: #cce3ee; /* for non-css3 browsers */
-    background: -webkit-gradient(linear, left top, left bottom, from(#dfedf4), to(#cce3ee)); /* for webkit browsers */
-    background: -moz-linear-gradient(top, #dfedf4, #cce3ee); /* for firefox 3.6+ */
+    background: $button-color; /* for non-css3 browsers */
     font-weight: normal;
     padding: 4px 15px 4px 15px;
     cursor:pointer;
     cursor:hand;
     opacity: 0.9;
-    &:hover {
-      -webkit-box-shadow: 0px 0px 2px 2px rgba(33, 33, 33, 0.3);
-      box-shadow: 0px 0px 2px 2px rgba(33, 33, 33, 0.3);
-      opacity: 1;
-      text-decoration: none;
-    }
-
     &:active {
       -webkit-box-shadow: 0px 0px 0px 0px rgba(33, 33, 33, 0.3);
       box-shadow: 0px 0px 0px 0px rgba(33, 33, 33, 0.3);

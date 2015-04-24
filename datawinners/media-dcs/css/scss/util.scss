@@ -256,10 +256,14 @@ table.no_border {
 
 /* Titles */
 .highlighted_title {
-  color: $bar-primary;
+  color: $page-title-primary;
   font-size: 22px;
 }
 
+.width-200px
+{
+    width:200px;
+}
 /* Help Icon */
 .help_icon {
   margin-left: 5px;

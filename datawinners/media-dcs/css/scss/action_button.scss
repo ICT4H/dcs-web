@@ -1,16 +1,16 @@
+@import "_main";
 #action_button, .action_button {
   .btn {
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#CCDFED), to(#B0CFD7));
-    background: -moz-linear-gradient(top, #CCDFED, #B0CFD7);
-    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#CCDFED, endColorStr=#B0CFD7);
-filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#CCDFED, endColorStr=#B0CFD7);
-display:inline-block; /* IE is so silly */
+    font-family: $app-font;
+    background: $button-color;
+    color:  $button-text-color;
+    display:inline-block; /* IE is so silly */
   }
 .btn:hover {
-  background: #DBE6F1;
+  background: $button-color;
 }
 .btn-group.open .btn.dropdown-toggle {
-  background: #DBE6F1;
+  background: $button-color;
 }
 .btn-group .btn.dropdown-toggle{
   margin-right: 20px;
