@@ -2,7 +2,7 @@ $bar-secondary: #ffffff;
 $bar-primary: #ffffff;
 $app-bg: #f1f1f1;
 $header-tab-color: #666;
-$primary-tab-active-bg: rgb(240,186,149);
+$primary-tab-active-bg: rgb(247,143,49);
 $header_tab_radius: 10px;
 $table-thead-bg: #f1f1f1;
 $table-thead-font-color:#666;
@@ -22,10 +22,10 @@ $attribute-font-size:14px;
 $note-font-size:11px;
 $page-title-color: #fff;
 $font-color:#666;
-$button-color: rgb(247,143,49);
-$button-text-color:white;
+$button-color: rgb(240,186,149);
+$button-text-color: #666;
 $button-border-color-hover:rgb(240,186,149);
-$page-title-band: rgb(240,186,149);
+$page-title-band: rgb(247,143,49);
 body{
     background: $app-bg;
 }
