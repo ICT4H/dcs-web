@@ -295,12 +295,12 @@ input [type=text]{
 }
 
 .button{
-    border: 1px solid #d4972d !important;
+    border: 0px solid #d4972d !important;
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
     background: $button-color; /* for non-css3 browsers */
     color: $button-text-color !important;
-    font-family: "Arial";
+    font-family: $app-font;
     font-weight: bold;
     text-decoration: none !important;
     padding: 6px 23px 5px 22px;
