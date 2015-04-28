@@ -3,7 +3,7 @@ import json
 import datetime
 import logging
 from datawinners.blue.correlated_xlxform import NoCommonFieldsException
-from datawinners.blue.correlated_xlxform import CorrelatedForms, ParentProjectWithFieldSetNotSupported
+from datawinners.blue.correlated_xlxform import CorrelatedForms
 from django import forms
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -518,8 +518,6 @@ def correlate_forms(request, project_id):
                 success, msg = (True, 'Updated') if successfully_related else (False, 'Some thing unexpected happened, please try again')
             except NoCommonFieldsException:
                 success, msg = (False, 'There are no common fields.')
-            except ParentProjectWithFieldSetNotSupported:
-                success, msg = (False, 'Project with repeat or group field cannot be a master/parent project.')
         else:
             success, msg = (False, 'Invalid input.')
 

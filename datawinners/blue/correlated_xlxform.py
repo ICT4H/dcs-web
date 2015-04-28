@@ -29,9 +29,6 @@ class CorrelatedForms():
         #TODO write test to verify that parent is reloaded to avoid ResourceConflict('Document update conflict.',)
         parent_project = Project.get(self.dbm, parent_id)
         common_fields = list(self._get_common_fields(parent_project, child_project))
-        # FIXME wrong validation; common fields should not have field set
-        if parent_project.is_field_set_field_present():
-            raise ParentProjectWithFieldSetNotSupported()
         if len(common_fields) == 0:
             raise NoCommonFieldsException()
 
@@ -49,9 +46,6 @@ class CorrelatedForms():
     @staticmethod
     def _get_code_label_dict(project, field_codes):
         return {field['code']:field['label'] for field in project.form_fields if field.get('code') in field_codes}
-
-class ParentProjectWithFieldSetNotSupported(Exception):
-    pass
 
 class NoCommonFieldsException(Exception):
     pass

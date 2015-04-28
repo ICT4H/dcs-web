@@ -6,8 +6,7 @@ import time
 from django.contrib.auth.models import User
 
 from datawinners.alldata.helper import get_all_project_for_user
-from datawinners.blue.correlated_xlxform import CorrelatedForms, NoCommonFieldsException, \
-    ParentProjectWithFieldSetNotSupported, ParentXform
+from datawinners.blue.correlated_xlxform import CorrelatedForms, NoCommonFieldsException, ParentXform
 from datawinners.blue.xform_bridge import XlsFormParser, MangroveService
 from datawinners.main.database import get_database_manager
 from datawinners.project import helper
@@ -96,13 +95,6 @@ class TestCorrelatedXlsForms(unittest.TestCase):
     def test_should_hide_common_parent_fields_in_child_xform_when_accessed_by_dcs_apis(self):
         # This needs to be done only for dcs app. For odk and web the parent fields remain editable.
         pass
-
-    def test_should_not_allow_parent_to_contain_field_set_field_to_support_excel_import(self):
-        project_with_repeat_field = self._create_test_projects_and_delete_teardown('Project-with-repeat-'
-                                                                               + self.random_project_name, self.REPEAT)
-        correlated_forms = CorrelatedForms(self.user)
-        with self.assertRaises(ParentProjectWithFieldSetNotSupported):
-            correlated_forms.relate_parent_and_child_forms(project_with_repeat_field, self.repayment_project_id, 'Repayment')
 
     def test_should_relate_child_containing_field_set_question(self):
         correlated_forms = CorrelatedForms(self.user)
