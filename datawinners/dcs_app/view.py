@@ -228,12 +228,12 @@ def get_projects_status(request):
         try:
             server_project = Project.get(manager, client_project['project_uuid'])
             _add_to_unassigned(unassigned_uuids, request.user, server_project)
-            if(server_project.is_void()):
-                response_projects.appened({'project_uuid': client_project['id'], 'status': 'server-deleted'})
+            if server_project.is_void():
+                response_projects.append({'project_uuid': client_project['project_uuid'], 'status': 'server-deleted'})
             elif server_project.revision != client_project['version'] :
                 response_projects.append({'project_uuid': server_project.id, 'status': 'outdated'})
         except Exception:
-            response_projects.append({'project_uuid': client_project['id'], 'status': 'server-deleted'})
+            response_projects.append({'project_uuid': client_project['project_uuid'], 'status': 'server-deleted'})
 
     return response_json_cors({'outdated_projects': response_projects, 'last_updated': current_date_time,
                                'unassigned_uuids': unassigned_uuids})
