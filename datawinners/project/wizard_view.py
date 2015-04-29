@@ -31,7 +31,7 @@ from datawinners.common.constant import EDITED_QUESTIONNAIRE, ACTIVATED_REMINDER
 from datawinners.questionnaire.questionnaire_builder import QuestionnaireBuilder
 from datawinners.project.helper import is_project_exist
 from datawinners.project.utils import is_quota_reached
-from mangrove.transport.xforms.xform import  xform_for
+from mangrove.transport.xforms.xform import create_xform_by_form_id
 from mangrove.utils.types import is_empty
 
 
@@ -150,7 +150,7 @@ def edit_project(request, project_id):
             detail.update(changed_questions)
             questionnaire.save()
             if(settings.BRAND_FEATURES.get('DW_BUILDER_PROJECT_TO_XLSFORMS', False)):
-                questionnaire.xform = xform_for(get_database_manager(request.user), questionnaire.id, request.user.get_profile().reporter_id)
+                questionnaire.xform = create_xform_by_form_id(get_database_manager(request.user), questionnaire.id, request.user.get_profile().reporter_id)
                 questionnaire.update_doc_and_save()
 
             deleted_question_codes = _get_deleted_question_codes(old_codes=old_field_codes,
