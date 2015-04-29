@@ -41,10 +41,12 @@ $(document).on("click", "#id_register_button", function () {
     });
     $('#id_location').val($.trim($('#id_location').val()));
     $('#id_geo_code').val($.trim($('#id_geo_code').val()));
+    var post_data = $("#registration_form").serialize();
+    post_data = post_data + '&devices=web';
     $.ajax({
         type: 'POST',
         url: sender_registration_link || window.location.href,
-        data: $("#registration_form").serialize(),
+        data: post_data,
         success: function (response) {
             $.unblockUI();
             $("#add_data_sender_form").html(response);
