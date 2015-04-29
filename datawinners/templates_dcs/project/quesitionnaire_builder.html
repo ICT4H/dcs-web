@@ -8,7 +8,7 @@
 
         <div id="questionnaire" class="clear_both">
             <fieldset>
-                <h5>2. {% trans "Write and Edit Your Questions" %}</h5>
+                <h5>2. {% trans "Manage form questions" %}</h5>
             </fieldset>
             <div class="line"></div>
             <br/>
@@ -17,7 +17,7 @@
                 <fieldset>
                     <div class="questionnaire_form_header clearfix">
                         {% include 'project/questionnaire_info_indicator.html' %}
-                        <span style="float: left">{% trans "SMS Form Code" %}:
+                        <span style="display: none">{% trans "SMS Form Code" %}:
                             <input id='questionnaire-code' data-bind="value: questionnaireCode"/>
                             <img src="/media/images/help_icon.png" class="help_icon" style="margin-bottom: 10px;">
                             <div class="tooltip">

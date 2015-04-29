@@ -66,22 +66,14 @@
     <p>{% trans "Review the question by clicking on each" %}</p>
 {% endblock %}
 {% block content %}
-    <div>
-        <div class="grid_8 alpha">
-            <h2>{% trans "Form" %}</h2>
-        </div>
-        <div class="clear-both"></div>
-    </div>
-    <div class="help_accordion">
-        {% trans "View and edit your Form." %}
-    </div>
+
     <form id="question_form" class="clear_both">
         {% csrf_token %}
         <input id='project-id' type='hidden' value="{{ project.id }}"/>
         <fieldset>
             <div class="questionnaire_form_header clearfix">
                 {% include 'project/questionnaire_info_indicator.html' %}
-                  <span style="float: left">{% trans "SMS Form Code" %}:
+                  <span style="display: none">{% trans "SMS Form Code" %}:
                     <input id='questionnaire-code' data-bind="value: questionnaireCode"/>
                     <img src="/media/images/help_icon.png" class="help_icon" style="margin-bottom: 10px;">
                 <div class="tooltip">
@@ -104,7 +96,6 @@
                     <div id="question-detail-panel">
                         <div id="not_wizard">
                             {% include 'project/question_detail_panel.html' %}
-                            {% include 'project/sms_preview.html' %}
                         </div>
                         <div data-bind="hidden: selectedQuestion" class="select_question_message" style="">{% trans "Add or edit a question"%}</div>
                     </div>
