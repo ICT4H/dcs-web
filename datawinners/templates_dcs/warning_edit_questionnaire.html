@@ -1,0 +1,29 @@
+{% load i18n %}
+<div class="none">
+    <div id="submission_exists">
+        <p class="warning_message">
+            {% trans "If you delete this question, any previously collected data will be lost." %}<br/>
+            {% trans "Do you want to delete this question?" %}
+        </p>
+        <br/>
+        <div class="text_align_right">
+            <a class="button_blue no_button">{% trans "No" %}</a>
+            <a class="button_blue yes_button">{% trans "Yes" %}</a>
+        </div>
+    </div>
+
+    <div id="cancel_questionnaire_warning_message">
+        {% trans "Do you want to save the changes before leaving this page?" %}<br/>
+        <p class="font_size_13">{% trans "Your changes will be lost if you don't save them." %}</p>
+
+        <div class="text_align_right padding_top_20">
+            <a id="cancel_dialog" href="javascript:void(0);">{% trans "Cancel" %}</a>
+            <a id="ignore_changes" class="button_blue no_button">{% trans "Don't Save" %}</a>
+            <a id="save_changes" class="button yes_button">{% trans "Save" %}</a>
+        </div>
+    </div>
+
+    {% include "empty_questionnaire_dialog.html" %}
+    {% include "inform_datasender_of_excel_questionnaire_changes.html" %}
+</div>
+

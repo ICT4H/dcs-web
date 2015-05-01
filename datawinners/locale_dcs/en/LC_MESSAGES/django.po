@@ -74,3 +74,6 @@ msgstr "This is our first release of the Upload XLSForm feature.  Please help us
 
 msgid "no submission sub hint%(url)s"
 msgstr "Deleted Data and Data with errors will not be displayed as they should not be part of your analysis data.<br/> You can view and manage all Data on the <a href=\"%(url)s\">Data Log</a> page."
+
+msgid "The Data Sender(s) are added to Questionnaire(s) successfully"
+msgstr "The User(s) are added to Form(s) successfully"
