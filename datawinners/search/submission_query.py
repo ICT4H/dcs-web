@@ -17,9 +17,10 @@ from mangrove.utils.dates import py_datetime_to_js_datestring
 
 
 class SubmissionQueryResponseCreator(object):
-    def __init__(self, form_model, localized_time_delta):
+    def __init__(self, form_model, localized_time_delta, use_iso_create_date=False):
         self.form_model = form_model
         self.localized_time_delta = localized_time_delta
+        self.use_iso_create_date = use_iso_create_date
 
     def combine_name_and_id(self, short_code, entity_name, submission):
         return submission.append(
@@ -86,7 +87,8 @@ class SubmissionQueryResponseCreator(object):
                     elif key == 'status' and res.get(key):
                         submission.append(ugettext(res.get(key)))
                     elif key == SubmissionIndexConstants.SUBMISSION_DATE_KEY:
-                        self._convert_to_iso_format_date_time(key, res, submission)
+                        self._convert_to_iso_format_date_time(key, res, submission) if self.use_iso_create_date else\
+                            self._convert_to_localized_date_time(key, res, submission)
                     elif key == 'error_msg':
                         self._populate_error_message(key, language, res, submission)
                     elif key in fieldset_fields.keys():

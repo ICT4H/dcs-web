@@ -293,7 +293,7 @@ def _get_slim_submission_paginated(request, project_uuid):
     local_time_delta = get_country_time_delta('IN')
     search_results, query_fields = get_submissions_paginated(dbm, form_model, search_parameters, local_time_delta)
     submission_count_with_filters = get_submission_count(dbm, form_model, search_parameters, local_time_delta)
-    submissions = SubmissionQueryResponseCreator(form_model, local_time_delta) \
+    submissions = SubmissionQueryResponseCreator(form_model, local_time_delta, use_iso_create_date=True) \
                     .create_response(query_fields, search_results)
     return {
         'data': submissions,
