@@ -1,7 +1,7 @@
 $(function(){
      var reminderAddDialogOptions = {
                     link_selector: "#undelete_project_section",
-                    title: "Specify Reminders",
+                    title: "Undone Delete",
                     dialogDiv: "#reminder_add_dialog",
                     successCallBack: function(callback){
                         callback();

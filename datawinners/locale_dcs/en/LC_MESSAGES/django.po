@@ -77,3 +77,6 @@ msgstr "Deleted Data and Data with errors will not be displayed as they should n
 
 msgid "The Data Sender(s) are added to Questionnaire(s) successfully"
 msgstr "The User(s) are added to Form(s) successfully"
+
+msgid "Sorry! Current version of DataWinners does not support"
+msgstr "Sorry! Current version of CollectData does not support"
