@@ -27,7 +27,7 @@ $button-text-color: #fff;
 $button-border-color-hover:rgb(240,186,149);
 $page-title-band: rgb(247,143,49);
 body{
-    background: $app-bg;
+    background: $app-bg !important;
 }
 
 .page_title_band {
