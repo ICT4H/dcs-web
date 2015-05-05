@@ -35,7 +35,7 @@ $(function () {
             DW.trackEvent('advanced-questionnaire-edited', 'edit-questionnaire-success');
 
             var kwargs = {dialogDiv: "#inform_datasender_about_changes",
-                title: gettext('Inform Your Data Senders about the Changes'),
+                title: 'Inform Your Users about the Changes',
                 width:650,
                 successCallBack: function(callback) {
                     callback();

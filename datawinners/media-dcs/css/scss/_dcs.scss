@@ -7,6 +7,7 @@ $header_tab_radius: 10px;
 $table-thead-bg: #f1f1f1;
 $table-thead-font-color:#666;
 $page-title-primary:#666;
+$popup-title-bg: rgb(247,143,49);
 $intro-bg : #82c552;
 $intro-bg-img: '/media/images/dw_intro_bg.gif';
 $header-bg: #aab;
@@ -22,9 +23,11 @@ $attribute-font-size:14px;
 $note-font-size:11px;
 $page-title-color: #fff;
 $font-color:#666;
-$button-color: rgb(247,143,49);
+
+$button-color: #3498db;
 $button-text-color: #fff;
-$button-border-color-hover:rgb(240,186,149);
+$button-border-color-hover: #2a8bcc;
+
 $page-title-band: rgb(247,143,49);
 body{
     background: $app-bg !important;

@@ -615,14 +615,12 @@ div.border_top_bottom{
   margin: -15px 0 15px 0;
 }
 .disabled_yellow_submit_button {
-  border: 1px solid #D5B071 !important;
+  border: 1px solid #3194D7 !important;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  background: #F8EDB8!important;
-  background: -webkit-gradient(linear, left top, left bottom, from(#F8EDB8), to(#FDE8A0))!important;
-  background: -moz-linear-gradient(top, #F8EDB8, #FDE8A0)!important;
-  color: #C29870 !important;
-  font-family: "Arial"!important;
+  background: #62ABDB;
+  color: #EDE9E9 !important;
+  font-family:  "Open Sans"!important;
   font-weight: bold!important;
   padding: 6px 23px 5px 22px!important;
   cursor: default!important;
