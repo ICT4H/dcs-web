@@ -19,73 +19,102 @@
     <link href="/media/css/scss/section_new_create_project.css" rel="stylesheet" />
     <link href="/media/css/scss/section_questionnaire_preview.css" rel="stylesheet" />
     <link href="/media/css/scss/section_application.css" rel="stylesheet"/>
-    {% if GOOGLE_MAPS_ENABLED %}
-        <link rel="stylesheet" href="/media/javascript/OpenLayers-2.13.1/theme/default/style.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/media/css/scss/section_map.css" media="screen">
-    {% endif %}
+    <style type="text/css">
+    .overview-panel {
+        border-top: 5px solid orange;
+        padding: 20px;
+        margin-left: 15px;
+        background: rgb(232, 232, 232);
+    }
+    .overview-panel-img {
+        width: 50px;
+        opacity: 0.5;
+    }
+    .spacer1 {
+        height: 1em;
+    }
+    .spacer {
+        height: 9em;
+    }
+    a.overview {
+        color: #666666;
+    }
+    div.overview-panel:hover{
+        background: rgb(200, 200, 200);
+    }
+    </style>
 {% endblock %}
-
-{% block page_js %}
-  {{ block.super }}
-  {% if GOOGLE_MAPS_ENABLED %}
-    <script type="text/javascript" src="/media/javascript/OpenLayers-2.13.1/OpenLayers.js"></script>
-    <script>
-        OpenLayers.ImgPath = '/media/javascript/OpenLayers-2.13.1/img/';
-    </script>
-    <script type="text/javascript" src="/media/javascript/mapping.js"></script>
-    <script type="text/javascript">
-        var entity_types = {{ project.entity_type|safe }};
-        $(document).ready(function() {
-            $( "#how_to" ).accordion({ collapsible: true, active: 0 });
-            init_map();
-        });
-    </script>
-  {% endif %}
-    <script type="text/javascript">
-        var isSmartPhoneUpgradeInfoFlagPresent = '{{ show_sp_upgrade_info }}';
-    </script>
-    <script type="text/javascript" src="/media/javascript/project/overview_index.js"></script>
-
-{% endblock %}
-
 
 {% block content %}
-    <span id="project_id" style="display: none;">{{ project.id }}</span>
-    <div class="span-18 box">
-        <!--Success Message div-->
-        {% include 'project/success_message.html' %}
-        <div class="my_sub">
-            <p><b>
-                <div>
-                    <label>
-                        {{ unique_id_header_text }} {% trans "Users"%} <img src="/media/images/help_icon.png" class="help_icon">
-                    </label>
-                    <div class="tooltip">
-                        <p>
-                            {% trans 'If you have assigned your Users and/or Identification Numbers with GPS Coordinates, they will be displayed on the map below.' %}
-                        </p>
-                    </div>
+        <div class="spacer1"></div>
+        <a class="overview" href="{{ project_links.questionnaire_link }}">
+            <div class="grid_10 overview-panel">
+                <div class="grid_2">
+                    <img class="overview-panel-img" src="/media/images/pencil-po.png" alt=""/>
                 </div>
-            </b></p>
-        </div>
+                <div>
+                    <h3>Manage Form</h3>
+                    To change the fields to Form
+                </div>
+            </div>
+        </a>
+        <a class="overview" href="{{ project_links.correlate_link }}">
+            <div class="grid_10 overview-panel">
+                <div class="grid_2">
+                    <img class="overview-panel-img" src="/media/images/book-po.png" alt=""/>
+                </div>
+                <div>
+                    <h3>Correlate</h3>
+                    Correlate Forms to refer existing data
+                </div>
+            </div>
+        </a>
 
-        <!--Map div-->
-        {% if GOOGLE_MAPS_ENABLED %}
-            {% include 'maps/entity_map.html'  %}
-        {% endif %}
-        <!--Questionnaire & DS div-->
-        <div class="clear_both_width_100" id="questionnaire_and_DS">
-            {% include 'project/questionnaire_and_DS.html'%}
-        </div>
+        <div class="spacer"></div>
+        <a class="overview" href="{{ project_links.registered_datasenders_link }}">
+            <div class="grid_10 overview-panel">
+                <div class="grid_2">
+                    <img class="overview-panel-img" src="/media/images/user-po.png" alt=""/>
+                </div>
+                <div>
+                    <h3>Assigned Users</h3>
+                    Manage Assigned Users of this Form
+                </div>
+            </div>
+        </a>
+        <a class="overview" href="{{ project_links.data_analysis_link }}">
+            <div class="grid_10 overview-panel">
+                <div class="grid_2">
+                    <img class="overview-panel-img" src="/media/images/cal-po.png" alt=""/>
+                </div>
+                <div>
+                    <h3>Analysis</h3>
+                    Analyse Submitted Multi/Single Choice Data
+                </div>
+            </div>
+        </a>
 
-    </div>
-
-    <div id="smartphone_upgrade_section" class="none">
-        {% trans "For advanced Form features to work on Android Devices tell your Users to download "%}
-        <a href="https://play.google.com/store/apps/details?id=org.hni.datawinners.android.collect&hl=en" target="_blank" class="dialog-link">{%trans "the latest version of the CollectData app."%}</a>
-        <div class="gotitbutton">
-            <a class="button yes_button" id="close_accordion_link">{% trans "OK, Got It" %}</a>
-        </div>
-    </div>
-
+        <div class="spacer"></div>
+        <a class="overview" href="{{ project_links.submission_log_link }}">
+            <div class="grid_10 overview-panel">
+                <div class="grid_2">
+                    <img class="overview-panel-img" src="/media/images/cal-po-1.png" alt=""/>
+                </div>
+                <div>
+                    <h3>Data Log</h3>
+                    View/Change Submitted Data
+                </div>
+            </div>
+        </a>
+        <a class="overview" href="{{ project_links.test_questionnaire_link }}">
+            <div class="grid_10 overview-panel">
+                <div class="grid_2">
+                    <img class="overview-panel-img" src="/media/images/submit-po.png" alt=""/>
+                </div>
+                <div>
+                    <h3>Submit Data</h3>
+                    Submit Data for this Form
+                </div>
+            </div>
+        </a>
 {% endblock %}
