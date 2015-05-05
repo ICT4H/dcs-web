@@ -17,7 +17,7 @@ msgstr ""
 "\tcollection service. </"
 "p><p>With CollectData, you collect and analyze the data you need using the "
 "equipment you already have – a computer, the Internet and Android "
-"phones. </p>"
+"devices. </p>"
  
 msgid "subscription_details"
 msgstr ""

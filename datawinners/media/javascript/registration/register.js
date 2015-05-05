@@ -5,7 +5,7 @@ $(document).ready(function() {
     $("#user_should_agree_terms_block").dialog({
         autoOpen: false,
         modal: true,
-        title: gettext("DataWinners Terms & Conditions"),
+        title: "CollectData Terms & Conditions",
         zIndex:200,
         width: 500,
         beforeClose: function() {
