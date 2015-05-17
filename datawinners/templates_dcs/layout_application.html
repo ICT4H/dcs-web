@@ -10,6 +10,22 @@
 {% block page_css %}
     {{ block.super }}
     <link href="/media/css/plugins/jqueryUI/jquery-ui-1.8.13.custom.css" rel="stylesheet"/>
+    <style type="text/css">
+        div#header_application {
+            height: 73px;
+        }
+        a#try-it {
+            border: 1px solid orange;
+            border-radius: 8px;
+            padding: 6px 16px;
+            margin-top: -5px;
+        }
+        a.public {
+            font-size: 14px;
+            color: #000 !important;
+            letter-spacing: 1px;
+        }
+    </style>
 {% endblock %}
 
 {% block page_js %}

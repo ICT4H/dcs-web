@@ -10,7 +10,7 @@ urlpatterns = patterns('',
         (r'^home/ask-us/', ask_us),
         (r'^fr/about-us/blog/$', blog, {'language': 'fr'}),
         (r'^en/about-us/blog/$', blog, {'language': 'en'}),
-        url(r'^$', custom_login, {'template_name': 'registration/login.html', 'authentication_form': LoginForm}, name='auth_login'),
+        url(r'^$', custom_login, {'template_name': 'index.html', 'authentication_form': LoginForm}, name='auth_login'),
         url(r'^$', custom_home),
         url(r'^openskype/', open_skype, name='open_skype'),
 )

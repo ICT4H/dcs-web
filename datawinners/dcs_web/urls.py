@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     (r'^media/images/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_IMAGES}),
     (r'^media/javascript/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_JS}),
 
+    (r'^media/homepage/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_HOME_PAGE}),
+
     (r'', include('datawinners.urls')), #including the datawinners url
     (r'', include('datawinners.dcs_app.urls')),
 
