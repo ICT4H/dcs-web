@@ -28,18 +28,21 @@
             <div class="grid_3 alpha logo" style="padding-top: 0px">
                 <a href="/"><img src="/media/images/collect-logo.png" style="height: 50px"/></a>
             </div>
+          {% include 'header_wizard.html' %}
           </div>
         </div>
-
-
     {% endblock %}
 
 {% block main_content %}
     <div id="container_content">
+<div class="page_title_band">
+    <div id="page_title">
 
+  </div>
+</div>
         {% block main_message %}
         {% endblock %}
-        <div class="container_24">
+        <div class="container_24" style="padding-top: 15px;">
             <div class="grid_23 content">
                 <div class="questionnaire-content">
                     {% block questionnaire %}
