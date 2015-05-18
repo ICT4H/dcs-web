@@ -40,7 +40,6 @@
 {% block questionnaire %}
     <div class="questionnaire-header">
 
-        <p class="instructions italic">{% trans "Fill out the following Questionnaire and click on Submit." %}</p>
         {% for message in messages %}
             <div class="{{ message.tags }}-message-box message-box clear-left">{{ message }}</div>
         {% endfor %}

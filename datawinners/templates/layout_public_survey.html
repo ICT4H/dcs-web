@@ -17,26 +17,20 @@
 {% endblock %}
 
 
+
 {% block section_title %}
     <span class="section_title">{% trans "Survey" %}</span>
 {% endblock %}
 
     {% block header %}
         <div id="container_header_application">
-            <div class="container_24" id="header_application">
-                <div id="container_header_wizard" >
-                    <div class="container_24" id="header_wizard">
-                    <div id="header" class="grid_24">
-                    </div>
-                    </div>
-                </div>
-                    <div id="main_tab">
-                        <div class="grid_3 alpha logo">
-                                <a href="{% url auth_login %}"><img src="/media/images/dcs_logo.png"/></a>
-                        </div>
-                    </div>
+          <div class="container_24" id="header_application">
+            <div class="grid_3 alpha logo" style="padding-top: 0px">
+                <a href="/"><img src="/media/images/collect-logo.png" style="height: 50px"/></a>
             </div>
+          </div>
         </div>
+
 
     {% endblock %}
 
