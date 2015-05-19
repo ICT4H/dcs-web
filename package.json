@@ -4,6 +4,7 @@
     "brand": "dcs",
     "brand_file": "_dcs.scss",
     "scss_src": "datawinners/media-dcs/css/scss/",
+    "css_dest": "datawinners/media/css/scss/",
 
     "devDependencies": {
         "grunt": "0.4.5",
