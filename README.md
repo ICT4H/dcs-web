@@ -1,14 +1,12 @@
 ##Introduction
 
-__Data winners__ is a data collection application supporting multiple channels
-like sms, web and smartphone. Goal is to enable seamless data collection,
-reporting and visualization.
+This is the backend for __CollectData__ service build on top of [DataWinners](https://github.com/mangroveorg/datawinners).
 
-Commercial hosted service is available at http://datawinners.com
+Free hosted trial is at www.collectdata.in
 
 ####Copyright and license
 
-__Copyright 2014 HNI__
+__Copyright 2015 Thoughtworks__
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
