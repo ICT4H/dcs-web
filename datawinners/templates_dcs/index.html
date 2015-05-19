@@ -30,6 +30,8 @@
     <meta property="og:image" content="https://www.collectdata.in/media/homepage/img/banner-for-fb.jpg">
     <meta property="og:type" content="video">
 
+    {% include 'analyticsjs.html' %}
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -139,13 +141,13 @@
                         <a href="#page-top"></a>
                     </li>
                     <li class="page-scroll">
-                        <a href="/survey/FKF626232/9b62b339-5ed7-4743-aff4-9743bafd8834">CONTACT US</a>
+                        <a href="/survey/FKF626232/9b62b339-5ed7-4743-aff4-9743bafd8834" onClick="DW.trackEvent('home', 'contact-us')">CONTACT US</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="login">SIGN IN</a>
+                        <a href="login" onClick="DW.trackEvent('home', 'login')">SIGN IN</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="registration" id="try-it">TRY IT</a>
+                        <a href="registration" id="try-it" onClick="DW.trackEvent('home', 'tryit', 'top')">TRY IT</a>
                     </li>
                 </ul>
             </div>
@@ -236,10 +238,10 @@
                 </div>
             </div>
             <div class="row">
-                <h2 class="text-center">CollectData trial is absolutely free. <a href="registration" >TRY IT</a></h2>
+                <h2 class="text-center">CollectData trial is absolutely free. <a href="registration" onClick="DW.trackEvent('home', 'tryit', 'bottom')">TRY IT</a></h2>
                 <p></p>
                 <p class="text-center"><a href="https://play.google.com/store/apps/details?id=com.thoughtworks.dcs">
-                <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" /></a></p>
+                <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" onClick="DW.trackEvent('home', 'downloadapp')" /></a></p>
             </div>
         </div>
     </section>
@@ -267,6 +269,8 @@
 
     <!-- jQuery -->
     <script src="media/homepage/js/jquery.js"></script>
+
+    <script src="media/homepage/js/analytics_wrapper.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="media/homepage/js/bootstrap.min.js"></script>
