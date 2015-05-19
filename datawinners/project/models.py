@@ -103,6 +103,9 @@ class PublicSurvey(models.Model):
         self.submissions_count += 1
         self.save()
 
+    def get_remaining_submission_count(self):
+        return self.allowed_submission_count - self.submissions_count
+
 def create_public_survey(org_id, questionnaire_id):
     from datawinners.project.public_project_guest_handler import UniqueIdGenerator
     project_survey = PublicSurvey.objects.create(organization=Organization.objects.get(org_id=org_id),

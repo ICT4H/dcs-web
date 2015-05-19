@@ -250,7 +250,7 @@ def public_survey(request, project_id):
         form = PublicProjectForm(request.POST)
         if form.is_valid():
             form_data = form.cleaned_data
-            public_survey.allowed_submission_count = form_data['allowed_submission_count']
+            public_survey.allowed_submission_count = 1000 if form_data['allowed_submission_count'] is None else form_data['allowed_submission_count']
             public_survey.anonymous_web_submission_allowed = form_data['is_anonymous_enabled']
             public_survey.survey_expiry_date = form_data['expires_on']
             public_survey.save()

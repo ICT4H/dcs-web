@@ -79,7 +79,7 @@
                         <p>Anonymous submission link:</p>
                         <p style="border: 1px solid #ccc">http://{{ domain }}{% url public_survey org_id public_link %}</p>
 
-                        <p>Limit anonymous submissions (Empty for unlimited submissions)</p>
+                        <p>Limit anonymous submissions (Default 1000 can be submitted if not specified)</p>
                         <p>{{ form.allowed_submission_count }}</p>
                         {% if form.allowed_submission_count.errors %}
                             {% for error in form.allowed_submission_count.errors %}
