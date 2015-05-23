@@ -24,6 +24,7 @@
 
     <fieldset>
         {% csrf_token %}
+      <input type="hidden" value="{{ email }}" name="email"/>
 
         <ul>
             <li>

@@ -45,7 +45,7 @@ class SubjectForm(Form):
 def smartphone_icon():
     return ' + <img src="/media/images/smart_phone.png" /><span>Smartphone</span>'
 
-class ReporterRegistrationForm(Form):
+class ReporterForm(Form):
     required_css_class = 'required'
 
     name = RegexField(regex="[^0-9.,\s@#$%&*~]*", max_length=80,
@@ -60,7 +60,7 @@ class ReporterRegistrationForm(Form):
     DEVICE_CHOICES = (('sms', mark_safe('<img src="/media/images/mini_mobile.png" /> <span>SMS</span>')), ('web', mark_safe('<img src="/media/images/mini_computer.png" /> <span>Web</span>' + smartphone_icon())))
     devices = MultipleChoiceField(label=_('Device'), widget=CheckboxSelectMultiple(), choices=DEVICE_CHOICES,
         initial=['sms', 'web'], required=False,)
-    email = EmailField(required=True, widget=TextInput(attrs=dict({'class': 'required'},
+    email = EmailField(widget=TextInput(attrs=dict({'class': 'required'},
         maxlength=75)),
         label=_("Email address"),
         error_messages={
@@ -73,7 +73,21 @@ class ReporterRegistrationForm(Form):
 
     def __init__(self, org_id=None, *args, **kwargs):
         self.org_id = org_id
-        super(ReporterRegistrationForm, self).__init__(*args, **kwargs)
+        super(ReporterForm, self).__init__(*args, **kwargs)
+
+
+class ReporterRegistrationForm(ReporterForm):
+
+    email = EmailField(required=True, widget=TextInput(attrs=dict({'class': 'required'},
+        maxlength=75)),
+        label=_("Email address"),
+        error_messages={
+            'invalid': _('Enter a valid email address. Example:name@organization.com')})
+
+
+    def __init__(self, org_id=None, *args, **kwargs):
+        self.org_id = org_id
+        super(ReporterForm, self).__init__(*args, **kwargs)
 
     def _is_int(self, s):
         try:
