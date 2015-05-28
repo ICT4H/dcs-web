@@ -1,25 +1,33 @@
 {% load i18n %}
 <div>
-    <div class="main">
-        <article class="paper">
-            <!-- this is where the form will go -->
-            <div class="ajax-loader"><img src="/media/images/ajax-loader.gif"/><span
-                    class="loading">{% trans "Just a moment..." %}</span></div>
-            <button id="validate-form" class="btn btn-primary btn-large disabled-state disabled">{% trans "Submit" %}</button>
-            {% if is_quota_reached %}
-                <div class="can-not-submit" style="width: 628px;text-align: center;">
-                    <span class="can-not-submit-link-quest help_icon">{% trans "Why canʼt I submit?" %}</span>
 
-                    <div class="tooltip">
-                        <p>
-                            {% trans 'You have reached your limit of 1000 free Submissions. Ask your Project Manager to sign up for a monthly subscription to continue submitting data.' %}
-                        </p>
-                    </div>
+    <div class="main">
+        <article class="paper" >
+            <div class="ajax-loader"><img src="/media/images/ajax-loader.gif"/>
+            <span class="loading">{% trans "Just a moment..." %}</span></div>
+
+            <header class="form-header clearfix">
+                <span class="form-language-selector"><span>Choose Language</span></span>
+            </header>
+
+
+            <div class="form-footer">
+                    <!--
+                    Used some quick-and-dirty inline CSS styles here because the form-footer should be styled in the
+                    mother application
+                    -->
+                <div style="text-align: center">
+                    <a href="#" class="btn btn-primary previous-page disabled">Back</a>
+                    <button id="validate-form" class="btn btn-primary">Submit</button>
+                    <a href="#" class="btn btn-primary next-page disabled">Next</a>
                 </div>
-            {% endif %}
-            <div class="enketo-power">Powered by <a target="_self" href="http://enketo.org" title="enketo.org website"><img
-                    src="/media/images/enketo_powered_by.png" alt="enketo logo"/></a>
+
+                <div class="enketo-power" style="margin-bottogirm: 30px;">Powered by <a target="_blank" href="http://enketo.org" title="enketo.org website"><img src="https://enketo.org/images/enketo_bare_100x37.png" alt="enketo logo" /></a> </div>
+
+                <a href="#" class="btn btn-default disabled first-page" style="width: 49.7%; border-radius: 0;">Return to Beginning</a>
+                <a href="#" class="btn btn-default disabled last-page" style="width: 49.7%; border-radius: 0;">Go to End</a>
             </div>
+
         </article>
     </div>
     <div id="cancel_submission_warning_message" style="display: none;">

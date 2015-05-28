@@ -26,23 +26,6 @@ article.paper {
     margin-right: 18px;
     margin-bottom: 18px;
   }
-  button#validate-form {
-    border: 1px solid #3498db !important;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    background: #3498db;
-    /* for non-css3 browsers */
-    color: #fff !important;
-    font-family: "Arial";
-    font-weight: bold;
-    text-decoration: none !important;
-    padding: 6px 23px 5px 22px;
-    cursor: pointer;
-    cursor: hand;
-    opacity: 0.9;
-    font-size: 15px;
-    height: 37px;
-  }
   .question:not(.or-appearance-label):not(.or-appearance-compact):not(.or-appearance-quickcompact) label input[type="checkbox"]:checked ~ .option-label:before,
   .question:not(.or-appearance-label):not(.or-appearance-compact):not(.or-appearance-quickcompact) label input[type="radio"]:checked ~ .option-label:before {
     color: #AFCCFF;
@@ -61,6 +44,7 @@ article.paper {
   }
   section.or-group, section.or-group-data{
     border: 1px solid #CCC;
+    background: #F1F1F1;
     padding-left: 18px;
   }
   .option-wrapper > label:hover:not(.filler) {
@@ -89,4 +73,8 @@ article.paper {
 
 .geopicker .btn[name="geodetect"]:not(.close-chain-btn){
   display: none;
+}
+
+.form-footer .disabled{
+    display: none;
 }

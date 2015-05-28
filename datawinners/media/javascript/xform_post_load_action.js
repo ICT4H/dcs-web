@@ -4,7 +4,7 @@ $(document).on('initializePostFormLoadAction', 'form', function(){
 
     if(isEditSubmission){
         $("#validate-form").wrap("<div id='submission-action-section'></div>");
-        $("<a id='cancel-link' href=" + submissionLogURL + " class='cancel-link'>"+ gettext("Cancel Editing") +"</a>").insertBefore("#validate-form");
+        //$("<a id='cancel-link' href=" + submissionLogURL + " class='cancel-link'>"+ gettext("Cancel Editing") +"</a>").insertAfter("#validate-form");
     }
 });
 
@@ -34,7 +34,7 @@ function _initializeWarningDialog() {
         },
 
         cancelDialogDiv: "#cancel_submission_warning_message",
-        ignore_links: "#cancel_changes , .map-canvas-wrapper a"
+        ignore_links: "#cancel_changes , .map-canvas-wrapper a, .form-footer a"
     };
     cancelWarningPopUp = new DW.CancelWarningDialog(options).init();
     cancelWarningPopUp.initializeLinkBindings();

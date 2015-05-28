@@ -195,7 +195,7 @@ class XlsFormParser():
     def parse(self):
         fields = self.xform_dict['children']
         errors = self._validate_fields_are_recognised(fields)
-        settings_page_errors = self._validate_settings_page_is_not_present(self.xform_dict)
+        settings_page_errors = []
         errors = errors.union(settings_page_errors)
         choice_errors = self._validate_media_in_choices(fields)
         [errors.add(choice_error) for choice_error in choice_errors if choice_error]
