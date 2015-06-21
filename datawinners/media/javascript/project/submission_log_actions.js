@@ -21,6 +21,7 @@ var filter_as_json = function () {
                     unique_id_filters[filter.attr('entity_type')] = filter.data('value');
                 })
                 return {"submissionDatePicker": $('#submissionDatePicker').val(),
+                        "submissionUpdatedPicker": $('#submissionUpdatedPicker').val(),
                         "datasenderFilter": $("#data_sender_filter").data('ds_id'),
                         "reportingPeriodPicker": $('#reportingPeriodPicker').val(),
                         "search_text":$('#search_text').val(),
