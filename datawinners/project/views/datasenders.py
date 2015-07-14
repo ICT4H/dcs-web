@@ -206,10 +206,13 @@ def project_guests(request, project_id):
 
         iDisplayStart = int(request.POST.get('iDisplayStart'))
         iDisplayLength = int(request.POST.get('iDisplayLength'))
+        email_status_req = request.POST.get('email_status')
+        email_status = None if email_status_req == 'undefined' or email_status_req == 'all' else int(email_status_req)
+
         current_page = 1 if iDisplayStart == 0 else (iDisplayStart / iDisplayLength) + 1
 
         search_count, guests_data = guest_finder.get_paginated_guest_for_survey(organisation.org_id, project_id,
-                                                                  current_page, iDisplayLength)
+                                                                            email_status, current_page, iDisplayLength)
         query_count = len(guests_data)
 
         return HttpResponse(

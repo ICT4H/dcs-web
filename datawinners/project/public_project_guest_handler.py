@@ -109,13 +109,18 @@ class GuestFinder():
 
         return data
 
-    def get_paginated_guest_for_survey(self, org_id, questionnaire_id, page_num, count):
-        public_surveys = PublicSurvey.objects.filter(organization=org_id, questionnaire_id=questionnaire_id)
-        if len(public_surveys) < 1:
+    def get_paginated_guest_for_survey(self, org_id, questionnaire_id, email_status, page_num, count):
+        if email_status:
+            guests = ProjectGuest.objects.filter(public_survey__organization=org_id,
+                                             public_survey__questionnaire_id=questionnaire_id,
+                                             status=email_status)
+        else:
+            guests = ProjectGuest.objects.filter(public_survey__organization=org_id,
+                                             public_survey__questionnaire_id=questionnaire_id)
+        if len(guests) < 1:
             return 0, []
 
-
-        page = Paginator(public_surveys[0].projectguest_set.all(), count)
+        page = Paginator(guests, count)
         project_guests = page.page(page_num).object_list
         return page.count, self._transform_to_array(project_guests)
 

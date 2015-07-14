@@ -87,8 +87,10 @@ $(document).ready(function() {
         $("#guest_table").dwTable({
             "concept": "Project Guest",
             "sAjaxSource": project_guests_ajax_url,
+            "dData": function() { return $('#email_status').val()},
             "sAjaxDataIdColIndex": 1,
             "bServerSide": true,
+            "sDom": 'ip<"toolbar">rtipl',
             "oLanguage": {
                 "sEmptyTable": $('#no_registered_subject_message').clone(true, true).html()
             },
@@ -101,7 +103,22 @@ $(document).ready(function() {
             ],
             "aaSorting": [ [ col("name"), "asc"] ]
         });
-        $("#guest_table").dataTable().fnSetColumnVis(1, false)
+        $("#guest_table").dataTable().fnSetColumnVis(1, false);
+        _add_email_send_filter_select();
     });
+
+    function _add_email_send_filter_select() {
+        var s = $("<select id=\"email_status\"/>");
+        $("<option />", {value: 'all', text: 'Show All'}).appendTo(s);
+        $("<option />", {value: '1', text: 'Email Send'}).appendTo(s);
+        $("<option />", {value: '0', text: 'Email Not Send'}).appendTo(s);
+        s.appendTo('div.toolbar');
+        s.change(function() {
+            $("#guest_table").dataTable().fnReloadAjax();
+        });
+        $('div.toolbar').css('float', 'right');
+    }
+
+
 
 });
