@@ -41,6 +41,16 @@
         .guestForm p {
             padding: 5px;
         }
+        #file-uploader{
+            padding-left: 5px;
+        }
+        #file-uploader, .file-uploader {
+            width: auto;
+            margin-right: 0;
+        }
+        #file-uploader #file_uploader, .file-uploader #file_uploader {
+            float: right;
+        }
     </style>
 {% endblock %}
 
@@ -62,7 +72,7 @@
        </div>
     {% endif %}
     <div>
-        <div class="float_left" style="width: 50%">
+        <div class="float_left" style="width: 50%; border: 1px solid rgb(204, 204, 204); margin-bottom: 20px;">
             <form action="{% url add_project_guests project.id %}" method="post" class="guestForm">{% csrf_token %}
                 <p>You can send the survey request email to the added guest by selecting 'Send survey email' form Actions below.</p>
                 {% for field in guest_form %}
@@ -76,25 +86,24 @@
                 {% endfor %}
 
                 <p><input class="button" type="submit" value="Add Guest" /></p>
-                <br>
-                <p>
-                    <div id="file-uploader" class="grid">
-                        <noscript>
-                            <p>{% trans "Please enable JavaScript to use file uploader." %}</p>
-                        </noscript>
-                        <div id="file_uploader" class="float_left grid_5"></div>
-                    </div>
-                </p>
-                <br>
-
             </form>
         </div>
-        <div class="float_left guestForm" style="width: 50%">
+        <div class="float_left guestForm" style="width: 49%">
             <p>Last date of submission, Anonymous survey url, submission count limit, etc.</p>
             <p><a class="button" href="{%  url public_survey_details project.id %}">Manage public settings</a></p>
         </div>
     </div>
-
+    <div style="clear: both; float: right; margin-top: -60px; margin-right: 0px;">
+        <div style="margin-top: -15px; float: right;">
+            Email and Name (optional) columns
+        </div>
+        <div id="file-uploader" class="grid">
+            <noscript>
+                <p>{% trans "Please enable JavaScript to use file uploader." %}</p>
+            </noscript>
+            <div id="file_uploader"></div>
+        </div>
+    </div>
     {% include 'project/guest_table.html' %}
 
 {% endblock %}
