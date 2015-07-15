@@ -86,7 +86,7 @@ class SubmissionQueryResponseCreator(object):
                         self._populate_datasender(res, submission)
                     elif key == 'status' and res.get(key):
                         submission.append(ugettext(res.get(key)))
-                    elif key == SubmissionIndexConstants.SUBMISSION_DATE_KEY or key == SubmissionIndexConstants.SUBMISSION_UPDATED_KEY:
+                    elif key == SubmissionIndexConstants.SUBMISSION_DATE_KEY:
                         self._convert_to_iso_format_date_time(key, res, submission) if self.use_iso_create_date else\
                             self._convert_to_localized_date_time(key, res, submission)
                     elif key == 'error_msg':

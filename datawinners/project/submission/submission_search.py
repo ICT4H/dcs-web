@@ -67,13 +67,6 @@ def _add_unique_id_filters(form_model, unique_id_filters, search):
     return search
 
 
-def append_date_filters(local_time_delta, search, submission_date_range):
-    submission_date_query = SubmissionDateRangeFilter(submission_date_range, local_time_delta).build_filter_query()
-    if submission_date_query:
-        search = search.query(submission_date_query)
-    return search
-
-
 def _add_search_filters(search_filter_param, form_model, local_time_delta, query_fields, search):
     if not search_filter_param:
         return
@@ -83,9 +76,9 @@ def _add_search_filters(search_filter_param, form_model, local_time_delta, query
     if query_text:
         search = search.query("query_string", query=query_text_escaped, fields=query_fields)
     submission_date_range = search_filter_param.get("submissionDatePicker")
-    search = append_date_filters(local_time_delta, search, submission_date_range)
-    submission_updated_range = search_filter_param.get("submissionUpdatedPicker")
-    search = append_date_filters(local_time_delta, search, submission_updated_range)
+    submission_date_query = SubmissionDateRangeFilter(submission_date_range, local_time_delta).build_filter_query()
+    if submission_date_query:
+        search = search.query(submission_date_query)
     search = _add_date_range_filters(search_filter_param.get("dateQuestionFilters"), form_model, search)
     datasender_filter = search_filter_param.get("datasenderFilter")
     if datasender_filter:
