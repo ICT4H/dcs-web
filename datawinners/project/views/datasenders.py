@@ -29,7 +29,7 @@ from datawinners.entity.datasender_tasks import convert_open_submissions_to_regi
 from datawinners.entity.helper import rep_id_name_dict_of_users
 from datawinners.main.database import get_database_manager
 from datawinners.project.helper import is_project_exist
-from datawinners.project.models import Project, get_or_create_public_survey_of
+from datawinners.project.models import Project, get_or_create_public_survey_of, PublicSurvey
 from datawinners.project.public_project_guest_handler import GuestEmail, PublicProject, GuestFinder, UniqueIdGenerator
 from datawinners.project.views.views import get_project_link, _in_trial_mode, _is_pro_sms
 from datawinners.search.datasender_index import update_datasender_index_by_id
@@ -177,11 +177,11 @@ def delete_project_guests(request, project_id):
 @is_not_expired
 def project_guests_send_email(request, project_id):
     if request.method == 'POST':
-        manager = get_database_manager(request.user)
-        questionnaire = Project.get(manager, project_id)
+        org = get_organization(request)
         selected_project_guest_ids = json.loads(request.POST.get('id_list', []))
-        emailer = GuestEmail(_get_domain(request), subject_line=questionnaire.name)
-        success_count = emailer.sendEmails(selected_project_guest_ids);
+        public_survey = PublicSurvey.objects.filter(organization=org, questionnaire_id=project_id)[0]
+        emailer = GuestEmail(_get_domain(request), public_survey)
+        success_count = emailer.send_emails(selected_project_guest_ids);
         return HttpResponse(
             jsonpickle.encode({
                 'success': True,
@@ -226,6 +226,9 @@ def project_guests(request, project_id):
             }, unpicklable=False), content_type='application/json')
 
 class PublicProjectForm(forms.Form):
+    email_subject = forms.CharField(required=False)
+    email_body = forms.CharField(widget=forms.Textarea, required=False)
+    custom_brand_logo = forms.CharField(required=False)
     is_anonymous_enabled = forms.BooleanField(initial=False, required=False, widget=forms.CheckboxInput(attrs={'data-bind': 'checked: is_anonymous_enabled'}))
     allowed_submission_count = forms.IntegerField(initial=-1, required=False)
     expires_on = forms.DateField(widget=forms.widgets.DateInput(format='%d.%m.%Y'), input_formats=['%d.%m.%Y'], required=False)
@@ -247,7 +250,7 @@ def public_survey(request, project_id):
     message = ''
     domain = _get_domain(request)
     organisation = get_organization(request)
-    public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
+    public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id, questionnaire.name)
 
     if request.method == 'POST':
         form = PublicProjectForm(request.POST)
@@ -255,11 +258,17 @@ def public_survey(request, project_id):
             form_data = form.cleaned_data
             public_survey.allowed_submission_count = 1000 if form_data['allowed_submission_count'] is None else form_data['allowed_submission_count']
             public_survey.anonymous_web_submission_allowed = form_data['is_anonymous_enabled']
+            public_survey.email_subject = form_data['email_subject']
+            public_survey.email_body = form_data['email_body']
+            public_survey.custom_brand_logo = form_data['custom_brand_logo']
             public_survey.survey_expiry_date = form_data['expires_on']
             public_survey.save()
             success, message = True, 'Survey settings updated'
     else:
         form = PublicProjectForm({'public_link': public_survey.anonymous_link_id,
+                                  'email_subject': public_survey.email_subject,
+                                  'email_body': public_survey.email_body,
+                                  'custom_brand_logo': public_survey.custom_brand_logo,
                                   'is_anonymous_enabled': public_survey.anonymous_web_submission_allowed,
                                   'expires_on': public_survey.survey_expiry_date,
                                   'allowed_submission_count': public_survey.allowed_submission_count})
@@ -292,7 +301,7 @@ def add_project_guests(request, project_id):
         guest_form = ProjectGuestForm(request.POST)
         if guest_form.is_valid():
             organisation = get_organization(request)
-            public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
+            public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id, questionnaire.name)
 
             public_project = PublicProject(project_id, public_survey, UniqueIdGenerator())
             message, success = public_project.add_guest(
@@ -321,7 +330,7 @@ def import_guest(request, project_id):
     organisation = get_organization(request)
     success, message = True, 'Guest(s) added successfully to survey. '\
         'Use the \'Send survey email\' from the Actions to email survey link to selected guest(s)'
-    public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id)
+    public_survey = get_or_create_public_survey_of(questionnaire.id, organisation.org_id, questionnaire.name)
     public_project = PublicProject(project_id, public_survey, UniqueIdGenerator())
 
     try:

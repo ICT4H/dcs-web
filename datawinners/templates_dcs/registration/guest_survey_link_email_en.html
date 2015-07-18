@@ -32,17 +32,17 @@
 
                                             <p>Hello,</p>
 
-											<p>You are being requested to take up "{{ subject_line }}" survey.
-                                                Please <a href="http://{{ domain }}{% url guest_survey link_id %}" style="text-decoration: none">click here</a> to start the survey.<br/>
+											<p>You are being requested to take up {{ email_subject }}.
+                                                Please <a href="{{ survey_link }}" style="text-decoration: none">click here</a> to start the survey.<br/>
 
                                             <p>
                                                 Have fun,
                                             </p>
                                             <p>
                                                 Your CollectData Team<br/>
-                                                <a href="{{ protocol }}://{{ domain }}" style="color: #4379A2;font-weight: normal;text-decoration: none;">
+                                                <a href="https://{{ domain }}" style="color: #4379A2;font-weight: normal;text-decoration: none;">
                                                     <span style="color: #4379A2;font-weight: normal;text-decoration: none;">
-                                                        {{ protocol }}://{{ domain }}
+                                                        https://{{ domain }}
                                                     </span>
                                                 </a>
                                             </p>

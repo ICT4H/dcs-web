@@ -1,14 +1,17 @@
 # vim: ai ts=4 sts=4 et sw= encoding=utf-8
 from datetime import timedelta, date
+import os
 
 from couchdb.mapping import TextField
 from django.db.models import CASCADE
 from django.db.models.fields import IntegerField, CharField
 from django.db.models.fields.related import ForeignKey
 from django.db import models, IntegrityError
+from django.template.loader import render_to_string
 
 from datawinners.accountmanagement.models import Organization
 from datawinners.project.couch_view_helper import get_all_projects
+from datawinners.settings import TEMPLATE_DIRS
 from mangrove.datastore.database import DatabaseManager, DataObject
 from mangrove.datastore.documents import DocumentBase, TZAwareDateTimeField, ProjectDocument
 from mangrove.form_model.project import Project
@@ -90,6 +93,9 @@ class PublicSurvey(models.Model):
     survey_expiry_date = models.DateField(null=True)
     organization = models.ForeignKey('accountmanagement.Organization', on_delete=CASCADE, null=False)
     questionnaire_id = models.CharField(max_length=100)
+    email_subject = models.CharField(max_length=255, default='')
+    email_body = models.TextField(default='')
+    custom_brand_logo = models.CharField(max_length=255, default='')
     anonymous_web_submission_allowed = models.BooleanField(default=False)
     allowed_submission_count = models.IntegerField(null=True) # max 2147483647
     anonymous_link_id = models.CharField(max_length=100)
@@ -106,24 +112,36 @@ class PublicSurvey(models.Model):
     def get_remaining_submission_count(self):
         return self.allowed_submission_count - self.submissions_count
 
-def create_public_survey(org_id, questionnaire_id):
+def create_public_survey(org_id, questionnaire_id, project_name):
     from datawinners.project.public_project_guest_handler import UniqueIdGenerator
+
     project_survey = PublicSurvey.objects.create(organization=Organization.objects.get(org_id=org_id),
                                                  questionnaire_id=questionnaire_id,
-                                                 anonymous_link_id=UniqueIdGenerator().get_unique_id())
+                                                 anonymous_link_id=UniqueIdGenerator().get_unique_id(),
+                                                 email_subject = '%s survey'%project_name,
+                                                 email_body = _get_default_email_body(),
+                                                 custom_brand_logo = 'collectdata.png')
     return project_survey
 
+def _get_default_email_body():
+    template_folder = os.path.join(TEMPLATE_DIRS[0], 'registration')
+    guest_survey_email_template = os.path.join(template_folder, 'guest_survey_link_email_en.html')
 
-def get_or_create_public_survey_of(questionnaire_id, org_id):
+    with open(guest_survey_email_template, "r") as template_file:
+        email_body = template_file.read()
+
+    return email_body
+
+def get_or_create_public_survey_of(questionnaire_id, org_id, project_name):
     public_surveys = PublicSurvey.objects.filter(organization=org_id).filter(questionnaire_id=questionnaire_id)
     if len(public_surveys) > 0:
         public_survey = public_surveys[0]
     else:
         try:
-            public_survey = create_public_survey(org_id, questionnaire_id)
+            public_survey = create_public_survey(org_id, questionnaire_id, project_name)
         except IntegrityError:
             # retry once
-            public_survey = create_public_survey(org_id, questionnaire_id)
+            public_survey = create_public_survey(org_id, questionnaire_id, project_name)
 
 
     return public_survey

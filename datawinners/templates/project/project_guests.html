@@ -40,6 +40,7 @@
     <style type="text/css">
         .guestForm p {
             padding: 5px;
+            font-size: 14px;
         }
         #file-uploader{
             padding-left: 5px;
@@ -88,9 +89,8 @@
                 <p><input class="button" type="submit" value="Add Guest" /></p>
             </form>
         </div>
-        <div class="float_left guestForm" style="width: 49%">
-            <p>Last date of submission, Anonymous survey url, submission count limit, etc.</p>
-            <p><a class="button" href="{%  url public_survey_details project.id %}">Manage public settings</a></p>
+        <div class="float_right guestForm">
+            <p><a class="button" href="{%  url public_survey_details project.id %}">Settings</a></p>
         </div>
     </div>
     <div style="clear: both; float: right; margin-top: -60px; margin-right: 0px;">

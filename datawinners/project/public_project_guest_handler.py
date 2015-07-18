@@ -3,9 +3,11 @@ import uuid
 
 from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
+from django.template import Template, Context
 from django.template.loader import render_to_string
 from django.db import connection, transaction
 from django.db.utils import IntegrityError
+from rest_framework.reverse import reverse
 
 from datawinners import settings
 from datawinners.feeds.database import feeds_db_for
@@ -148,32 +150,29 @@ class GuestMapper():
 
 class GuestEmail():
 
-    def __init__(self, domain, subject_line):
+    def __init__(self, domain, public_survey):
         self.domain = domain
-        self.subject_line = subject_line
+        self.public_survey = public_survey
+        self.email_body_template = Template(self.public_survey.email_body)
 
-    def sendEmails(self, project_guest_ids):
+
+    def send_emails(self, project_guest_ids):
         guests = ProjectGuest.objects.filter(pk__in=[int(entry) for entry in project_guest_ids])
-
         for guest in guests:
-            self._send_mail(guest.guest_email, guest.link_id)
+            self._send_mail(guest)
             guest.mark_email_send()
 
         return len(guests)
 
-    def _send_mail(self, guest_email, link_id):
-        language = 'en'
-        context = {
-            'subject_line': self.subject_line,
+    def _send_mail(self, guest):
+        context = Context({
+            'name': guest.guest_name,
+            'email_subject': self.public_survey.email_subject,
             'domain': self.domain,
-            'link_id': link_id
-        }
-        subject = render_to_string('registration/guest_survey_email_subject_in_'+language+'.txt')
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines()) + ' - ' + self.subject_line
-        message = render_to_string('registration/guest_survey_link_email_'+language+'.html',
-                                   context)
-        email = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [guest_email], [settings.HNI_SUPPORT_EMAIL_ID])
+            'survey_link': 'https://%s%s'%(self.domain, reverse('guest_survey', args=[guest.link_id]), )
+        })
+        message = self.email_body_template.render(context)
+        email = EmailMessage(self.public_survey.email_subject, message, settings.DEFAULT_FROM_EMAIL, [guest.guest_email], [settings.HNI_SUPPORT_EMAIL_ID])
         email.content_subtype = "html"
         email.send()
 

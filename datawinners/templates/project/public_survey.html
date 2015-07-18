@@ -41,13 +41,18 @@
     <style type="text/css">
         .guestForm p {
             padding: 5px;
+            font-size: 14px;
+        }
+        #id_email_body {
+            height: 350px;
+            width: 900px;
         }
     </style>
 {% endblock %}
 
 {% block content %}
     <div>
-        <h2>{% trans "My Guests" %}</h2>
+        <h2>{% trans "My Guests > Settings" %}</h2>
     </div>
 
     <div id="my_subjects">
@@ -63,8 +68,29 @@
        </div>
     {% endif %}
     <div>
-        <div class="float_left" style="width: 50%">
+        <div class="float_left" style="width: 80%">
             <form action="" method="POST" class="guestForm">{% csrf_token %}
+                <p>Email Subject</p>
+                <p>{{ form.email_subject }}</p>
+                    {% if form.email_subject.errors %}
+                        {% for error in form.email_subject.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                <p>Email Body- Available Template variables: {% templatetag openvariable %} name {% templatetag closevariable %} {% templatetag openvariable %} survey_link {% templatetag closevariable %}</p>
+                <p>{{ form.email_body }}</p>
+                    {% if form.email_body.errors %}
+                        {% for error in form.email_body.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                <p>Hosted Logo url Ex.http://example.com/mylogo.png (Dimension) </p>
+                <p>{{ form.custom_brand_logo }}</p>
+                    {% if form.custom_brand_logo.errors %}
+                        {% for error in form.custom_brand_logo.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
                 <p>Guest/anonymous submission allowed till (dd.mm.yyyy ex. 13.01.2018; Empty date to always allow)</p>
                 <p>{{ form.expires_on }}</p>
                     {% if form.expires_on.errors %}
@@ -72,6 +98,7 @@
                             <p style="color: red">{{ error }}</p>
                         {% endfor %}
                     {% endif %}
+
                 <br>
                 <div >
                     <p>{{ form.is_anonymous_enabled }} Anonymous submissions enabled - Any one with the link can take survey any number of times.</p>
@@ -88,12 +115,14 @@
                         {% endif %}
                     </div>
                 </div>
-                <p><input class="button" type="submit" value="update"/></p>
+                <p>
+                    <a class="button" href="{%  url add_project_guests project.id %}">Back</a> &nbsp;
+                    <input class="button" type="submit" value="update"/>
+                </p>
             </form>
         </div>
-        <div class="float_left guestForm">
-            <p>Invite guest to take survey one time</p>
-            <p><a class="button" href="{%  url add_project_guests project.id %}">Manage guest</a></p>
+        <div class="float_right guestForm">
+            <p><a href="{%  url add_project_guests project.id %}">Back</a></p>
         </div>
     </div>
 {% endblock %}
