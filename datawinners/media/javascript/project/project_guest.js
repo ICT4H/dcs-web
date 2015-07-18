@@ -40,7 +40,8 @@ $(document).ready(function() {
                         url: url,
                         data: {
                             'id_list': JSON.stringify(selected_ids),
-                            'all_selected': all_selected
+                            'all_selected': all_selected,
+                            'email_status_filter': $('#email_status').val()
                         },
                         success: function (response) {
                             var data = JSON.parse(response);

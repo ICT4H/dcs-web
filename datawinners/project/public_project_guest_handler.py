@@ -112,7 +112,7 @@ class GuestFinder():
         return data
 
     def get_paginated_guest_for_survey(self, org_id, questionnaire_id, email_status, page_num, count):
-        if email_status:
+        if email_status > -1:
             guests = ProjectGuest.objects.filter(public_survey__organization=org_id,
                                              public_survey__questionnaire_id=questionnaire_id,
                                              status=email_status)

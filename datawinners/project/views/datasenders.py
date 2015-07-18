@@ -29,7 +29,7 @@ from datawinners.entity.datasender_tasks import convert_open_submissions_to_regi
 from datawinners.entity.helper import rep_id_name_dict_of_users
 from datawinners.main.database import get_database_manager
 from datawinners.project.helper import is_project_exist
-from datawinners.project.models import Project, get_or_create_public_survey_of, PublicSurvey
+from datawinners.project.models import Project, get_or_create_public_survey_of, PublicSurvey, ProjectGuest
 from datawinners.project.public_project_guest_handler import GuestEmail, PublicProject, GuestFinder, UniqueIdGenerator
 from datawinners.project.views.views import get_project_link, _in_trial_mode, _is_pro_sms
 from datawinners.search.datasender_index import update_datasender_index_by_id
@@ -163,7 +163,9 @@ def registered_datasenders(request, project_id):
 def delete_project_guests(request, project_id):
     if request.method == 'POST':
         publicProject = PublicProject(project_id)
-        publicProject.delete_guests(json.loads(request.POST.get('id_list', [])))
+        org = get_organization(request)
+        selected_project_guest_ids = _get_selected_guest_ids(request, org.org_id, project_id)
+        publicProject.delete_guests(selected_project_guest_ids)
 
         return HttpResponse(
             jsonpickle.encode({
@@ -172,13 +174,34 @@ def delete_project_guests(request, project_id):
             })
         )
 
+
+def _get_selected_guest_ids(request, org_id, project_id):
+    selected_project_guest_ids = json.loads(request.POST.get('id_list', []))
+    all_selected = request.POST.get('all_selected', None)
+    if all_selected == 'true':
+        email_status_filter = request.POST.get('email_status_filter', '')
+        email_status = None if email_status_filter == 'all' else int(email_status_filter)
+        if email_status:
+            guests = ProjectGuest.objects.filter(public_survey__organization=org_id,
+                                             public_survey__questionnaire_id=project_id,
+                                             status=email_status)
+        else:
+            guests = ProjectGuest.objects.filter(public_survey__organization=org_id,
+                                             public_survey__questionnaire_id=project_id)
+
+        selected_project_guest_ids = [guest.id for guest in guests]
+
+    return selected_project_guest_ids
+
+
 @csrf_exempt
 @login_required
 @is_not_expired
 def project_guests_send_email(request, project_id):
     if request.method == 'POST':
         org = get_organization(request)
-        selected_project_guest_ids = json.loads(request.POST.get('id_list', []))
+        selected_project_guest_ids = _get_selected_guest_ids(request, org.org_id, project_id)
+
         public_survey = PublicSurvey.objects.filter(organization=org, questionnaire_id=project_id)[0]
         emailer = GuestEmail(_get_domain(request), public_survey)
         success_count = emailer.send_emails(selected_project_guest_ids);
@@ -207,7 +230,7 @@ def project_guests(request, project_id):
         iDisplayStart = int(request.POST.get('iDisplayStart'))
         iDisplayLength = int(request.POST.get('iDisplayLength'))
         email_status_req = request.POST.get('email_status')
-        email_status = None if email_status_req == 'undefined' or email_status_req == 'all' else int(email_status_req)
+        email_status = -1 if email_status_req == 'undefined' or email_status_req == 'all' else int(email_status_req)
 
         current_page = 1 if iDisplayStart == 0 else (iDisplayStart / iDisplayLength) + 1
 
