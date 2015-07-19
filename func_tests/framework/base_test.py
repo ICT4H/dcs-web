@@ -36,7 +36,7 @@ def is_running_in_pycharm():
 class HeadlessRunnerTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        browser = "phantom"
+        browser = "firefox"
         if is_running_in_pycharm():
             browser = settings.DEBUG_BROWSER or "firefox"
         cls.driver = setup_driver(browser)
