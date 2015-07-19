@@ -118,9 +118,9 @@ def create_public_survey(org_id, questionnaire_id, project_name):
     project_survey = PublicSurvey.objects.create(organization=Organization.objects.get(org_id=org_id),
                                                  questionnaire_id=questionnaire_id,
                                                  anonymous_link_id=UniqueIdGenerator().get_unique_id(),
-                                                 email_subject = '%s survey'%project_name,
-                                                 email_body = _get_default_email_body(),
-                                                 custom_brand_logo = 'collectdata.png')
+                                                 email_subject='%s survey'%project_name,
+                                                 email_body=_get_default_email_body(),
+                                                 custom_brand_logo='/media/images/collect-logo.png')
     return project_survey
 
 def _get_default_email_body():

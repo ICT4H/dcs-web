@@ -652,6 +652,7 @@ def public_survey(request, org_id, anonymous_link_id):
                 'xform_xml': re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()),
                 'questionnaire_code': questionnaire.form_code,
                 'submission_create_url': '',
+                'custom_brand_logo': public_survey.public_survey.custom_brand_logo,
                 'web_site_url': '',
                 'errors': ''
             }
