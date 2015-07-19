@@ -633,7 +633,7 @@ def guest_survey(request, link_uid):
     except InvalidLinkException:
         messages.add_message(request, messages.ERROR, 'The survey link is invalid.')
     except Exception:
-        return HttpResponseBadRequest()
+        messages.add_message(request, messages.ERROR, 'Server Error.')
 
     return render_to_response("project/public_web_questionnaire_message.html", context_instance=RequestContext(request))
 
@@ -661,7 +661,7 @@ def public_survey(request, org_id, anonymous_link_id):
     except AllowedSubmissionLimitException:
         messages.add_message(request, messages.ERROR, 'The survey number of allowed survey has reached.')
     except Exception:
-        return HttpResponseBadRequest()
+        messages.add_message(request, messages.ERROR, 'Server Error')
 
     return render_to_response("project/public_web_questionnaire_message.html", context_instance=RequestContext(request))
 

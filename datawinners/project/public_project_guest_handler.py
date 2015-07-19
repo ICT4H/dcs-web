@@ -244,8 +244,7 @@ class AnonymousSubmission(PublicSubmission):
             raise InvalidLinkException()
         self.public_survey = public_survey_objects[0]
 
-        if self.public_submission.public_survey.submissions_count >=\
-                self.public_submission.public_survey.allowed_submission_count:
+        if self.public_survey.submissions_count >= self.public_survey.allowed_submission_count:
             raise AllowedSubmissionLimitException()
         #TODO raise survey expired
 
