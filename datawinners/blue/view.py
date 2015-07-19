@@ -622,6 +622,7 @@ def guest_survey(request, link_uid):
             form_context = {
                 'xform_xml': re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()),
                 'questionnaire_code': questionnaire.form_code,
+                'custom_brand_logo': guest_submission.project_guest.public_survey.custom_brand_logo,
                 'submission_create_url': '',
                 'web_site_url': '',
                 'errors': ''
