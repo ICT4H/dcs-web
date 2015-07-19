@@ -170,7 +170,7 @@ class GuestEmail():
             'name': guest.guest_name,
             'email_subject': self.public_survey.email_subject,
             'domain': self.domain,
-            'survey_link': 'https://%s%s'%(self.domain, reverse('public_survey', args=[guest.link_id]), )
+            'survey_link': 'https://%s%s'%(self.domain, reverse('guest_survey', args=[guest.link_id]), )
         })
         message = self.email_body_template.render(context)
         email = EmailMessage(self.public_survey.email_subject, message, settings.DEFAULT_FROM_EMAIL, [guest.guest_email], [settings.HNI_SUPPORT_EMAIL_ID])
