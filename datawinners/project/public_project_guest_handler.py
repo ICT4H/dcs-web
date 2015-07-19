@@ -14,8 +14,9 @@ from datawinners.feeds.database import feeds_db_for
 from datawinners.main.database import get_db_manager
 from datawinners.project.submission.submission_import import XlsSubmissionParser, ImportValidationError
 from datawinners.utils import get_database_manager_for_org
-from datawinners.accountmanagement.models import Organization, OrganizationSetting
+from datawinners.accountmanagement.models import Organization, OrganizationSetting, get_ngo_admin_user_profiles_for
 from datawinners.project.models import ProjectGuest, Project, PublicSurvey
+from mangrove.form_model.form_model import get_form_model_by_code
 
 
 class PublicProject():
@@ -206,13 +207,17 @@ class PublicSubmission():
     def get_form_code(self):
         return self.questionnaire.form_code;
 
+    def post_save(self):
+        pass
+
+
 class GuestSubmission(PublicSubmission):
 
     def __init__(self, link_id):
-        projectGuestObjects = ProjectGuest.objects.filter(link_id=link_id)
-        if len(projectGuestObjects) < 1:
+        project_guest_objects = ProjectGuest.objects.filter(link_id=link_id)
+        if len(project_guest_objects) < 1:
             raise InvalidLinkException()
-        self.project_guest = projectGuestObjects[0]
+        self.project_guest = project_guest_objects[0]
         if self.project_guest.status == ProjectGuest.SURVEY_TAKEN:
             raise SubmissionTakenError
         if self.project_guest.status != ProjectGuest.EMAIL_SEND:
@@ -239,7 +244,11 @@ class AnonymousSubmission(PublicSubmission):
             raise InvalidLinkException()
         self.public_survey = public_survey_objects[0]
 
-        #TODO raise survey expired and allowed count exceptions
+        if self.public_submission.public_survey.submissions_count >=\
+                self.public_submission.public_survey.allowed_submission_count:
+            raise AllowedSubmissionLimitException()
+        #TODO raise survey expired
+
         settings = OrganizationSetting.objects.get(organization=self.public_survey.organization)
         self.dbm = get_db_manager(settings.document_store)
         self.feeds_dbm = feeds_db_for(settings.document_store)
@@ -249,7 +258,29 @@ class AnonymousSubmission(PublicSubmission):
     def mark_submission_taken(self):
         self.public_survey.mark_submission_taken()
 
+    def post_save(self):
+        if self.public_submission.public_survey.get_remaining_submission_count() == 50:
+            self._send_limit_nearing_email()
+
+    def _send_limit_nearing_email(self):
+        admins = get_ngo_admin_user_profiles_for(self.organization)
+        language = 'en'
+        form_model = get_form_model_by_code(self.manager, self.form_code)
+        for admin in admins:
+            ctx_dict = {'username': admin.user.first_name,
+                        'project_name': form_model.name}
+            subject = render_to_string('registration/submission_limit_subject_'+language+'.txt')
+            subject = ''.join(subject.splitlines()) # Email subject *must not* contain newlines
+            message = render_to_string('registration/submission_limit_email_'+language+'.html', ctx_dict)
+            email = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [admin.user.email], [settings.HNI_SUPPORT_EMAIL_ID])
+            email.content_subtype = "html"
+            email.send()
+
+
 class InvalidLinkException(Exception):
+    pass
+
+class AllowedSubmissionLimitException(Exception):
     pass
 
 class SubmissionTakenError(Exception):

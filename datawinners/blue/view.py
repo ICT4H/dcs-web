@@ -26,7 +26,8 @@ from datawinners.blue.xform_bridge import MangroveService, XlsFormParser, XFormT
 from datawinners.accountmanagement.models import Organization
 from datawinners.blue.error_translation_utils import transform_error_message, translate_odk_message
 from datawinners.dataextraction.helper import convert_date_string_to_UTC
-from datawinners.project.public_project_guest_handler import GuestSubmission, InvalidLinkException, SubmissionTakenError, AnonymousSubmission
+from datawinners.project.public_project_guest_handler import GuestSubmission, InvalidLinkException, SubmissionTakenError, AnonymousSubmission, \
+    AllowedSubmissionLimitException
 from datawinners.settings import EMAIL_HOST_USER, HNI_SUPPORT_EMAIL_ID
 from datawinners.feeds.database import get_feeds_database
 from datawinners.search.submission_index import SubmissionSearchStore
@@ -657,6 +658,8 @@ def public_survey(request, org_id, anonymous_link_id):
             return render_to_response("project/public_web_questionnaire.html", form_context, context_instance=RequestContext(request))
     except InvalidLinkException:
         messages.add_message(request, messages.ERROR, 'The survey link is invalid.')
+    except AllowedSubmissionLimitException:
+        messages.add_message(request, messages.ERROR, 'The survey number of allowed survey has reached.')
     except Exception:
         return HttpResponseBadRequest()
 

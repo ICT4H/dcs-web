@@ -111,28 +111,11 @@ class PublicWebSubmissionHandler(XFormWebSubmissionHandler):
             ))
 
     def create_new_guest_submission(self):
-        if self.public_submission.public_survey.submissions_count >= self.public_submission.public_survey.allowed_submission_count:
-            return HttpResponse(content="Public survey limit reach", status=400)
         player_response = self.player.add_guest_survey_response(self._get_mangrove_request(), logger=sp_submission_logger)
         self.public_submission.mark_submission_taken()
-        if self.public_submission.public_survey.get_remaining_submission_count() == 50:
-            self._send_limit_reaching_email()
+        self.public_submission.post_save()
         return self._post_save(player_response)
 
-    def _send_limit_reaching_email(self):
-        admins = get_ngo_admin_user_profiles_for(self.organization)
-        language = 'en'
-        form_model = get_form_model_by_code(self.manager, self.form_code)
-        for admin in admins:
-            ctx_dict = {'domain': _get_domain(self.request) ,
-                        'username': admin.user.first_name,
-                        'project_name': form_model.name}
-            subject = render_to_string('registration/submission_limit_subject_'+language+'.txt')
-            subject = ''.join(subject.splitlines()) # Email subject *must not* contain newlines
-            message = render_to_string('registration/submission_limit_email_'+language+'.html', ctx_dict)
-            email = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [admin.user.email], [settings.HNI_SUPPORT_EMAIL_ID])
-            email.content_subtype = "html"
-            email.send()
 
 class GuestWebSubmissionHandler(PublicWebSubmissionHandler):
 
