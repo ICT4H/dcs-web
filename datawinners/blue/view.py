@@ -637,7 +637,7 @@ def guest_survey(request, link_uid):
         messages.add_message(request, messages.ERROR, 'Server Error.')
 
     return render_to_response("project/public_web_questionnaire_message.html",
-                            {'custom_brand_logo': public_survey.public_survey.custom_brand_logo},
+                            {'custom_brand_logo': guest_submission.project_guest.public_survey.custom_brand_logo},
                             context_instance=RequestContext(request))
 
 @csrf_exempt
