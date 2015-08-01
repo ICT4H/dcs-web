@@ -636,7 +636,9 @@ def guest_survey(request, link_uid):
     except Exception:
         messages.add_message(request, messages.ERROR, 'Server Error.')
 
-    return render_to_response("project/public_web_questionnaire_message.html", context_instance=RequestContext(request))
+    return render_to_response("project/public_web_questionnaire_message.html",
+                            {'custom_brand_logo': public_survey.public_survey.custom_brand_logo},
+                            context_instance=RequestContext(request))
 
 @csrf_exempt
 def public_survey(request, org_id, anonymous_link_id):
@@ -665,7 +667,9 @@ def public_survey(request, org_id, anonymous_link_id):
     except Exception:
         messages.add_message(request, messages.ERROR, 'Server Error')
 
-    return render_to_response("project/public_web_questionnaire_message.html", context_instance=RequestContext(request))
+    return render_to_response("project/public_web_questionnaire_message.html",
+                              {'custom_brand_logo': public_survey.public_survey.custom_brand_logo},
+                              context_instance=RequestContext(request))
 
 def set_mobile_displayable_fields(user, project_id, field_codes):
     dbm = get_database_manager(user)
