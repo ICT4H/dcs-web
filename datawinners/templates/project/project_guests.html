@@ -4,6 +4,15 @@
 
 {% block page_js %}
     {{ block.super }}
+    <script type="text/javascript" src="/media/javascript/jquery-dropdown/jquery.dropdown.js"></script>
+    <script type="text/javascript" src="/media/javascript/warning_dialog.js"></script>
+    <script src="/media/javascript/data_tables/js/jquery.dataTables.min.js"></script>
+    <script src="/media/javascript/data_tables/js/dw_pagination_plugin.js"></script>
+    <script src="/media/javascript/data_tables/js/dwtable.js"></script>
+    <script>
+        var project_guests_ajax_url = "{{ project_links.project_guests }}";
+        var project_id = "{{ project.id }}";
+    </script>
     <script type="text/javascript" src="/media/javascript/file_uploader/fileuploader.js"></script>
     <script type="text/javascript" src="/media/javascript/project/project_guest.js"></script>
     <script type="text/javascript">
@@ -14,6 +23,7 @@
     </script>
 
 {% endblock %}
+
 
 {% load dw_tabs %}
 {% block navigation %}

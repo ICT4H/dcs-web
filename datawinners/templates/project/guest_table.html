@@ -1,17 +1,6 @@
 {% load i18n %}
 <link href="/media/javascript/data_tables/css/dwtable.css" rel="stylesheet"/>
 {% load compress %}
-{% compress js %}
-    <script type="text/javascript" src="/media/javascript/jquery-dropdown/jquery.dropdown.js"></script>
-    <script type="text/javascript" src="/media/javascript/warning_dialog.js"></script>
-    <script src="/media/javascript/data_tables/js/jquery.dataTables.min.js"></script>
-    <script src="/media/javascript/data_tables/js/dw_pagination_plugin.js"></script>
-    <script src="/media/javascript/data_tables/js/dwtable.js"></script>
-    <script>
-        var project_guests_ajax_url = "{{ project_links.project_guests }}";
-        var project_id = "{{ project.id }}";
-    </script>
-{% endcompress %}
 
 <div id="message_text" style="display: none">
 </div>
