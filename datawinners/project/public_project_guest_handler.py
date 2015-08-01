@@ -214,14 +214,17 @@ class PublicSubmission():
 class GuestSubmission(PublicSubmission):
 
     def __init__(self, link_id):
-        project_guest_objects = ProjectGuest.objects.filter(link_id=link_id)
-        if len(project_guest_objects) < 1:
+        self.project_guest_objects = ProjectGuest.objects.filter(link_id=link_id)
+        self.project_guest = None
+
+    def validate(self):
+        if len(self.project_guest_objects) < 1:
             raise InvalidLinkException()
-        self.project_guest = project_guest_objects[0]
+        self.project_guest = self.project_guest_objects[0]
         if self.project_guest.status == ProjectGuest.SURVEY_TAKEN:
-            raise SubmissionTakenError
+            raise SubmissionTakenError()
         if self.project_guest.status != ProjectGuest.EMAIL_SEND:
-            raise InvalidLinkException
+            raise InvalidLinkException()
 
         #TODO raise survey expired exception
         settings = OrganizationSetting.objects.get(organization=self.project_guest.public_survey.organization)
@@ -229,6 +232,9 @@ class GuestSubmission(PublicSubmission):
         self.feeds_dbm = feeds_db_for(settings.document_store)
         self.questionnaire = Project.get(self.dbm, self.project_guest.public_survey.questionnaire_id)
         self.organization = self.project_guest.public_survey.organization
+
+    def get_custom_brand_logo(self):
+        return self.project_guest.public_survey.custom_brand_logo if self.project_guest else ''
 
     def get_guest_email(self):
         return self.project_guest.guest_email
@@ -239,10 +245,13 @@ class GuestSubmission(PublicSubmission):
 class AnonymousSubmission(PublicSubmission):
 
     def __init__(self, org_id, anonymous_link_id):
-        public_survey_objects = PublicSurvey.objects.filter(organization=org_id, anonymous_link_id=anonymous_link_id)
-        if len(public_survey_objects) < 1:
+        self.public_survey_objects = PublicSurvey.objects.filter(organization=org_id, anonymous_link_id=anonymous_link_id)
+        self.public_survey = None
+
+    def validate(self):
+        if len(self.public_survey_objects) < 1:
             raise InvalidLinkException()
-        self.public_survey = public_survey_objects[0]
+        self.public_survey = self.public_survey_objects[0]
 
         if self.public_survey.submissions_count >= self.public_survey.allowed_submission_count:
             raise AllowedSubmissionLimitException()
@@ -253,6 +262,10 @@ class AnonymousSubmission(PublicSubmission):
         self.feeds_dbm = feeds_db_for(settings.document_store)
         self.questionnaire = Project.get(self.dbm, self.public_survey.questionnaire_id)
         self.organization = self.public_survey.organization
+
+    def get_custom_brand_logo(self):
+        return self.public_survey.custom_brand_logo if self.public_survey else ''
+
 
     def mark_submission_taken(self):
         self.public_survey.mark_submission_taken()

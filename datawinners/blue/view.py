@@ -610,8 +610,9 @@ def attachment_download(request, document_id, attachment_name):
 
 @csrf_exempt
 def guest_survey(request, link_uid):
+    guest_submission = GuestSubmission(link_uid)
     try:
-        guest_submission = GuestSubmission(link_uid)
+        guest_submission.validate()
         if request.method == 'POST':
             handler = GuestWebSubmissionHandler(request, guest_submission)
             return handler.create_new_guest_submission()
@@ -622,7 +623,7 @@ def guest_survey(request, link_uid):
             form_context = {
                 'xform_xml': re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()),
                 'questionnaire_code': questionnaire.form_code,
-                'custom_brand_logo': guest_submission.project_guest.public_survey.custom_brand_logo,
+                'custom_brand_logo': guest_submission.get_custom_brand_logo(),
                 'submission_create_url': '',
                 'web_site_url': '',
                 'errors': ''
@@ -637,13 +638,14 @@ def guest_survey(request, link_uid):
         messages.add_message(request, messages.ERROR, 'Server Error.')
 
     return render_to_response("project/public_web_questionnaire_message.html",
-                            {'custom_brand_logo': guest_submission.project_guest.public_survey.custom_brand_logo},
+                            {'custom_brand_logo': guest_submission.get_custom_brand_logo()},
                             context_instance=RequestContext(request))
 
 @csrf_exempt
 def public_survey(request, org_id, anonymous_link_id):
+    public_survey = AnonymousSubmission(org_id, anonymous_link_id)
     try:
-        public_survey = AnonymousSubmission(org_id, anonymous_link_id)
+        public_survey.validate();
         if request.method == 'POST':
             handler = PublicWebSubmissionHandler(request, public_survey)
             return handler.create_new_guest_submission()
@@ -655,7 +657,7 @@ def public_survey(request, org_id, anonymous_link_id):
                 'xform_xml': re.sub(r"\n", " ", XFormTransformer(questionnaire.xform).transform()),
                 'questionnaire_code': questionnaire.form_code,
                 'submission_create_url': '',
-                'custom_brand_logo': public_survey.public_survey.custom_brand_logo,
+                'custom_brand_logo': public_survey.get_custom_brand_logo(),
                 'web_site_url': '',
                 'errors': ''
             }
@@ -668,7 +670,7 @@ def public_survey(request, org_id, anonymous_link_id):
         messages.add_message(request, messages.ERROR, 'Server Error')
 
     return render_to_response("project/public_web_questionnaire_message.html",
-                              {'custom_brand_logo': public_survey.public_survey.custom_brand_logo},
+                              {'custom_brand_logo': public_survey.get_custom_brand_logo()},
                               context_instance=RequestContext(request))
 
 def set_mobile_displayable_fields(user, project_id, field_codes):
