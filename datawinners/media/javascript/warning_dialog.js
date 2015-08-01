@@ -93,4 +93,4 @@ DW.warning_dialog.prototype = {
         }
         this.init();
     }
-}
+};
