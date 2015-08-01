@@ -639,8 +639,8 @@ def guest_survey(request, link_uid):
         messages.add_message(request, messages.ERROR, 'Server Error.')
 
     return render_to_response("project/public_web_questionnaire_message.html",
-                            {'custom_brand_logo': guest_submission.get_custom_brand_logo()},
-                            {'band_color': guest_submission.get_band_color()},
+                            {'custom_brand_logo': guest_submission.get_custom_brand_logo(),
+                             'band_color': guest_submission.get_band_color()},
                             context_instance=RequestContext(request))
 
 @csrf_exempt
@@ -673,8 +673,8 @@ def public_survey(request, org_id, anonymous_link_id):
         messages.add_message(request, messages.ERROR, 'Server Error')
 
     return render_to_response("project/public_web_questionnaire_message.html",
-                              {'custom_brand_logo': public_survey.get_custom_brand_logo()},
-                              {'band_color': public_survey.get_band_color()},
+                              {'custom_brand_logo': public_survey.get_custom_brand_logo(),
+                               'band_color': public_survey.get_band_color()},
                               context_instance=RequestContext(request))
 
 def set_mobile_displayable_fields(user, project_id, field_codes):
