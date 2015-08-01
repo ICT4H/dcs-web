@@ -85,10 +85,13 @@ $(document).ready(function() {
         function col(header_class_name){
             return $('#guest_table th.' + header_class_name).index('#guest_table th');
         }
+        function getEmailStatus() {
+            return $('#email_status').val();
+        }
         $("#guest_table").dwTable({
             "concept": "Project Guest",
             "sAjaxSource": project_guests_ajax_url,
-            "dData": function() { return $('#email_status').val()},
+            "dData": getEmailStatus,
             "sAjaxDataIdColIndex": 1,
             "bServerSide": true,
             "sDom": 'ip<"toolbar">rtipl',
