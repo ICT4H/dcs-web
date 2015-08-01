@@ -91,6 +91,13 @@
                             <p style="color: red">{{ error }}</p>
                         {% endfor %}
                     {% endif %}
+                <p>Top Band Color</p>
+                <p>{{ form.band_color }}</p>
+                    {% if form.band_color.errors %}
+                        {% for error in form.band_color.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
                 <p>Guest/anonymous submission allowed till (dd.mm.yyyy ex. 13.01.2018; Empty date to always allow)</p>
                 <p>{{ form.expires_on }}</p>
                     {% if form.expires_on.errors %}

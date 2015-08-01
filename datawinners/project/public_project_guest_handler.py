@@ -236,6 +236,9 @@ class GuestSubmission(PublicSubmission):
     def get_custom_brand_logo(self):
         return self.project_guest.public_survey.custom_brand_logo if self.project_guest else ''
 
+    def get_band_color(self):
+        return self.project_guest.public_survey.band_color if self.project_guest else '#F78F31'
+
     def get_guest_email(self):
         return self.project_guest.guest_email
 
@@ -266,6 +269,8 @@ class AnonymousSubmission(PublicSubmission):
     def get_custom_brand_logo(self):
         return self.public_survey.custom_brand_logo if self.public_survey else ''
 
+    def get_band_color(self):
+        return self.public_survey.band_color if self.public_survey else '#F78F31'
 
     def mark_submission_taken(self):
         self.public_survey.mark_submission_taken()

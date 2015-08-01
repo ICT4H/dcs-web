@@ -96,6 +96,7 @@ class PublicSurvey(models.Model):
     email_subject = models.CharField(max_length=255, default='')
     email_body = models.TextField(default='')
     custom_brand_logo = models.CharField(max_length=255, default='')
+    band_color = models.CharField(max_length=50, default='')
     anonymous_web_submission_allowed = models.BooleanField(default=False)
     allowed_submission_count = models.IntegerField(null=True) # max 2147483647
     anonymous_link_id = models.CharField(max_length=100)
@@ -120,7 +121,8 @@ def create_public_survey(org_id, questionnaire_id, project_name):
                                                  anonymous_link_id=UniqueIdGenerator().get_unique_id(),
                                                  email_subject='%s survey'%project_name,
                                                  email_body=_get_default_email_body(),
-                                                 custom_brand_logo='/media/images/collect-logo.png')
+                                                 custom_brand_logo='/media/images/collect-logo.png',
+                                                 band_color='#F78F31')
     return project_survey
 
 def _get_default_email_body():

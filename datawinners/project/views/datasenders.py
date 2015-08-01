@@ -252,6 +252,7 @@ class PublicProjectForm(forms.Form):
     email_subject = forms.CharField(required=False)
     email_body = forms.CharField(widget=forms.Textarea, required=False)
     custom_brand_logo = forms.CharField(required=False)
+    band_color = forms.CharField(required=False)
     is_anonymous_enabled = forms.BooleanField(initial=False, required=False, widget=forms.CheckboxInput(attrs={'data-bind': 'checked: is_anonymous_enabled'}))
     allowed_submission_count = forms.IntegerField(initial=-1, required=False)
     expires_on = forms.DateField(widget=forms.widgets.DateInput(format='%d.%m.%Y'), input_formats=['%d.%m.%Y'], required=False)
@@ -284,6 +285,7 @@ def public_survey(request, project_id):
             public_survey.email_subject = form_data['email_subject']
             public_survey.email_body = form_data['email_body']
             public_survey.custom_brand_logo = form_data['custom_brand_logo']
+            public_survey.band_color = form_data['band_color']
             public_survey.survey_expiry_date = form_data['expires_on']
             public_survey.save()
             success, message = True, 'Survey settings updated'
@@ -292,6 +294,7 @@ def public_survey(request, project_id):
                                   'email_subject': public_survey.email_subject,
                                   'email_body': public_survey.email_body,
                                   'custom_brand_logo': public_survey.custom_brand_logo,
+                                  'band_color': public_survey.band_color,
                                   'is_anonymous_enabled': public_survey.anonymous_web_submission_allowed,
                                   'expires_on': public_survey.survey_expiry_date,
                                   'allowed_submission_count': public_survey.allowed_submission_count})
