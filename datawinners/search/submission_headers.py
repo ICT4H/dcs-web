@@ -68,6 +68,7 @@ class AllSubmissionHeader(SubmissionHeader):
         header_dict.update({SubmissionIndexConstants.DATASENDER_ID_KEY: translate("Datasender Id", self.language, ugettext)})
         header_dict.update({SubmissionIndexConstants.DATASENDER_NAME_KEY: translate("Data Sender", self.language, ugettext)})
         header_dict.update({"date": translate("Submission Date", self.language, ugettext)})
+        header_dict.update({"date_updated": translate("Updated Date", self.language, ugettext)})
         header_dict.update({"status": translate("Status", self.language, ugettext)})
 
         return header_dict
