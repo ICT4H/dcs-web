@@ -27,6 +27,16 @@
         $(document).ready(function() {
             // removing the success message delayed fade-out
             $('.success-message-box').stop(true, true);
+
+            if ('{{ isPublicSubmission }}' == 'true'){
+                //TODO hack to show success msg for public submission
+                $( '#validate-form' ).on( 'click', function() {
+                    saveXformSubmission(function() {
+                        window.location.href = window.location.href + '?submitted=true';
+                        return true;
+                    });
+                });
+            }
         });
     </script>
 

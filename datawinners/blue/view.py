@@ -652,6 +652,9 @@ def public_survey(request, org_id, anonymous_link_id):
             handler = PublicWebSubmissionHandler(request, public_survey)
             return handler.create_new_guest_submission()
         else:
+            if request.GET.get('submitted', None):
+                messages.add_message(request, messages.SUCCESS, 'Thank you for taking up the survey')
+
             questionnaire = public_survey.get_questionnaire()
             #TODO needs to handle non-xform based survey?
             # if not questionnaire.xform:
@@ -662,7 +665,8 @@ def public_survey(request, org_id, anonymous_link_id):
                 'custom_brand_logo': public_survey.get_custom_brand_logo(),
                 'band_color': public_survey.get_band_color(),
                 'web_site_url': '',
-                'errors': ''
+                'errors': '',
+                'isPublicSubmission': 'true'
             }
             return render_to_response("project/public_web_questionnaire.html", form_context, context_instance=RequestContext(request))
     except InvalidLinkException:

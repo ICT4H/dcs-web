@@ -8,7 +8,7 @@ from datawinners.project.views.submission_views import edit_xform_submission_get
 urlpatterns = patterns('',
 
     url(r'^guest_survey/(?P<link_uid>.+?)/$', guest_survey, name='guest_survey'),
-    url(r'^survey/(?P<org_id>.+?)/(?P<anonymous_link_id>.+?)/$', public_survey, name='public_survey'),
+    url(r'^survey/(?P<org_id>.+?)/(?P<anonymous_link_id>.+?)/*$', public_survey, name='public_survey'),
 
     url(r'^xlsform/upload/$', ProjectUpload.as_view(), name="import_project"),
     url(r'^xlsform/download/$', view.project_download),
