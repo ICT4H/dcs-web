@@ -32,7 +32,7 @@ class MyDataSenderQuery(Query):
 
     def get_headers(self, user, entity_type=None):
         fields, old_labels, codes = get_entity_type_fields(get_database_manager(user))
-        fields.append("devices")
+        fields.remove("geo_code")
         return fields
 
     def filtered_query(self, user, project_name, query_params):

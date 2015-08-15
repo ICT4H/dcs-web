@@ -314,12 +314,18 @@ class NGOUserProfile(models.Model):
     org_id = models.TextField()
     mobile_phone = models.TextField()
     reporter_id = models.CharField(null=True, max_length=20)
+    tag = models.CharField(null=True, max_length=255, default='')
 
     @property
     def reporter(self):
         user = User.objects.get(email=self.user)
         return True if user.groups.filter(name="Data Senders").count() else False
 
+    def is_tag_assigned(self):
+        return True if self.tag else False
+
+    def get_assigned_tag(self):
+        return self.tag
 
 class PaymentDetails(models.Model):
     organization = models.ForeignKey(Organization)

@@ -74,6 +74,11 @@ var sender_registration_link = "{{ registration_link }}";
                   </li>
               </ul>
           </li>
+          <li class="{{ form.tag.css_classes }} form-row-10px">
+              {{ form.tag.label_tag }}
+              {{ form.tag }}
+              {{ form.tag.errors }}
+          </li>
           <li class="{{ form.short_code.css_classes }} form-row-10px">
               {{ form.short_code.label_tag }}
               {{ form.short_code }}

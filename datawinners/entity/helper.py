@@ -19,7 +19,8 @@ from mangrove.form_model.form_model import NAME_FIELD,\
     NAME_FIELD_CODE, LOCATION_TYPE_FIELD_NAME, LOCATION_TYPE_FIELD_CODE,\
     GEO_CODE, MOBILE_NUMBER_FIELD, MOBILE_NUMBER_FIELD_CODE,\
     SHORT_CODE_FIELD, REGISTRATION_FORM_CODE,\
-    ENTITY_TYPE_FIELD_CODE, GEO_CODE_FIELD_NAME, SHORT_CODE, REPORTER, EMAIL_FIELD, get_form_model_by_code, EntityFormModel, get_form_model_by_entity_type
+    ENTITY_TYPE_FIELD_CODE, GEO_CODE_FIELD_NAME, SHORT_CODE, REPORTER, EMAIL_FIELD, get_form_model_by_code, EntityFormModel, get_form_model_by_entity_type, \
+    TAG_FIELD_CODE
 from mangrove.form_model.validation import TextLengthConstraint,\
     RegexConstraint
 from mangrove.transport.player.player import WebPlayer
@@ -134,13 +135,15 @@ def get_country_appended_location(location_hierarchy, country):
 def _get_data(form_data, country,reporter_id=None):
     #TODO need to refactor this code. The master dictionary should be maintained by the registration form model
     mapper = {'telephone_number': MOBILE_NUMBER_FIELD_CODE, 'geo_code': GEO_CODE, 'Name': NAME_FIELD_CODE,
-              'location': LOCATION_TYPE_FIELD_CODE, 'short_code':SHORT_CODE_FIELD, "email": EMAIL_FIELD}
+              'location': LOCATION_TYPE_FIELD_CODE, 'short_code':SHORT_CODE_FIELD, "email": EMAIL_FIELD,
+              'tag': TAG_FIELD_CODE}
     data = dict()
     data[mapper['telephone_number']] = form_data.get('telephone_number')
     data[mapper['location']] = get_country_appended_location(form_data.get('location'), country)
     data[mapper['geo_code']] = form_data.get('geo_code')
     data[mapper['Name']] = form_data.get('name')
     data[mapper['email']] = form_data.get('email')
+    data[mapper['tag']] = form_data.get('tag')
     data['form_code'] = REGISTRATION_FORM_CODE
     data[ENTITY_TYPE_FIELD_CODE] = REPORTER
     data['s'] = reporter_id

@@ -995,8 +995,9 @@ def create_data_sender_and_web_user(request, project_id):
 
             if form.requires_web_access():
                 email_id = request.POST['email']
+                tag = request.POST['tag']
                 create_single_web_user(org_id=org_id, email_address=email_id, reporter_id=reporter_id,
-                                       language_code=request.LANGUAGE_CODE)
+                                       language_code=request.LANGUAGE_CODE, tag=tag)
             UserActivityLog().log(request, action=REGISTERED_DATA_SENDER,
                                   detail=json.dumps(dict({"Unique ID": reporter_id})), project=questionnaire.name)
         if message is not None and reporter_id:

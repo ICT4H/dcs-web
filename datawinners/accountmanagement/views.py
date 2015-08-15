@@ -339,6 +339,7 @@ def _update_user_and_profile(request, form):
     ngo_user_profile.title = form.cleaned_data['title']
     old_phone_number = ngo_user_profile.mobile_phone
     ngo_user_profile.mobile_phone = form.cleaned_data['mobile_phone']
+    ngo_user_profile.tag = form.cleaned_data.get('tag', None)
 
     ngo_user_profile.save()
     update_corresponding_datasender_details(user,ngo_user_profile,old_phone_number)

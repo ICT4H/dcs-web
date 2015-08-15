@@ -4,6 +4,7 @@ import logging
 import re
 import json
 from sets import Set
+from datawinners.project.views.data_sharing import DataSharing
 from datawinners.alldata.helper import get_all_project_for_user
 from datawinners.blue.correlated_xlxform import ParentXform
 
@@ -19,6 +20,7 @@ from datawinners.blue.view import SurveyWebXformQuestionnaireRequest, logger
 from datawinners.blue.xform_bridge import XFormTransformer, XFormSubmissionProcessor
 from datawinners.blue.xform_web_submission_handler import XFormWebSubmissionHandler
 from datawinners.main.database import get_database_manager
+from datawinners.search.index_utils import es_questionnaire_field_name
 from datawinners.search.submission_query import SubmissionQueryResponseCreator
 from datawinners.utils import get_organization
 from mangrove.errors.MangroveException import DataObjectNotFound
@@ -266,7 +268,12 @@ def get_delta_submission(request, project_uuid):
     survey_request = SurveyWebXformQuestionnaireRequest(request, project_uuid, XFormSubmissionProcessor())
     to_time = convert_date_time_to_epoch(datetime.utcnow())
     from_time = int(request.GET.get('last_fetch'))
-    submissions = survey_request.get_submission_from(from_time, to_time)
+
+    if DataSharing().is_admin(request.user):
+        submissions = survey_request.get_submission_updated_between(from_time, to_time)
+    else:
+        ds_tag = request.user.get_profile().get_assigned_tag()
+        submissions = survey_request.get_submission_updated_between(from_time, to_time, ds_tag)
 
     return response_json_cors({'submissions':submissions,
                                'last_fetch': convert_date_time_to_epoch(datetime.utcnow())})
@@ -283,11 +290,12 @@ def _get_slim_submission_paginated(request, project_uuid):
     search_parameters.update({"number_of_results": length})
     search_parameters.update({"filter": 'all'})
     search_parameters.update({"headers_for": 'all'})
-    search_parameters.update({'response_fields': ['ds_id', 'ds_name', 'date', 'status']})
+    search_parameters.update({'response_fields': ['ds_id', 'ds_name', 'date', 'status', 'date_updated']})
     search_parameters.update({"sort_field": "date"})
     search_parameters.update({"order": "-"})
     search_filters = {"submissionDatePicker": "All Dates", "datasenderFilter": "", "search_text": search_text,
                       "dateQuestionFilters": {}, "uniqueIdFilters": {}}
+    DataSharing(form_model, request.user).append_data_filter(search_filters)
     search_parameters.update({"search_filters": search_filters})
     search_parameters.update({"search_text": search_text})
     local_time_delta = get_country_time_delta('IN')

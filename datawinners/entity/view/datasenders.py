@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _, get_language, activate
 from django.views.generic.base import TemplateView
 
 from datawinners.accountmanagement.decorators import valid_web_user, is_datasender
-from datawinners.accountmanagement.helper import update_user_name_if_exists
+from datawinners.accountmanagement.helper import update_user_name_if_exists, update_tag_of_user
 from datawinners.accountmanagement.models import Organization
 from datawinners.activitylog.models import UserActivityLog
 from datawinners.common.constant import EDITED_DATA_SENDER, REGISTERED_DATA_SENDER
@@ -47,11 +47,13 @@ class EditDataSenderView(TemplateView):
         phone_number = reporter_entity.mobile_number
         location = reporter_entity.location
         geo_code = reporter_entity.geo_code
+        tag = reporter_entity.tag
         form = ReporterForm(initial={
                                      'name': name,
                                      'telephone_number': phone_number,
                                      'location': location,
-                                     'geo_code': geo_code
+                                     'geo_code': geo_code,
+                                     'tag': tag
                                     })
         return self.render_to_response(RequestContext(request, {
                                            'reporter_id': reporter_id,
@@ -92,6 +94,7 @@ class EditDataSenderView(TemplateView):
                     if email and current_name != form.cleaned_data["name"]:
                         update_user_name_if_exists(email, form.cleaned_data["name"])
                     update_submission_search_for_datasender_edition(manager, reporter_id, form.cleaned_data["name"])
+                    update_tag_of_user(reporter_id, request.user, form.cleaned_data.get('tag', None))
                     message = _("Your changes have been saved.")
 
                     detail_dict = {"Unique ID": reporter_id}
@@ -154,8 +157,9 @@ class RegisterDatasenderView(TemplateView):
             message = _("Data Sender with Unique Identification Number (ID) = %s already exists.") % e.data[1]
         if len(form.errors) == 0 and form.requires_web_access() and reporter_id:
             email_id = form.cleaned_data['email']
+            tag = form.cleaned_data['tag']
             create_single_web_user(org_id=org_id, email_address=email_id, reporter_id=reporter_id,
-                                   language_code=request.LANGUAGE_CODE)
+                                   language_code=request.LANGUAGE_CODE, tag=tag)
 
         if message is not None and reporter_id:
             if form.cleaned_data['project_id'] != "":
