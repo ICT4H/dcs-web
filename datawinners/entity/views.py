@@ -276,7 +276,7 @@ def log_activity(request, action, detail):
     UserActivityLog().log(request, action=action, detail=detail, project=request.POST.get("project", "").capitalize())
 
 
-def __create_web_users(org_id, reporter_details, language_code):
+def __create_web_users(org_id, reporter_details, language_code, tag):
     duplicate_entries = {}
     [duplicate_entries.update({item[0]: item[1]}) for item in reporter_details.items() if
      [val for val in reporter_details.values()].count(item[1]) > 1]
@@ -304,7 +304,7 @@ def __create_web_users(org_id, reporter_details, language_code):
             user.first_name = reporter_entity.value(NAME_FIELD)
             user.save()
             profile = NGOUserProfile(user=user, org_id=org_id, title="Mr",
-                                     reporter_id=reporter_id.lower())
+                                     reporter_id=reporter_id.lower(), tag=tag)
             profile.save()
 
             send_email_to_data_sender(user, language_code, organization=organization)
@@ -313,10 +313,10 @@ def __create_web_users(org_id, reporter_details, language_code):
     return content
 
 
-def create_single_web_user(org_id, email_address, reporter_id, language_code):
+def create_single_web_user(org_id, email_address, reporter_id, language_code, tag=None):
     """Create single web user from My Data Senders page"""
     return HttpResponse(
-        __create_web_users(org_id, {reporter_id: email_address}, language_code))
+        __create_web_users(org_id, {reporter_id: email_address}, language_code, tag))
 
 
 @login_required

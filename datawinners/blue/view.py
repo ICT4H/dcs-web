@@ -43,9 +43,10 @@ from datawinners.project.views.views import SurveyWebQuestionnaireRequest
 from datawinners.questionnaire.questionnaire_builder import QuestionnaireBuilder
 from mangrove.form_model.form_model import get_form_model_by_code
 from mangrove.form_model.project import Project
-from mangrove.transport.repository.survey_responses import get_survey_response_by_id, get_survey_responses, \
-    survey_responses_by_form_model_id, get_view_paginated, get_many_survey_response_by_ids
-from mangrove.utils.dates import py_datetime_to_js_datestring, convert_date_time_to_epoch
+from mangrove.transport.repository.survey_responses import get_survey_response_by_id, \
+    survey_responses_by_form_model_id, get_view_paginated, get_many_survey_response_by_ids, get_survey_responses_with_tag, \
+    get_survey_responses
+from mangrove.utils.dates import py_datetime_to_js_datestring
 
 
 logger = logging.getLogger("datawinners.xls-questionnaire")
@@ -453,10 +454,15 @@ class SurveyWebXformQuestionnaireRequest(SurveyWebQuestionnaireRequest):
             })
         return total_count, submission_list
 
-    def get_submission_from(self, from_time, to_time):
+    def get_submission_updated_between(self, from_time, to_time, tag=None):
         submissions = {}
-        _submissions = get_survey_responses(self.manager, self.questionnaire.id, from_time, to_time,
-                                           view_name="undeleted_survey_response_on_modified")
+        if tag:
+            _submissions = get_survey_responses_with_tag(self.manager, self.questionnaire.id, from_time,
+                                             to_time, tag, view_name="undeleted_survey_response_on_modified_and_tag")
+        else:
+            _submissions = get_survey_responses(self.manager, self.questionnaire.id, from_time,
+                                             to_time, view_name="undeleted_survey_response_on_modified")
+
         for submission in _submissions:
             submissions[submission.id] =  self.get_formatted_submission(submission)
         return submissions

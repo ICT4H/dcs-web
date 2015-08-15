@@ -70,6 +70,8 @@ class ReporterForm(Form):
 
 #    Needed for telephone number validation
     org_id = None
+    tag = CharField(max_length=255, required=False, label=_("Tag"))
+
 
     def __init__(self, org_id=None, *args, **kwargs):
         self.org_id = org_id

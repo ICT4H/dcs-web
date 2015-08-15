@@ -5,6 +5,7 @@ import re
 import datetime
 import logging
 from string import capitalize
+from datawinners.project.views.data_sharing import DataSharing
 from django.utils.safestring import mark_safe
 
 from django.utils.translation import ugettext_lazy as _, get_language
@@ -17,8 +18,6 @@ from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_view_exempt
 from elasticutils import F
 import jsonpickle
-import resource
-from psycopg2._psycopg import Boolean
 
 from datawinners import settings
 from datawinners.accountmanagement.localized_time import get_country_time_delta, convert_utc_to_localized
@@ -597,6 +596,7 @@ def get_submissions(request, form_code):
     search_parameters.update({"sort_field": _get_field_to_sort_on(request.POST, form_model, filter_type)})
     search_parameters.update({"order": "-" if request.POST.get('sSortDir_0') == "desc" else ""})
     search_filters = json.loads(request.POST.get('search_filters'))
+    DataSharing(form_model, request.user).append_data_filter(search_filters)
     search_parameters.update({"search_filters": search_filters})
     search_text = search_filters.get("search_text", '')
     search_parameters.update({"search_text": search_text})

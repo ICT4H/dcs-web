@@ -1,4 +1,5 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+from datawinners.entity.data_sender import get_user_profile_by_reporter_id
 from datawinners.entity.helper import update_data_sender_from_trial_organization
 from datawinners.main.database import get_database_manager
 from mangrove.datastore.entity import get_by_short_code
@@ -60,11 +61,22 @@ def update_user_name_if_exists(email,new_name):
     except User.DoesNotExist as e:
         pass
 
+def update_tag_of_user(reporter_id, user,tag):
+    try:
+        user_profile = get_user_profile_by_reporter_id(reporter_id, user)
+        user_profile.tag = tag
+        user_profile.save()
+    except User.DoesNotExist as e:
+        pass
+
+
 def update_corresponding_datasender_details(user,ngo_user_profile,old_phone_number):
     manager = get_database_manager(user)
     reporter_entity = get_by_short_code(manager, ngo_user_profile.reporter_id, [REPORTER])
     current_phone_number = ngo_user_profile.mobile_phone
-    reporter_entity.update_latest_data([('name',user.first_name),("mobile_number", current_phone_number)])
+    reporter_entity.update_latest_data([('name',user.first_name),
+                                        ("mobile_number", current_phone_number),
+                                        ("tag", ngo_user_profile.tag)])
 
     organization = Organization.objects.get(org_id=ngo_user_profile.org_id)
     if organization.in_trial_mode:

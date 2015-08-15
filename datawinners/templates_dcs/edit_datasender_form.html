@@ -84,6 +84,11 @@
                     </li>
                 </ul>
             </li>
+            <li class="{{ form.tag.css_classes }} form-row-10px">
+                {{ form.tag.label_tag }}
+                {{ form.tag }}
+                {{ form.tag.errors }}
+            </li>
             <li>
                 <div class="button_block">
                     {% block cancel_block %}

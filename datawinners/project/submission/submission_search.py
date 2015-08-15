@@ -83,6 +83,9 @@ def _add_search_filters(search_filter_param, form_model, local_time_delta, query
     if query_text:
         search = search.query("query_string", query=query_text_escaped, fields=query_fields)
     submission_date_range = search_filter_param.get("submissionDatePicker")
+    params = search_filter_param.get('tag', None)
+    if params:
+        search = search.query('term', **params)
     search = append_date_filters(local_time_delta, search, submission_date_range)
     submission_updated_range = search_filter_param.get("submissionUpdatedPicker")
     search = append_date_filters(local_time_delta, search, submission_updated_range)
