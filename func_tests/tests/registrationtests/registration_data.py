@@ -32,24 +32,25 @@ AGREE_TERMS = "agree-terms"
 #Registration Page Data for Successful Registration Page
 REGISTRATION_DATA_FOR_SUCCESSFUL_REGISTRATION = {ORGANIZATION_NAME: u"ÑGÓ 001",
                                                  ORGANIZATION_SECTOR: u"PublicHealth",
-                                                 ORGANIZATION_ADDRESS: u"Address Line öne",
+                                                 # ORGANIZATION_ADDRESS: u"Address Line öne",
                                                  ORGANIZATION_CITY: u"Pünë",
-                                                 ORGANIZATION_STATE: u"Máharashtra",
+                                                 # ORGANIZATION_STATE: u"Máharashtra",
                                                  ORGANIZATION_COUNTRY: u"IN",
-                                                 ORGANIZATION_ZIPCODE: u"411028",
-                                                 ORGANIZATION_OFFICE_PHONE: u"0123456789",
-                                                 ORGANIZATION_WEBSITE: u"http://ngo001.com",
+                                                 # ORGANIZATION_ZIPCODE: u"411028",
+                                                 # ORGANIZATION_OFFICE_PHONE: u"0123456789",
+                                                 # ORGANIZATION_WEBSITE: u"http://ngo001.com",
                                                  TITLE: u"Mr",
                                                  NAME: u"Mickey Gö",
                                                  EMAIL: u"nGO",
                                                  ADMIN_MOBILE_NUMBER: "23-45-678-567",
                                                  REGISTRATION_PASSWORD: u"ngo001",
                                                  REGISTRATION_CONFIRM_PASSWORD: u"ngo001",
-                                                 PAY_MONTHLY: PAY_MONTHLY,
-                                                 WIRE_TRANSFER: WIRE_TRANSFER,
-                                                 PRO_SMS: PRO_SMS}
+                                                 # PAY_MONTHLY: PAY_MONTHLY,
+                                                 # WIRE_TRANSFER: WIRE_TRANSFER,
+                                                 # PRO_SMS: PRO_SMS
+                                                }
 
-REGISTRATION_SUCCESS_MESSAGE = u"You have successfully signed up with DataWinners!!\n\nLast Step: Activate your account\nWe've sent you an activation email. Please check your Spam folder if you haven't received it.\n\nContact support@datawinners.com if you need help."
+REGISTRATION_SUCCESS_MESSAGE = u"You have successfully signed up with CollectData!!\n\nLast Step: Activate your account\nWe've sent you an activation email. Please check your Spam folder if you haven't received it.\n\nContact support@collectdata.in if you need help."
 
 REGISTRATION_DATA_FOR_SUCCESSFUL_TRIAL_REGISTRATION = {ORGANIZATION_NAME: u"ÑGÓ 001",
                                                        ORGANIZATION_SECTOR: u"PublicHealth",

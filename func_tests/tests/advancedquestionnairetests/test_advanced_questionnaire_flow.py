@@ -92,7 +92,7 @@ class TestAdvancedQuestionnaireEndToEnd(HeadlessRunnerTest):
         self.global_navigation_page.sign_out()
 
         self.global_navigation_page = login(self.driver, VALID_CREDENTIALS)
-        submission_log_page = self.global_navigation_page.navigate_to_all_data_page().navigate_to_submission_log_page(
+        submission_log_page = self.global_navigation_page.navigate_to_all_forms_page().navigate_to_submission_log_page(
             self.project_name).wait_for_table_data_to_load()
 
         self.assertEqual(submission_log_page.get_total_number_of_records(), 2)
@@ -129,7 +129,7 @@ class TestAdvancedQuestionnaireEndToEnd(HeadlessRunnerTest):
         self.assertEquals(r.status_code, 200)
         self.assertNotEqual(r._container[0].find('"success": true'), -1, r._container[0])
 
-        submission_log_page = self.global_navigation_page.navigate_to_all_data_page().navigate_to_submission_log_page(
+        submission_log_page = self.global_navigation_page.navigate_to_all_forms_page().navigate_to_submission_log_page(
             self.project_name).wait_for_table_data_to_load()
 
         is_table_empty = self._wait_for_table_to_be_empty(submission_log_page)

@@ -44,12 +44,6 @@ class QuestionnaireTabPage(Page):
         Return self
         """
         self.type_project_name(project_data)
-        questionnaire_code = fetch_(QUESTIONNAIRE_CODE, from_(questionnaire_data))
-        gen_ramdom = fetch_(GEN_RANDOM, from_(questionnaire_data))
-        if gen_ramdom:
-            questionnaire_code = questionnaire_code + generateId()
-        if fetch_(QUESTIONNAIRE_CODE, from_(questionnaire_data)):
-            self.driver.find_text_box(QUESTIONNAIRE_CODE_TB).enter_text(questionnaire_code)
         self.add_questions(questionnaire_data)
         return self
 
@@ -676,7 +670,7 @@ class QuestionnaireTabPage(Page):
 
     def save_and_create_project_successfully(self, click_ok=True):
         self.driver.find(SAVE_AND_CREATE_BTN).click()
-        self.driver.wait_for_page_with_title(UI_TEST_TIMEOUT, "Questionnaires - Overview")
+        self.driver.wait_for_page_with_title(UI_TEST_TIMEOUT, "Forms - Overview")
         if click_ok:
             self.got_redistribute_questionnaire_message()
         return ProjectOverviewPage(self.driver)

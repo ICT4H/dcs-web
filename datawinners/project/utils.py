@@ -73,7 +73,7 @@ def project_info(request, form_model, questionnaire_code): #revisit:export
             'encoded_project_name': (urlquote(form_model.name)),
             'import_template_file_name': slugify(form_model.name),
             'questionnaire_code': questionnaire_code, 'in_trial_mode': in_trial_mode,
-            'is_advance_questionnaire': True if form_model.xform else False,
+            'is_advance_questionnaire': True if form_model.created_using_xlxform else False,
             'organization_name': organization.name
             }
 

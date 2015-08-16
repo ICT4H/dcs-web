@@ -40,7 +40,7 @@ class GlobalNavigationPage(Page):
 
         Return view all projects page
          """
-        self.driver.find(PROJECT_LINK).click()
+        self.driver.find(ALL_FORMS_LINK).click()
         return ProjectsPage(self.driver)
 
     def click_on_save_change(self):
@@ -69,16 +69,16 @@ class GlobalNavigationPage(Page):
          """
         self.driver.wait_for_element(UI_TEST_TIMEOUT, DASHBOARD_PAGE_LINK, True)
         self.driver.find(DASHBOARD_PAGE_LINK).click()
-        self.driver.wait_for_page_with_title(UI_TEST_TIMEOUT, "Dashboard")
+        self.driver.wait_for_page_with_title(UI_TEST_TIMEOUT, "Forms")
         return DashboardPage(self.driver)
 
-    def navigate_to_all_data_page(self):
+    def navigate_to_all_forms_page(self):
         """
         Function to navigate to all data page of the website.
 
         Return add data sender page
          """
-        self.driver.find(PROJECT_LINK).click()
+        self.driver.find(ALL_FORMS_LINK).click()
         return AllDataPage(self.driver)
 
     def sign_out(self):

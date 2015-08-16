@@ -10,6 +10,6 @@ ADD_USER_DATA = {
     USERNAME: random_string(7)+"@mailinator.com",
     MOBILE_PHONE: random_number(9)
 }
-ADDED_USER_SUCCESS_MSG = u'User has been added successfully'
-DASHBOARD_PAGE_TITLE = u'Dashboard'
+ADDED_USER_SUCCESS_MSG = u'Admin has been added successfully'
+DASHBOARD_PAGE_TITLE = u'Forms'
 DEFAULT_PASSWORD = "test123"

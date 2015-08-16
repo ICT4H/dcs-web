@@ -40,7 +40,6 @@ class AddDataSenderPage(Page):
             fetch_(GPS, from_(registration_data)))
 
         if email is not None:
-            self.driver.find(by_css("#id_devices_1")).click()
             self.driver.find_text_box(EMAIL_TB).enter_text(email)
 
         if unique_id is not None:

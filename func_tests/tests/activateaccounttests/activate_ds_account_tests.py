@@ -17,7 +17,7 @@ from tests.testsettings import UI_TEST_TIMEOUT
 
 
 class TestActivateDSAccount(HeadlessRunnerTest):
-    @attr('functional_test')
+    @attr('functional_test', 'dcs')
     def test_create_and_activate_datasender(self):
         self.driver.go_to(DATA_WINNER_LOGIN_PAGE)
         login_page = LoginPage(self.driver)
@@ -34,7 +34,7 @@ class TestActivateDSAccount(HeadlessRunnerTest):
         activation_page = ResetPasswordPage(self.driver)
         activation_page.type_same_password(NEW_PASSWORD)
         activation_page.click_submit()
-        self.driver.wait_for_page_with_title(UI_TEST_TIMEOUT, "Data Submission")
-        self.assertEqual(self.driver.get_title(), "Data Submission")
+        self.driver.wait_for_page_with_title(UI_TEST_TIMEOUT, "Data")
+        self.assertEqual(self.driver.get_title(), "Data")
 
 

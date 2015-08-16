@@ -10,7 +10,7 @@ from tests.alluserstests.all_users_data import ALL_USERS_URL
 
 
 class TestAddUser(HeadlessRunnerTest):
-    @attr('functional_test')
+    @attr('functional_test', 'dcs')
     def test_should_add_a_new_user(self):
         self.global_navigation = login(self.driver, VALID_CREDENTIALS)
         self.driver.go_to(ALL_USERS_URL)

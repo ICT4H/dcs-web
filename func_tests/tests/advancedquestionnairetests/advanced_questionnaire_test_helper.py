@@ -11,7 +11,7 @@ DIR = os.path.dirname(__file__)
 test_data = os.path.join(DIR, 'testdata')
 
 def navigate_and_verify_web_submission_page_is_loaded(driver, global_navigation_page,project_name):
-    all_data_page = global_navigation_page.navigate_to_all_data_page()
+    all_data_page = global_navigation_page.navigate_to_all_forms_page()
     web_submission_page = all_data_page.navigate_to_web_submission_page(project_name)
     form_element = verify_advanced_web_submission_page_is_loaded(driver)
     return form_element.get_attribute('id'), web_submission_page

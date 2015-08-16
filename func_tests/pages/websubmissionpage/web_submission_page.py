@@ -88,11 +88,11 @@ class WebSubmissionPage(Page):
         return labels, instructions
 
     def navigate_to_submission_log(self):
-        self.driver.wait_for_element(UI_TEST_TIMEOUT, by_id('submission_log_link'), True).click()
+        self.driver.wait_for_element(UI_TEST_TIMEOUT, by_css('.data_log'), True).click()
         return SubmissionLogPage(self.driver)
 
     def navigate_to_datasenders_page(self):
-        self.driver.find(by_id("data_senders_tab")).click()
+        self.driver.wait_for_element(UI_TEST_TIMEOUT, by_id("#data_senders_tab"), True).click()
 
     def get_text_value(self, qcode):
         return self.driver.find(by_css("input#id_%s" % qcode)).get_attribute('value')

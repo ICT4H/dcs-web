@@ -695,7 +695,7 @@ class SurveyWebQuestionnaireRequest():
         dashboard_page = settings.HOME_PAGE + "?deleted=true"
         if self.questionnaire.is_void():
             return HttpResponseRedirect(dashboard_page)
-        if self.questionnaire.xform:
+        if self.questionnaire.created_using_xlxform:
             return HttpResponseRedirect(reverse('xform_web_questionnaire', args=[self.questionnaire.id]))
         reporter_id = NGOUserProfile.objects.get(user=self.request.user).reporter_id
         reporter_name = NGOUserProfile.objects.get(user=self.request.user).user.first_name

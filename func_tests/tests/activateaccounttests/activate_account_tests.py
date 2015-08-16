@@ -16,10 +16,12 @@ from tests.logintests.login_data import USERNAME, PASSWORD
 
 class TestActivateAccount(HeadlessRunnerTest):
 
-    @attr('functional_test')
+    @attr('functional_test', 'dcs')
     def test_successful_login_with_uppercased_email(self):
         registration_confirmation_page, self.email = register_and_get_email(self.driver)
-        assert REGISTRATION_SUCCESS_MESSAGE == registration_confirmation_page.registration_success_message()
+        message = registration_confirmation_page.registration_success_message()
+        print message
+        assert REGISTRATION_SUCCESS_MESSAGE == message
         self.account_activate_page = ActivateAccountPage(self.driver)
         self.postgres_dbmanager = DatabaseManager()
         self.activation_code = self.postgres_dbmanager.get_activation_code(self.email.lower())

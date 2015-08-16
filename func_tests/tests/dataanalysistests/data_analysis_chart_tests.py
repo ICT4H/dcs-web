@@ -33,7 +33,7 @@ class TestDataAnalysisChart(HeadlessRunnerTest):
 
     @classmethod
     def go_to_analysis_page(cls, project_name = fetch_(PROJECT_NAME, from_(DEFAULT_DATA_FOR_QUESTIONNAIRE))):
-        all_data_page = cls.global_navigation_page.navigate_to_all_data_page()
+        all_data_page = cls.global_navigation_page.navigate_to_all_forms_page()
         return all_data_page.navigate_to_data_analysis_page(project_name)
 
     def _go_to_chart_view(self, project_name = fetch_(PROJECT_NAME, from_(DEFAULT_DATA_FOR_QUESTIONNAIRE))):

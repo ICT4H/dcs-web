@@ -48,7 +48,7 @@ class TestDataSenderAssociationWithTrialAccount(HeadlessRunnerTest):
 
     def go_to_analysis_page(self, credentials, project_name):
         global_navigation = login(self.driver, credentials)
-        all_data_page = global_navigation.navigate_to_all_data_page()
+        all_data_page = global_navigation.navigate_to_all_forms_page()
         analysis_page = all_data_page.navigate_to_data_analysis_page(project_name)
         analysis_page.wait_for_table_data_to_load()
         return analysis_page

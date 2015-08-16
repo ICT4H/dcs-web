@@ -24,7 +24,7 @@ class TestWebSubmission(HeadlessRunnerTest):
         return web_submission_page
 
     def navigate_to_web_submission(self):
-        all_data_page = (GlobalNavigationPage(self.driver)).navigate_to_all_data_page()
+        all_data_page = (GlobalNavigationPage(self.driver)).navigate_to_all_forms_page()
         return all_data_page.navigate_to_web_submission_page(
             fetch_(PROJECT_NAME, from_(DEFAULT_ORG_DATA)))
 

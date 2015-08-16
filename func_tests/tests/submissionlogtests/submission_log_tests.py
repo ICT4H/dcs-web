@@ -173,7 +173,7 @@ class TestSubmissionLog(HeadlessRunnerTest):
 
 
     def make_web_submission(self, project_name, submission):
-        all_data_page = self.dashboard.navigate_to_all_data_page()
+        all_data_page = self.dashboard.navigate_to_all_forms_page()
         web_submission_page = all_data_page.navigate_to_web_submission_page(project_name)
         self.driver.wait_for_page_with_title(5, web_submission_page.get_title())
         web_submission_page.fill_questionnaire_with(submission)

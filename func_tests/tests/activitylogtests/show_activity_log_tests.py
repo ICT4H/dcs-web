@@ -25,7 +25,7 @@ class TestShowActivityLog(HeadlessRunnerTest):
     def setUpClass(cls):
         HeadlessRunnerTest.setUpClass()
         cls.global_navigation_page = login(cls.driver)
-        cls.project_title = cls.create_new_project()
+        cls.project_title = 'Reporter Activities 480son' #cls.create_new_project()
         cls.email = None
 
     @classmethod
@@ -35,10 +35,10 @@ class TestShowActivityLog(HeadlessRunnerTest):
         create_questionnaire_page = questionnaire_creation_options_page.select_blank_questionnaire_creation_option()
         create_questionnaire_page.create_questionnaire_with(NEW_PROJECT_DATA, QUESTIONNAIRE_DATA)
         create_questionnaire_page.save_and_create_project_successfully()
-        cls.driver.wait_for_page_with_title(5, 'Questionnaires - Overview')
+        cls.driver.wait_for_page_with_title(5, 'Forms - Overview')
         return ProjectOverviewPage(cls.driver).get_project_title()
 
-    @attr('functional_test')
+    @attr('functional_test', 'dcs')
     def test_should_match_created_project_entry_in_user_activity_log_page(self):
         """
         This function will create a project and will check the user activity log entry for that action
@@ -56,7 +56,7 @@ class TestShowActivityLog(HeadlessRunnerTest):
         self.assertEqual(activity_log_page.get_data_on_cell(row_index, 1), TESTER_NAME)
         self.assertEqual(activity_log_page.get_data_on_cell(row_index, 2), CREATED_PROJECT_ACTION)
 
-    @attr('functional_test')
+    @attr('functional_test', 'dcs')
     def test_should_only_show_logs_for_current_organization(self):
         self.prepare_data_for_showing_only_logs_for_current_organization()
         activity_log_page = self.navigate_to_activity_log_page()
@@ -67,7 +67,7 @@ class TestShowActivityLog(HeadlessRunnerTest):
 
 
     #issue 3483
-    @attr('functional_test')
+    @attr('functional_test', 'dcs')
     def test_filter_for_one_day(self):
         activity_log_page = self.navigate_to_activity_log_page()
         today = datetime.datetime.today()
@@ -100,7 +100,7 @@ class TestShowActivityLog(HeadlessRunnerTest):
         entries_number = activity_log_page.get_number_of_entries_found()
         self.assertTrue(entries_number != 0)
 
-    @attr('functional_test')
+    @attr('functional_test', 'dcs')
     def test_edit_submissions_are_logged(self):
         project_overview = self.global_navigation_page.navigate_to_view_all_project_page().navigate_to_project_overview_page(
             self.project_title)

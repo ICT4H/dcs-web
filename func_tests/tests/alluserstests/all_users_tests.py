@@ -116,7 +116,7 @@ class TestAllUsers(HeadlessRunnerTest):
         self.assertEqual(message, SUCCESSFULLY_DELETED_USER_MSG)
 
     def check_sent_submission(self, project_name):
-        all_data_page = self.global_navigation.navigate_to_all_data_page()
+        all_data_page = self.global_navigation.navigate_to_all_forms_page()
         data_analysis_page = all_data_page.navigate_to_data_analysis_page(project_name)
         data_sender_name = data_analysis_page.get_all_data_on_nth_row(1)[1]
         self.assertTrue("kimi" in data_sender_name)

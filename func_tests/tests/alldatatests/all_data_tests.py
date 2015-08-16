@@ -25,6 +25,6 @@ class TestAllData(HeadlessRunnerTest):
     @attr('functional_test')
     def test_should_display_all_failed_submission_link_for_an_user_account(self):
         login(self.driver, VALID_CREDENTIALS)
-        all_data_page = self.global_navigation.navigate_to_all_data_page()
+        all_data_page = self.global_navigation.navigate_to_all_forms_page()
         link_exists = all_data_page.has_all_failed_submission_link()
         self.assertTrue(link_exists)
