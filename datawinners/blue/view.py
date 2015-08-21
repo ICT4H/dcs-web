@@ -653,7 +653,7 @@ def public_survey(request, org_id, anonymous_link_id):
             request.session['submitted'] = 'True'
             return handler.create_new_guest_submission()
         else:
-            if request.GET.get('submitted', None):
+            if request.session.get('submitted', None) is not None:
                 messages.add_message(request, messages.SUCCESS, 'Thank you for taking up the survey')
 
             questionnaire = public_survey.get_questionnaire()
