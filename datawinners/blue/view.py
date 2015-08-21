@@ -655,6 +655,10 @@ def public_survey(request, org_id, anonymous_link_id):
         else:
             if request.session.get('submitted', None) is not None:
                 messages.add_message(request, messages.SUCCESS, 'Thank you for taking up the survey')
+                return render_to_response("project/public_web_questionnaire_message.html",
+                              {'custom_brand_logo': public_survey.get_custom_brand_logo(),
+                               'band_color': public_survey.get_band_color()},
+                              context_instance=RequestContext(request))
 
             questionnaire = public_survey.get_questionnaire()
             #TODO needs to handle non-xform based survey?
