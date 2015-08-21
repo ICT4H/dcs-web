@@ -648,8 +648,9 @@ def public_survey(request, org_id, anonymous_link_id):
     public_survey = AnonymousSubmission(org_id, anonymous_link_id)
     try:
         public_survey.validate();
-        if request.method == 'POST':
+        if request.method == 'POST' and request.session.get('submitted', None) is None:
             handler = PublicWebSubmissionHandler(request, public_survey)
+            request.session['submitted'] = 'True'
             return handler.create_new_guest_submission()
         else:
             if request.GET.get('submitted', None):
