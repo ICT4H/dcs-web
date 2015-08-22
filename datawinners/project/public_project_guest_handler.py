@@ -276,7 +276,7 @@ class AnonymousSubmission(PublicSubmission):
         self.public_survey.mark_submission_taken()
 
     def post_save(self):
-        if self.public_submission.public_survey.get_remaining_submission_count() == 50:
+        if self.public_survey.get_remaining_submission_count() == 50:
             self._send_limit_nearing_email()
 
     def _send_limit_nearing_email(self):
