@@ -648,12 +648,16 @@ def public_survey(request, org_id, anonymous_link_id):
     public_survey = AnonymousSubmission(org_id, anonymous_link_id)
     try:
         public_survey.validate();
-        if request.method == 'POST' and request.session.get('submitted', None) is None:
+        SUBMITTED_SURVEY_COOKIE = 'submitted' + anonymous_link_id.encode('ascii','ignore')
+        survey_taken = request.COOKIES.has_key(SUBMITTED_SURVEY_COOKIE)
+        if request.method == 'POST' and not survey_taken:
             handler = PublicWebSubmissionHandler(request, public_survey)
-            request.session['submitted'] = 'True'
-            return handler.create_new_guest_submission()
+            submission_response = handler.create_new_guest_submission()
+            one_month_expiry = 30 * 24 * 60 * 60
+            submission_response.set_cookie(SUBMITTED_SURVEY_COOKIE, 'True', max_age=one_month_expiry)
+            return submission_response
         else:
-            if request.session.get('submitted', None) is not None:
+            if survey_taken:
                 messages.add_message(request, messages.SUCCESS, 'Thank you for taking up the survey')
                 return render_to_response("project/public_web_questionnaire_message.html",
                               {'custom_brand_logo': public_survey.get_custom_brand_logo(),
@@ -678,7 +682,7 @@ def public_survey(request, org_id, anonymous_link_id):
         messages.add_message(request, messages.ERROR, 'The survey link is invalid.')
     except AllowedSubmissionLimitException:
         messages.add_message(request, messages.ERROR, 'The survey number of allowed survey has reached.')
-    except Exception:
+    except Exception as e:
         messages.add_message(request, messages.ERROR, 'Server Error')
 
     return render_to_response("project/public_web_questionnaire_message.html",
