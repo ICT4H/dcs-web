@@ -48,10 +48,15 @@ def start_servers():
     run("sudo service celeryd start")
     print 'server started..'
 
+def local():
+    env.user = "yogeshsr"
+    env.hosts = ["127.0.0.1"]
+    env.key_filename = ["/home/yogeshsr/.ssh/id_rsa"]
+    env.use_ssh_config = False
 
 def test():
     env.user = "yogeshsr"
-    env.hosts = ["172.18.29.2"]
+    env.hosts = ["172.18.29.3"]
     env.key_filename = ["/home/yogeshsr/.ssh/id_rsa"]
     env.use_ssh_config = False
 
@@ -275,16 +280,20 @@ def remove_cache(context):
 
 
 def apply_couchdb_backup(backup_dir, couchdb_dir, backup_file, type):
-    with cd(backup_dir):
-        run('cp %s %s' %(backup_file, couchdb_dir))
-    with cd(couchdb_dir):
-        if backup_file:
-            sudo('rm -rf %s' %type)
-            # run('sudo rm -rf %s', type)
-            run('sudo tar -xvf %s' % backup_file)
-            run('sudo chown -R couchdb:couchdb %s' % type)
-        else:
-            print "no backup file"
+
+    if not backup_file:
+        print "no backup file"
+        return
+
+    sudo('service %s stop' %type)
+
+    with cd(backup_dir), settings(sudo_user=COUCH_USER):
+        sudo('cp %s %s' %(backup_file, couchdb_dir))
+    with cd(couchdb_dir),  settings(sudo_user=COUCH_USER):
+        sudo('rm -rf %s' %type)
+        sudo('tar -xvf %s' % backup_file)
+        sudo('chown -R couchdb:couchdb %s' % type)
+        sudo('rm %s' %backup_file)
 
 
 def get_backup_file(backup_dir, partial_file_name):
@@ -303,7 +312,6 @@ def apply_elasticsearch_backup(backup_dir, index_bkp_file):
         sudo('rm -rf elasticsearch')
         sudo('tar -xvf %s/%s' % (backup_dir, index_bkp_file))
         print "applied"
-    sudo('service elasticsearch start')
 
 def restart_elasticsearch():
     run('sudo service elasticsearch restart')
@@ -317,3 +325,4 @@ def apply_backup(backup_dir):
     index_bkp_file = get_backup_file(backup_dir, 'mangrove_elasticsearch')
     apply_elasticsearch_backup(backup_dir, index_bkp_file)
     restart_couchdb()
+    restart_elasticsearch()
