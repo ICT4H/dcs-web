@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch, helpers
 from elasticsearch_dsl import Search, Q, F
 import elasticutils
+from datawinners.project.views.data_sharing import DS_TAG_IS_EMPTY
 from datawinners.search.filters import SubmissionDateRangeFilter, DateQuestionRangeFilter
 from datawinners.search.index_utils import es_unique_id_code_field_name, es_questionnaire_field_name
 from datawinners.search.query import ElasticUtilsHelper
@@ -74,6 +75,18 @@ def append_date_filters(local_time_delta, search, submission_date_range):
     return search
 
 
+def _append_tag_filter(search, search_filter_param):
+    tag_params = search_filter_param.get('tag', None)
+    if tag_params:
+        search = search.query('term', **tag_params)
+
+    empty_tag_params = search_filter_param.get(DS_TAG_IS_EMPTY, None)
+    if empty_tag_params:
+        search = search.filter('missing', **empty_tag_params)
+
+    return search
+
+
 def _add_search_filters(search_filter_param, form_model, local_time_delta, query_fields, search):
     if not search_filter_param:
         return
@@ -83,9 +96,7 @@ def _add_search_filters(search_filter_param, form_model, local_time_delta, query
     if query_text:
         search = search.query("query_string", query=query_text_escaped, fields=query_fields)
     submission_date_range = search_filter_param.get("submissionDatePicker")
-    params = search_filter_param.get('tag', None)
-    if params:
-        search = search.query('term', **params)
+    search = _append_tag_filter(search, search_filter_param)
     search = append_date_filters(local_time_delta, search, submission_date_range)
     submission_updated_range = search_filter_param.get("submissionUpdatedPicker")
     search = append_date_filters(local_time_delta, search, submission_updated_range)
